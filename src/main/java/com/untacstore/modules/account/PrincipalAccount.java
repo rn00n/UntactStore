@@ -10,7 +10,7 @@ import java.util.List;
 public class PrincipalAccount extends User {
     private Account account;
     public PrincipalAccount(Account account) {
-        super(account.getUserName(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        super(account.getUsername(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
         this.account = account;
     }
 }

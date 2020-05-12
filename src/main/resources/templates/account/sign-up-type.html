@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head">
+</head>
+<body>
+<div th:replace="fragments.html :: main-nav"></div>
+<div class="container">
+    <div id="selectType" align="center">
+        <form th:action="@{/sign-up/type}" th:object="${signUpForm}" method="post">
+            <input hidden name="accountType" value="USER">
+            <input type="submit" value="일반 계정">
+        </form>
+        <form th:action="@{/sign-up/type}" th:object="${signUpForm}" method="post">
+            <input hidden name="accountType" value="ADMIN">
+            <input type="submit" value="관리자 계정">
+        </form>
+    </div>
+    <div th:replace="fragments.html :: footer"></div>
+</div>
+</body>
+</html>

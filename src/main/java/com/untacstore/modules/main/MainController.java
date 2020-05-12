@@ -14,13 +14,14 @@ public class MainController {
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
         if (account != null) {
+            System.out.println("test:"+account.getUsername());
             model.addAttribute(account);
         }
         return "index";
     }
 
     @GetMapping("/login")
-    public String loginForm() {
+    public String login() {
         return "login";
     }
 }

@@ -2,10 +2,7 @@ package com.untacstore.modules.account;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,7 +14,7 @@ public class Account {
     private Long id;
 
     @Column(unique = true)
-    private String userName;
+    private String username;
     private String password;
     private String name;
 
@@ -28,7 +25,8 @@ public class Account {
     private LocalDateTime emailVerifiedDateTime; //회원가입 시간
 
     private String licensee; //사업자등록번호
-    private AccountType accountType = AccountType.USER; //계정 유형
+    @Enumerated(value = EnumType.STRING)
+    private AccountType accountType; //계정 유형
 
     //TODO profileImage;
     //TODO keyword

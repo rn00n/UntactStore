@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<head th:replace="fragments.html :: head">
 </head>
-<body>
-home
-<div th:text="${account.getName()}"></div>
-<a th:href="@{/login}">로그인</a>
-<a th:href="@{/sign-up?type=null}">회원가입</a>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav"></div>
+    <div class="container">
+        <div align="center">Main Page</div>
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
 </body>
 </html>
