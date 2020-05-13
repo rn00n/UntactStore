@@ -1,9 +1,13 @@
 package com.untacstore.modules.account;
 
+import com.untacstore.modules.keyword.Keyword;
+import com.untacstore.modules.location.Location;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -29,6 +33,25 @@ public class Account {
     private AccountType accountType; //계정 유형
 
     //TODO profileImage;
+    @Lob @Basic(fetch = FetchType.EAGER)
+    private String profileImage;
+
     //TODO keyword
-    //TODO address
+    @ManyToMany
+    private List<Keyword> keywords = new ArrayList<>();
+
+    //TODO location 관심지역
+    @ManyToMany
+    private List<Location> locations = new ArrayList<>();
+
+    //TODO notifications
+    private boolean ticketByWeb = true;
+//    private boolean ticketByKakao; TODO
+
+    //TODO 신고
+    private Integer report = 0;
+
+    public void addReport() {
+        report++;
+    }
 }

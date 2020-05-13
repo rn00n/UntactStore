@@ -19,8 +19,8 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-//    private final UserDetailsService userDetailsService;
-//    private final DataSource dataSource;
+    private final UserDetailsService userDetailsService;
+    private final DataSource dataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -32,19 +32,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin()
                 .loginPage("/login").permitAll();
+
         http.logout()
                 .logoutSuccessUrl("/");
-//        http.rememberMe()
-//                .userDetailsService(userDetailsService)
-//                .tokenRepository(tokenRepository());
+
+        http.rememberMe()
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository());
     }
 
-//    @Bean
-//    public PersistentTokenRepository tokenRepository() {
-//        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
-//        jdbcTokenRepository.setDataSource(dataSource);
-//        return jdbcTokenRepository;
-//    }
+    @Bean
+    public PersistentTokenRepository tokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        return jdbcTokenRepository;
+    }
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()

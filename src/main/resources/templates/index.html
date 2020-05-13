@@ -3,7 +3,8 @@
 <head th:replace="fragments.html :: head">
 </head>
 <body class="bg-light">
-    <div th:replace="fragments.html :: main-nav"></div>
+    <div th:replace="fragments.html :: main-nav-account(${account})"></div>
+
     <div class="container">
         <div align="center">Main Page</div>
         <div th:replace="fragments.html :: footer"></div>

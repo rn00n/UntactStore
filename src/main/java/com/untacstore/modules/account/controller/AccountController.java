@@ -1,7 +1,13 @@
-package com.untacstore.modules.account;
+package com.untacstore.modules.account.controller;
 
+import com.untacstore.modules.account.Account;
+import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.account.form.SignUpForm;
+import com.untacstore.modules.account.repository.AccountRepository;
+import com.untacstore.modules.account.service.AccountService;
 import com.untacstore.modules.account.validator.SignUpFormValidator;
+import com.untacstore.modules.keyword.Keyword;
+import com.untacstore.modules.location.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @SessionAttributes("signUpForm")
@@ -53,6 +61,31 @@ public class AccountController {
         accountService.login(account);
         sessionStatus.setComplete();
         return "redirect:/";
+    }
+    
+    /*프로필 보기*/
+    @GetMapping("/profile/{username}")
+    public String viewProfile(@CurrentAccount Account account, @PathVariable String username, Model model) {
+        Account accountToView = accountService.getAccount(username);
+        model.addAttribute(accountToView);
+        model.addAttribute("isOwner", accountToView.equals(account));
+
+        List<Keyword> keywords = accountService.getKeywords(account);
+        model.addAttribute("keywords", keywords.stream().map(Keyword::getName).collect(Collectors.toList()));
+        //로그인된 계정의 location
+        List<Location> locations = accountService.getLocations(account);
+        model.addAttribute("locations", locations.stream().map(Location::getName).collect(Collectors.toList()));
+
+        model.addAttribute("profileUsername", username);
+        return "account/profile";
+    }
+
+    /*계정 - 신고*/
+    @GetMapping("/profile/{username}/report")
+    public String addReport(@CurrentAccount Account account, @PathVariable String username, Model model) {
+        accountService.addReport(account);
+        //TODO 신고 필드를 엔티티로 변경
+        return "redirect:/profile/"+username;
     }
 
 }

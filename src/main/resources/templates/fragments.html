@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>UntacStore</title>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
 
     <script src="/node_modules/jquery/dist/jquery.min.js" ></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" ></script>
@@ -22,9 +24,13 @@
         }
     </style>
 </head>
-
+<!--메인 네비게이터 선택-->
+<div th:fragment="main-nav-account(account)">
+    <div th:if="${account == null}"><div th:replace="fragments.html :: main-nav('')"></div></div>
+    <div th:if="${account != null}"><div th:replace="fragments.html :: main-nav(${account.getAccountType().toString()})"></div></div>
+</div>
 <!--메인 네비게이터-->
-<nav th:fragment="main-nav" class="navbar navbar-expand-sm navbar-dark bg-dark">
+<nav th:fragment="main-nav(type)" class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="/" th:href="@{/}">
         <img src="/images/logo_sm.png" width="30" height="30">
     </a>
@@ -53,24 +59,26 @@
                     <i class="fa fa-bell-o" aria-hidden="true"></i>
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="isAuthenticated()">
+            <li class="nav-item" th:if="${type == 'USER'}" sec:authorize="isAuthenticated()">
                 <a class="nav-link btn btn-outline-primary" th:href="@{/}">
-                    <i class="fa fa-plus" aria-hidden="true"></i>대기표
+                    <i class="fa fa-list-ul" aria-hidden="true"></i></i> 대기표
+                </a>
+            </li>
+            <li class="nav-item" th:if="${type == 'ADMIN'}" sec:authorize="isAuthenticated()">
+                <a class="nav-link btn btn-outline-primary" th:href="@{/}">
+                    <i class="fa fa-cog" aria-hidden="true"></i></i> 내 가게
                 </a>
             </li>
             <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
-<!--                    <svg th:if="${#strings.isEmpty(account?.profileImage)}"-->
-<!--                         width="24" height="24" class="rounded border bg-light"></svg>&lt;!&ndash;th:data-jdenticon-value="${#authentication.name}"&ndash;&gt;-->
-<!--                    <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"-->
-<!--                         width="24" height="24" class="rounded border"/>-->
+                    <svg width="24" height="24" th:data-jdenticon-value="${#authentication.name}" class="rounded border bg-light"></svg>
                 </a>
                 <div class="dropdown-menu dropdown-menu-sm-right" aria-labelledby="userDropdown">
                     <h6 class="dropdown-header">
                         <span sec:authentication="name">Username</span>
                     </h6>
-<!--                    <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}}">내 정보</a>-->
+                    <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}}">내 정보</a>
                     <a class="dropdown-item" >즐겨찾기</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#" th:href="@{'/settings/profile'}">설정</a>
@@ -85,9 +93,39 @@
 <!--메인 푸터-->
 <footer th:fragment="footer">
     <div class="row justify-content-center">
-        <img class="mb-2" src="/images/logo_long_kr.jpg" alt="" width="100">
+        <img class="mb-2" src="/images/logo_long_kr.png" alt="" width="100">
         <small class="d-block mb-3 text-muted">&copy; 2020</small>
     </div>
 </footer>
+<!--유효성검사-->
+<script type="application/javascript" th:fragment="form-validation">
+    (function () {
+        'use strict';
+
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+
+            // Loop over them and prevent submission
+            Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        }, false)
+    }())
+</script>
+
+<!--셋팅 메뉴-->
+<div th:fragment="settings-menu (currentMenu)" class="list-group">
+    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'profile'}? active" href="#" th:href="@{/settings/profile}">내 정보</a>
+    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'keyword-location'}? active" href="#" th:href="@{/settings/keyword-location}">키워드/지역</a>
+    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'notifications'}? active" href="#" th:href="@{/settings/notifications}">알림</a>
+    <a class="list-group-item list-group-item-action list-group-item-danger" th:classappend="${currentMenu == 'account'}? active" href="#" th:href="@{/settings/account}">계정</a>
+</div>
 
 </html>

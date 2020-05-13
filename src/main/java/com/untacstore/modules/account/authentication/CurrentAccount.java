@@ -1,4 +1,4 @@
-package com.untacstore.modules.account;
+package com.untacstore.modules.account.authentication;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

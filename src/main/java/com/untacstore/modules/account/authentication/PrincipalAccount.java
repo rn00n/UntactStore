@@ -1,5 +1,6 @@
-package com.untacstore.modules.account;
+package com.untacstore.modules.account.authentication;
 
+import com.untacstore.modules.account.Account;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

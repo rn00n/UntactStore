@@ -3,19 +3,27 @@
 <head th:replace="fragments.html :: head">
 </head>
 <body>
-<div th:replace="fragments.html :: main-nav"></div>
-<div class="container">
-    <div id="selectType" align="center">
-        <form th:action="@{/sign-up/type}" th:object="${signUpForm}" method="post">
-            <input hidden name="accountType" value="USER">
-            <input type="submit" value="일반 계정">
-        </form>
-        <form th:action="@{/sign-up/type}" th:object="${signUpForm}" method="post">
-            <input hidden name="accountType" value="ADMIN">
-            <input type="submit" value="관리자 계정">
-        </form>
+    <div th:replace="fragments.html :: main-nav('')"></div>
+    <div class="container">
+        <div id="selectType" align="center">
+            <div class="jumbotron">
+                <h1 class="display-4">계정 유형 선택</h1>
+                <p class="lead">일반 사용자 계정과 사업자 사용자 계정을 선택하십시오.</p>
+                <hr class="my-4">
+
+                <form th:action="@{/sign-up/type}" th:object="${signUpForm}" method="post">
+                    <input hidden name="accountType" value="USER">
+                    <input class="btn btn-secondary" type="submit" value="일반 계정">
+                </form>
+                <br/>
+                <form th:action="@{/sign-up/type}" th:object="${signUpForm}" method="post">
+                    <input hidden name="accountType" value="ADMIN">
+                    <input class="btn btn-secondary" type="submit" value="관리자 계정">
+                </form>
+
+            </div>
+        </div>
+        <div th:replace="fragments.html :: footer"></div>
     </div>
-    <div th:replace="fragments.html :: footer"></div>
-</div>
 </body>
 </html>

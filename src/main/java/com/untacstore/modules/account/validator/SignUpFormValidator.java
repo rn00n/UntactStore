@@ -1,7 +1,7 @@
 package com.untacstore.modules.account.validator;
 
-import com.untacstore.modules.account.AccountRepository;
 import com.untacstore.modules.account.form.SignUpForm;
+import com.untacstore.modules.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

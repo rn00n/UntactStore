@@ -1,6 +1,8 @@
 package com.untacstore.modules.account;
 
 import com.untacstore.modules.account.form.SignUpForm;
+import com.untacstore.modules.account.repository.AccountRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class AccountControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
+    @Autowired AccountRepository accountRepository;
+
+    @AfterEach
+    void afterEach() {
+        accountRepository.deleteAll();
+    }
 
     @DisplayName("회원가입 - 폼")
     @Test
@@ -75,5 +82,37 @@ class AccountControllerTest {
                 .andExpect(authenticated().withUsername("byungryang"))
         ;
     }
+
+    @WithAccount("byungryang")
+    @DisplayName("프로필 - 화면")
+    @Test
+    void profileForm() throws Exception {
+        String username = "byungryang";
+        mockMvc.perform(get("/profile/"+username))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("account/profile"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("isOwner"))
+                .andExpect(model().attributeExists("keywords"))
+                .andExpect(model().attributeExists("locations"))
+                .andExpect(model().attributeExists("profileUsername"))
+        ;
+    }
+    
+//    @DisplayName("계정 - 신고")
+//    @Test
+//    void addReport() throws Exception {
+//        SignUpForm signUpForm = new SignUpForm();
+//        signUpForm.setAccountType(AccountType.ADMIN);
+//        mockMvc.perform(get("/sign-up/form")
+//                .sessionAttr("signUpForm", signUpForm))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("account/sign-up-form"))
+//                .andExpect(model().attributeExists("signUpForm"))
+//                .andExpect(unauthenticated())
+//        ;
+//    }
 
 }
