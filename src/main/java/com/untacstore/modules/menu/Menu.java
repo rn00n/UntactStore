@@ -22,4 +22,5 @@ public class Menu {
 
     private String price;
 
+    //TODO keyword를 이곳에 추가할까?
 }

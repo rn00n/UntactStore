@@ -2,6 +2,7 @@ package com.untacstore.modules.account;
 
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.location.Location;
+import com.untacstore.modules.store.Store;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,9 +29,7 @@ public class Account {
     private String emailCheckToken; //이메일 검증 토큰
     private LocalDateTime emailVerifiedDateTime; //회원가입 시간
 
-    private String licensee; //사업자등록번호
-    @Enumerated(value = EnumType.STRING)
-    private AccountType accountType; //계정 유형
+    private boolean hasStore = false;
 
     //TODO profileImage;
     @Lob @Basic(fetch = FetchType.EAGER)
@@ -51,7 +50,21 @@ public class Account {
     //TODO 신고
     private Integer report = 0;
 
+    private String licensee; //사업자등록번호
+    @Enumerated(value = EnumType.STRING)
+    private AccountType accountType; //계정 유형
+
     public void addReport() {
         report++;
     }
+
+    public boolean hasStore() {
+        return hasStore;
+    }
+
+    public String getAccountType() {
+        return accountType.toString();
+    }
+
+
 }

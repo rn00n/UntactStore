@@ -180,6 +180,7 @@ public class AccountSettingsController {
 
         return SETTINGS + ACCOUNT;
     }
+
     /*계정 - 패스워드 수정*/
     @PostMapping(PASSWORD)
     public String updatePassword(@CurrentAccount Account account, @Valid PasswordForm passwordForm, Errors errors, Model model, RedirectAttributes attributes) {
