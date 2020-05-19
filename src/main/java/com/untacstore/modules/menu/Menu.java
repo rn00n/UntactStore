@@ -3,10 +3,7 @@ package com.untacstore.modules.menu;
 import com.untacstore.modules.store.Store;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
@@ -15,12 +12,17 @@ public class Menu {
     @Id @GeneratedValue
     private Long id;
 
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    private String image;
+
     @ManyToOne
     private Store store;
 
     private String name;
 
-    private String price;
+    private Integer price;
 
+    private String explanation;
     //TODO keyword를 이곳에 추가할까?
 }

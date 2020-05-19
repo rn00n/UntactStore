@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +37,11 @@ class AccountControllerTest {
     @Test
     void signUpForm() throws Exception {
         SignUpForm signUpForm = new SignUpForm();
-        signUpForm.setAccountType(AccountType.ADMIN);
-        mockMvc.perform(get("/sign-up/form")
+        mockMvc.perform(get("/sign-up")
                     .sessionAttr("signUpForm", signUpForm))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("account/sign-up-form"))
+                .andExpect(view().name("account/sign-up"))
                 .andExpect(model().attributeExists("signUpForm"))
                 .andExpect(unauthenticated())
         ;
@@ -50,11 +50,7 @@ class AccountControllerTest {
     @DisplayName("회원가입 - 입력값 오류")
     @Test
     void signUpSubmit_wrong_input() throws Exception {
-        SignUpForm signUpForm = new SignUpForm();
-        signUpForm.setAccountType(AccountType.ADMIN);
-
-        mockMvc.perform(post("/sign-up/form")
-                    .sessionAttr("signUpForm", signUpForm)
+        mockMvc.perform(post("/sign-up")
                     .param("username", "byungryang")
                     .param("password", "123456") //최소 길이 오류
                     .param("email", "rn00n...") //형식 오류
@@ -62,7 +58,7 @@ class AccountControllerTest {
                     .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(view().name("account/sign-up-form"))
+                .andExpect(view().name("account/sign-up"))
                 .andExpect(unauthenticated())
         ;
     }
@@ -70,7 +66,7 @@ class AccountControllerTest {
     @DisplayName("회원가입 - 입력값 정상")
     @Test
     void signUpSubmit_correct_input() throws Exception {
-        mockMvc.perform(post("/sign-up/form")
+        mockMvc.perform(post("/sign-up")
                     .param("username", "byungryang")
                     .param("password", "asdfasdf")
                     .param("email", "rn00n@naver.com")

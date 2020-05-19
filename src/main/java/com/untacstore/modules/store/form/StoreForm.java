@@ -11,6 +11,9 @@ public class StoreForm {
     public static final String VALID_STORENAME_PATTERN = "^[ㄱ-ㅎ가-힣a-z0-9_-]{2,20}$";
 
     @NotBlank
+    private String licensee;
+
+    @NotBlank
     @Length(min = 2, max = 20)
     @Pattern(regexp = VALID_STORENAME_PATTERN)
     private String path;

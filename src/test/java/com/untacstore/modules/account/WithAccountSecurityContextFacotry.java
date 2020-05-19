@@ -24,7 +24,6 @@ public class WithAccountSecurityContextFacotry implements WithSecurityContextFac
         signUpForm.setName("문병량1");
         signUpForm.setEmail(username + "@email.com");
         signUpForm.setPassword("12345678");
-        signUpForm.setAccountType(AccountType.USER);
         accountService.processNewAccount(signUpForm);
 
         UserDetails principal = accountService.loadUserByUsername(username);

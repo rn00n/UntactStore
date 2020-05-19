@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav(${account})"></div>
+
+    <div class="container">
+        <div th:replace="fragments.html :: store-info"></div>
+        <div th:replace="fragments.html :: store-menu(storeMenu='settings')"></div>
+        <div class="row mt-3 justify-content-center">
+            <div class="col-2">
+                <div th:replace="fragments.html :: store-settings-menu(currentMenu='keywords')"></div>
+            </div>
+            <div class="col-8">
+                <div th:replace="fragments.html :: message"></div>
+                <div class="row">
+                    <div class="col-8"><h5><i class="fa fa-list" aria-hidden="true"></i> Keyword 관리</h5>
+                        <div class="alert alert-info" role="alert">
+                            해당 상점을 소개 하는 키워드를 입력해 주세요.
+                        </div>
+                        <div id="whitelistOfKeyword" th:text="${whitelistOfKeyword}" hidden></div>
+                        <input id="keywords" type="text" name="keywords" th:value="${#strings.listJoin(keywords, ',')}"
+                               class="tagify-outside" aria-describedby="keywordsHelp"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
+    <script src="/node_modules/@yaireo/tagify/dist/tagify.min.js"></script>
+    <script type="application/javascript" th:inline="javascript">
+        $(function() {
+            var csrfToken = /*[[${_csrf.token}]]*/ null;
+            var csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+            $(document).ajaxSend(function (e, xhr, options) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            });
+        });
+    </script>
+    <script type="application/javascript" th:inline="javascript">
+        $(function() {
+            var studyPath = "[(${store.path})]";
+            function keywordRequest(url, name) {
+                $.ajax({
+                    dataType: "json",
+                    autocomplete: {
+                        enabled: true,
+                        rightKey: true,
+                    },
+                    contentType: "application/json; charset=utf-8",
+                    method: "POST",
+                    url: "/store/" + studyPath + "/settings/keywords" + url,
+                    data: JSON.stringify({'name': name})
+                }).done(function (data, status) {
+                    console.log("${data} and status is ${status}");
+                });
+            }
+
+            function onAdd(e) {
+                keywordRequest("/add", e.detail.data.value);
+            }
+
+            function onRemove(e) {
+                keywordRequest("/remove", e.detail.data.value);
+            }
+
+            var keywordInput = document.querySelector("#keywords");
+            var tagify = new Tagify(keywordInput, {
+                pattern: /^.{0,20}$/,
+                whitelist: JSON.parse(document.querySelector("#whitelistOfKeyword").textContent),
+                dropdown : {
+                    enabled: 1, // suggest tags after a single character input
+                } // map tags
+            });
+            tagify.on("add", onAdd);
+            tagify.on("remove", onRemove);
+            // add a class to Tagify's input element
+            tagify.DOM.input.classList.add('form-control');
+            // re-place Tagify's input element outside of the  element (tagify.DOM.scope), just before it
+            tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+        });
+    </script>
+
+</body>
+</html>

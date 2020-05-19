@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
-@NoArgsConstructor @AllArgsConstructor
+@Builder @NoArgsConstructor @AllArgsConstructor
 public class Tables {
     @Id @GeneratedValue
     private Long id;
@@ -22,7 +22,9 @@ public class Tables {
     private Store store;
 
     @ManyToOne
-    private Account account;
+    private Account account; //현재 손님
+
+    private Integer personnel;
 
     @OneToMany(mappedBy = "tables")
     @OrderBy("orderAt")

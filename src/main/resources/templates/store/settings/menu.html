@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav(${account})"></div>
+
+    <div class="container">
+        <div th:replace="fragments.html :: store-info"></div>
+        <div th:replace="fragments.html :: store-menu(storeMenu='settings')"></div>
+
+        <div class="row mt-3 justify-content-center">
+            <div class="col-2">
+                <div th:replace="fragments.html :: store-settings-menu(currentMenu='menu')"></div>
+            </div>
+            <div class="col-8">
+                <div th:replace="fragments.html :: message"></div>
+
+                <div class="row">
+                    <div class="col-8"><h5><i class="fa fa-list" aria-hidden="true"></i> 세뚜메뉴 list</h5>
+                        <div class="accordion" id="accordionExample1" th:each="setmenu: ${setmenuList}">
+                            <div class="card">
+                                <div class="card-header" id="headingOne1">
+                                    <p class="mb-0">
+                                        <button class="col-8 btn btn-link btn-block text-left" type="button" data-toggle="collapse" th:data-target="'#collapseOne'+${setmenu.getId()}" aria-expanded="true" aria-controls="collapseOne">
+                                            <div th:text="${setmenu.getTitle()}">세트이름</div>
+                                        </button>
+                                        <a class="col-2" th:href="@{'/store/'+${store.getPath()}+'/settings/remove-setmenu?id='+${setmenu.getId()}}">삭제</a>
+                                    </p>
+                                </div>
+                                <div th:id="'collapseOne'+${setmenu.getId()}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample1">
+                                    <div class="card-body">
+                                        <div class="card" th:each="menuofset: ${setmenu.getMenuList()}">
+                                            <div class="card-body" >
+                                                <div class="font-weight-bold" th:text="${menuofset.getName()}">이름</div>
+                                                <span th:text="${#numbers.formatInteger(menuofset.getPrice(), 0, 'COMMA')}">가격</span>
+                                                <span th:text="${menuofset.getExplanation()}">설명</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#addSetmenu" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            세트 메뉴 추가
+                        </a>
+                        <div class="collapse" id="addSetmenu">
+                            <div class="card card-body">
+                                <form class="needs-validation" th:action="@{'/store/' + ${store.getPath()} + '/settings/setmenu'}"
+                                      th:object="${setmenuForm}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <label for="setname">세트 이름</label>
+                                        <input id="setname" type="text" th:field="*{title}" class="form-control"
+                                               placeholder="세트 이름" aria-describedby="setnameHelp" required maxlength="100">
+                                        </input>
+                                        <small id="setnameHelp" class="form-text text-muted">
+                                            세트 이름을 입력해 주세요.
+                                        </small>
+                                        <small class="invalid-feedback">세트 이름을 입력해 주세요.</small>
+                                        <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">title Error</small>
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="s-explanation">세트 설명</label>
+                                    <input id="s-explanation" type="text" th:field="*{explanation}" class="form-control"
+                                           placeholder="세트 설명" aria-describedby="s-explanationHelp" required maxlength="100">
+                                    </input>
+                                    <small id="s-explanationHelp" class="form-text text-muted">
+                                        세트 설명을 입력해 주세요.
+                                    </small>
+                                    <small class="invalid-feedback">세트 설명을 입력해 주세요.</small>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors('explanation')}" th:errors="*{explanation}">explanation Error</small>
+                                </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary btn-block" type="submit"
+                                                aria-describedby="submitHelp">추가</button>
+                                    </div>
+                                </form>
+                                <h5>추가예정인 메뉴</h5>
+                                <div th:each="readyMenu: ${readyMenuList}">
+                                    <span th:text="${readyMenu.getName()}">이름</span>
+                                    <span th:text="${#numbers.formatInteger(readyMenu.getPrice(), 0, 'COMMA')}">가격</span>
+                                    <span th:text="${readyMenu.getExplanation()}">설명</span>
+                                    <form th:action="@{'/store/'+${store.getPath()}+'/settings/remove-ready-setmenu'}" method="post">
+                                        <input hidden name="id" type="text" th:value="${readyMenu.getId()}">
+                                        <input type="submit" value="삭제">
+                                    </form>
+
+                                </div>
+                                <a class="btn btn-primary" data-toggle="collapse" href="#addReadyMenu" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    메뉴 추가
+                                </a>
+                                <div class="collapse" id="addReadyMenu">
+                                    <div class="card card-body">
+                                        <form class="needs-validation" th:action="@{'/store/' + ${store.getPath()} + '/settings/ready-setmenu'}"
+                                              th:object="${menuForm}" method="post" novalidate>
+                                            <div class="form-group">
+                                                <label for="set-name">메뉴 이름</label>
+                                                <input id="set-name" type="text" th:field="*{name}" class="form-control"
+                                                       placeholder="메뉴 이름" aria-describedby="set-nameHelp" required maxlength="100">
+                                                </input>
+                                                <small id="set-nameHelp" class="form-text text-muted">
+                                                    메뉴 이름을 입력해 주세요.
+                                                </small>
+                                                <small class="invalid-feedback">메뉴 이름을 입력해 주세요.</small>
+                                                <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">name Error</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="set-price">가격</label>
+                                                <input id="set-price" type="text" th:field="*{price}" class="form-control"
+                                                       placeholder="숫자" aria-describedby="set-priceHelp" required maxlength="100">
+                                                </input>
+                                                <small id="set-priceHelp" class="form-text text-muted">
+                                                    가격을 입력해주세요.
+                                                </small>
+                                                <small class="invalid-feedback">가격을 입력해주세요.</small>
+                                                <small class="form-text text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">price Error</small>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="set-explanation">짧은 소개</label>
+                                                <textarea id="set-explanation" type="textarea" th:field="*{explanation}" class="form-control"
+                                                          placeholder="메뉴를 짧게 소개해 주세요." aria-describedby="set-explanationHelp" required maxlength="100">
+                                        </textarea>
+                                                <small id="set-explanationHelp" class="form-text text-muted">
+                                                    100자 이내로 메뉴를 짧은 소개해 주세요.
+                                                </small>
+                                                <small class="invalid-feedback">짧은 소개를 입력하세요.</small>
+                                                <small class="form-text text-danger" th:if="${#fields.hasErrors('explanation')}" th:errors="*{explanation}">Explanation Error</small>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <button class="btn btn-primary btn-block" type="submit"
+                                                        aria-describedby="submitHelp">추가</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/><hr/>
+                <div class="row">
+                    <div class="col-8" ><h5><i class="fa fa-list" aria-hidden="true"></i> 메뉴 list</h5>
+                        <div class="accordion" id="accordion_MenuList" th:each="menu: ${menuList}">
+                            <div class="card">
+                                <div class="card-header" id="headingOne2">
+                                    <p class="mb-0">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" th:data-target="'#collapse'+${menu.id}" aria-expanded="true" aria-controls="collapseOne">
+                                            <div th:text="${menu.name}">메뉴이름</div>
+                                        </button>
+                                        <a th:href="@{'/store/'+${store.getPath()}+'/settings/remove-menu?id='+${menu.getId()}}">삭제</a>
+                                    </p>
+                                </div>
+
+                                <div th:id="'collapse'+${menu.id}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion_MenuList">
+                                    <div class="card-body">
+                                        <span th:text="${#numbers.formatInteger(menu.price, 0, 'COMMA')}+'원'">가격</span>
+                                        <span th:text="${menu.explanation}">설명</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#addMenu" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            메뉴 추가
+                        </a>
+                        <div class="collapse" id="addMenu">
+                            <div class="card card-body">
+                                <form class="needs-validation" th:action="@{'/store/' + ${store.getPath()} + '/settings/menu'}"
+                                      th:object="${menuForm}" method="post" novalidate>
+                                    <div class="form-group">
+                                        <label for="name">메뉴 이름</label>
+                                        <input id="name" type="text" th:field="*{name}" class="form-control"
+                                               placeholder="메뉴 이름" aria-describedby="nameHelp" required maxlength="100">
+                                        </input>
+                                        <small id="nameHelp" class="form-text text-muted">
+                                            메뉴 이름을 입력해 주세요.
+                                        </small>
+                                        <small class="invalid-feedback">메뉴 이름을 입력해 주세요.</small>
+                                        <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">name Error</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price">가격</label>
+                                        <input id="price" type="text" th:field="*{price}" class="form-control"
+                                               placeholder="숫자" aria-describedby="priceHelp" required maxlength="100">
+                                        </input>
+                                        <small id="priceHelp" class="form-text text-muted">
+                                            가격을 입력해주세요.
+                                        </small>
+                                        <small class="invalid-feedback">가격을 입력해주세요.</small>
+                                        <small class="form-text text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}">price Error</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="explanation">짧은 소개</label>
+                                        <textarea id="explanation" type="textarea" th:field="*{explanation}" class="form-control"
+                                                  placeholder="메뉴를 짧게 소개해 주세요." aria-describedby="shortDescriptionHelp" required maxlength="100">
+                                        </textarea>
+                                        <small id="shortDescriptionHelp" class="form-text text-muted">
+                                            100자 이내로 상점를 짧은 소개해 주세요.
+                                        </small>
+                                        <small class="invalid-feedback">짧은 소개를 입력하세요.</small>
+                                        <small class="form-text text-danger" th:if="${#fields.hasErrors('explanation')}" th:errors="*{explanation}">Explanation Error</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button class="btn btn-primary btn-block" type="submit"
+                                                aria-describedby="submitHelp">추가</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
+    <script th:replace="fragments.html :: tooltip"></script>
+    <script th:replace="fragments.html :: form-validation"></script>
+    <script th:replace="fragments.html :: editor-script"></script>
+</body>
+</html>

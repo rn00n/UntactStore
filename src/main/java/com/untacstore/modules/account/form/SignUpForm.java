@@ -26,7 +26,4 @@ public class SignUpForm {
     @NotBlank
     private String email;
 
-    private String licensee; //사업자등록번호
-
-    private AccountType accountType = null; //계정 유형
 }

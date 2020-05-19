@@ -16,12 +16,12 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@SessionAttributes("signUpForm")
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
@@ -33,36 +33,25 @@ public class AccountController {
         webDataBinder.addValidators(signUpFormValidator);
     }
 
-    /*회원가입 - 계정 타입 폼*/
-    @GetMapping("/sign-up/type")
-    public String signUpFormAccountType(Model model) {
-        model.addAttribute("signUpForm", new SignUpForm());
-        return "account/sign-up-type";
-    }
-    /*회원가입 - 계정 타입*/
-    @PostMapping("/sign-up/type")
-    public String signUpAccountType(SignUpForm signUpForm, Model model) {
-        return "redirect:/sign-up/form";
-    }
     /*회원가입 - 폼*/
-    @GetMapping("/sign-up/form")
-    public String signUpForm(@ModelAttribute SignUpForm signUpForm, Model model) {
-        model.addAttribute("signUpForm", signUpForm);
-        return "account/sign-up-form";
+    @GetMapping("/sign-up")
+    public String signUpForm(Model model) {
+        model.addAttribute("signUpForm", new SignUpForm());
+        return "account/sign-up";
     }
     /*회원가입*/
-    @PostMapping("/sign-up/form")
-    public String signUp(@Valid SignUpForm signUpForm, Errors errors, Model model, SessionStatus sessionStatus) {
+    @PostMapping("/sign-up")
+    public String signUp(@Valid SignUpForm signUpForm, Errors errors, Model model, HttpServletRequest request) {
         if (errors.hasErrors()) {
             //SignUpFormValidator 에서 검사
-            return "account/sign-up-form";
+            return "account/sign-up";
         }
+
         Account account = accountService.processNewAccount(signUpForm);
         accountService.login(account);
-        sessionStatus.setComplete();
         return "redirect:/";
     }
-    
+
     /*프로필 보기*/
     @GetMapping("/profile/{username}")
     public String viewProfile(@CurrentAccount Account account, @PathVariable String username, Model model) {

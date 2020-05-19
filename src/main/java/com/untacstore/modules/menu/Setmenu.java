@@ -14,11 +14,18 @@ public class Setmenu {
     @Id @GeneratedValue
     private Long id;
 
+    private String title;
+
+    @Lob @Basic(fetch = FetchType.EAGER)
+    private String image;
+
     @ManyToOne
     private Store store;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Menu> menuList = new ArrayList<>();
 
-    private Integer price;
+    private Integer totalPrice;
+
+    private String explanation;
 }

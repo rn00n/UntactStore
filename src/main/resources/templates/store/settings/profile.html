@@ -14,6 +14,7 @@
             </div>
             <div class="col-8">
                 <div th:replace="fragments.html :: message"></div>
+                <h5><i class="fa fa-list" aria-hidden="true"></i> 내 Store 관리</h5>
                 <form class="needs-validation" th:action="@{'/store/' + ${store.getPath()} + '/settings/profile'}"
                       th:object="${storeProfileForm}" method="post" novalidate>
 <!--                    <div class="form-group">-->

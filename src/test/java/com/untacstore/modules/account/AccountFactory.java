@@ -16,7 +16,6 @@ public class AccountFactory {
         Account byungryang = new Account();
         byungryang.setUsername(nickname);
         byungryang.setEmail(nickname + "@email.com");
-        byungryang.setAccountType(AccountType.USER);
         accountRepository.save(byungryang);
         return byungryang;
     }

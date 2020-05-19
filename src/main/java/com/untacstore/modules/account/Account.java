@@ -2,13 +2,14 @@ package com.untacstore.modules.account;
 
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.location.Location;
-import com.untacstore.modules.store.Store;
+import com.untacstore.modules.waiting.Waiting;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
@@ -47,12 +48,11 @@ public class Account {
     private boolean ticketByWeb = true;
 //    private boolean ticketByKakao; TODO
 
+    @OneToMany(mappedBy = "account")
+    private List<Waiting> waitingList = new ArrayList<>();
+
     //TODO 신고
     private Integer report = 0;
-
-    private String licensee; //사업자등록번호
-    @Enumerated(value = EnumType.STRING)
-    private AccountType accountType; //계정 유형
 
     public void addReport() {
         report++;
@@ -62,9 +62,8 @@ public class Account {
         return hasStore;
     }
 
-    public String getAccountType() {
-        return accountType.toString();
-    }
-
-
+//    public boolean hasAvailableWaiting() {
+//        return waitingList.stream().filter(w-> w.isAvailable()).collect(Collectors.toList()).isEmpty();
+//        return waitingList.stream().filter(w-> w.isAvailable()).collect(Collectors.toList()).isEmpty();
+//    }
 }

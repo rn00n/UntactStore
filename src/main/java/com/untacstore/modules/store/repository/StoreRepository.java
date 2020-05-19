@@ -18,4 +18,13 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     Store findStoreByPath(String path);
 
     Store findByOwner(Account account);
+
+
+    @EntityGraph(attributePaths = {"menuList"})
+    Store findStoreWithMenusByPath(String path);
+
+    Store findStoreWithKeywordByPath(String path);
+
+    @EntityGraph(attributePaths = {"waitingList"})
+    Store findStoreWithWaitingByPath(String path);
 }
