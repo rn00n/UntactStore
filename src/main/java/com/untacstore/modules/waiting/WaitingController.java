@@ -60,7 +60,7 @@ public class WaitingController {
         Store store = storeRepository.findStoreByPath(path);
         model.addAttribute(store);
 
-        List<Waiting> waitingList = waitingRepository.findAllByAccountAndStore(account, store);
+        List<Waiting> waitingList = waitingRepository.findAllByStoreOrderByTurnAscWaitingAtAsc(store);
         model.addAttribute("waitingList", waitingList);
 
         return "waiting/waiting-list";
@@ -74,6 +74,20 @@ public class WaitingController {
     @GetMapping("/reject-waiting")
     public String rejectWaiting(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
         waitingService.rejectWaiting(waiting);
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
+    }
+
+    @GetMapping("/waiting/check/in")
+    public String checkIn(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        waitingService.checkIn(store, waiting);
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
+    }
+
+    @GetMapping("/waiting/check/cancel")
+    public String cancelCheck(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        waitingService.cancelCheck(store, waiting);
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
     }
 }

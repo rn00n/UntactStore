@@ -164,6 +164,22 @@ public class StoreService {
         reply.setReplyAt(LocalDateTime.now());
         replyRepository.save(reply);
     }
+
+    public void openStore(Store store) {
+        store.setOpen(true);
+    }
+
+    public void closeStore(Store store) {
+        store.setOpen(false);
+    }
+
+    public void fullStore(Store store) {
+        store.setWaiting(true);
+    }
+
+    public void UnfilledStore(Store store) {
+        store.setWaiting(false);
+    }
     //TODO 리뷰 답글 삭제
 
 

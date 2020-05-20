@@ -111,20 +111,22 @@
                                     <span class="date-time" th:text="${waiting.getWaitingAt()}"></span>
                                 </td>
                                 <td>
-                                    <span th:if="${!waiting.isAvailable()}">확인</span>
-                                    <span th:if="${waiting.isAvailable()}">대기중</span>
-                                </td>
-                                <td>
-                                    <a th:if="${waiting.isAvailable()}" href="#" class="text-decoration-none"
-                                       th:href="@{'/store/' + ${store.path} + '/accept-waiting?id='+${waiting.getId()}}" >신청 수락</a>
-                                    <a th:if="${!waiting.isAvailable()}" href="#" class="text-decoration-none"
-                                       th:href="@{'/store/' + ${store.path} + '/reject-waiting?id='+${waiting.getId()}}">취소</a>
+                                    <span th:if="${!waiting.isAvailable() && waiting.isAttended()}">뭔가 오류가 있다!</span>
+                                    <span th:if="${!waiting.isAvailable() && !waiting.isAttended()}">대기중</span>
+                                    <span th:if="${waiting.isAvailable() && !waiting.isAttended()}">차례</span>
+                                    <span th:if="${waiting.isAvailable() && waiting.isAttended()}">입장완료</span>
                                 </td>
                                 <td>
                                     <a th:if="${!waiting.isAvailable() && !waiting.isAttended()}" href="#" class="text-decoration-none"
-                                       th:href="@{'/store/' + ${store.path} + '/a'}">체크인</a>
-                                    <a th:if="${!waiting.isAvailable() && waiting.isAttended()}" href="#" class="text-decoration-none"
-                                       th:href="@{'/store/' + ${store.path} + '/b'}">체크인 취소</a>
+                                       th:href="@{'/store/' + ${store.path} + '/accept-waiting?id='+${waiting.getId()}}" >신청 수락</a>
+                                    <a th:if="${waiting.isAvailable() && !waiting.isAttended()}" href="#" class="text-decoration-none"
+                                       th:href="@{'/store/' + ${store.path} + '/reject-waiting?id='+${waiting.getId()}}">취소</a>
+                                </td>
+                                <td>
+                                    <a th:if="${waiting.isAvailable() && !waiting.isAttended()}" href="#" class="text-decoration-none"
+                                       th:href="@{'/store/' + ${store.path} + '/waiting/check/in?id='+${waiting.getId()}}">체크인</a>
+                                    <a th:if="${waiting.isAvailable() && waiting.isAttended()}" href="#" class="text-decoration-none"
+                                       th:href="@{'/store/' + ${store.path} + '/waiting/check/cancel?id='+${waiting.getId()}}">체크인 취소</a>
                                 </td>
                             </tr>
                             </tbody>

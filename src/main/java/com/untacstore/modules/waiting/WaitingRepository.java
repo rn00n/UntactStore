@@ -13,5 +13,5 @@ public interface WaitingRepository extends JpaRepository<Waiting, Long> {
 
     List<Waiting> findAllByAccount(Account account);
 
-    List<Waiting> findAllByAccountAndStore(Account account, Store store);
+    List<Waiting> findAllByStoreOrderByTurnAscWaitingAtAsc(Store store);
 }

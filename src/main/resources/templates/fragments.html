@@ -171,80 +171,83 @@
             </a>
         </div>
         <div class="col-4 text-right justify-content-end">
-            <span th:if="${!store.open}"
-                  class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom"
-                  title="상점 오픈 준비중">
-                <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>CLOSED</button>
-            </span>
-            <span th:if="${store.open}"
-                  class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="상점 오픈">
-                <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>OPEN</button>
-            </span>
-            <span th:if="${!store.waiting && store.open}"
-                  class="d-inline-block ml-1" tabindex="0" data-toggle="tooltip" data-placement="bottom" title="자리 있음">
-                <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>자리 있음</button>
-            </span>
-            <span sec:authorize="isAuthenticated()" th:if="${store.waiting && store.open}"
-                  class="btn-group" role="group" aria-label="Basic example">
-                <a th:if="${store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}">
-                    <i class="fa fa-user-o" aria-hidden="true"></i> 줄서기
-                </a>
-                <a th:if="${!store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/exit-waiting?personnel=4'}" >
-                    <i class="fa fa-user-o" aria-hidden="true"></i> Waiting...
-                </a>
-                <a class="btn btn-outline-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}"
-                   th:text="${store.getWaitingList().size()}">1
+            <!--            -->
+            <span class="btn-group" role="group" aria-label="Basic example" data-toggle="tooltip" data-placement="bottom" title="상점 오픈 하기">
+                <button th:if="${!store.open && !store.checkOwner(#authentication.principal)}" class="btn btn-secondary btn-sm" disabled>
+                    CLOSE
+                </button>
+                <a th:if="${!store.open  && store.checkOwner(#authentication.principal)}" class="btn btn-primary btn-sm" th:href="@{'/store/'+${store.path}+'/settings/open'}" >
+                    CLOSE
                 </a>
             </span>
-            <!--                    <span sec:authorize="isAuthenticated()"-->
-            <!--                          th:if="${!store.closed && study.isMember(#authentication.principal)}" class="btn-group" role="group">-->
-            <!--                    <a class="btn btn-outline-warning" th:href="@{'/study/' + ${store.path} + '/leave'}">-->
-            <!--                        상점 탈퇴-->
-            <!--                    </a>-->
-            <!--                    <a class="btn btn-outline-primary" th:href="@{'/study/' + ${store.path} + '/members'}"-->
-            <!--                       th:text="${store.members.size()}">1</a>-->
-            <!--                </span>-->
-            <!--                    <span sec:authorize="isAuthenticated()"-->
-            <!--                          th:if="${store.published && !store.closed && store.isManager(#authentication.principal)}">-->
-            <!--                    <a class="btn btn-outline-primary" th:href="@{'/study/' + ${store.path} + '/new-event'}">-->
-            <!--                        <i class="fa fa-plus"></i> 모임 만들기-->
-            <!--                    </a>-->
-            <!--                </span>-->
-        </div>
-    </div>
-
-
-    <div class="row justify-content-center bg-light">
-        <div class="col-6">
-            <p class="lead" th:text="${store.getShortDescription()}"></p>
-        </div>
-        <div class="col-4 text-right justify-content-end">
+            <!--            -->
+            <span class="btn-group" role="group" aria-label="Basic example" data-toggle="tooltip" data-placement="bottom" title="상점 닫기">
+                <button th:if="${store.open && !store.checkOwner(#authentication.principal)}" class="btn btn-secondary btn-sm" disabled>
+                    OPEN
+                </button>
+                <a th:if="${store.open && store.checkOwner(#authentication.principal)}" class="btn btn-primary btn-sm" th:href="@{'/store/'+${store.path}+'/settings/close'}" >
+                    OPEN
+                </a>
+            </span>
             <span sec:authorize="isAuthenticated()"
                   class="btn-group" role="group" aria-label="Basic example">
                 <a th:if="${store.isFavoritesable(#authentication.principal)}" class="btn btn-primary"
-                   th:href="@{'/store/' + ${store.path} + '/addFavorites'}">
+                   th:href="@{'/store/' + ${store.path} + '/addFavorites'}"
+                   data-toggle="tooltip" data-placement="bottom" title="즐겨찾기 추가">
                     <i class="fa fa-user-o" aria-hidden="true"></i> 즐겨찾기
                 </a>
-                <a th:if="${!store.isFavoritesable(#authentication.principal)}" class="btn btn-primary"
-                   th:href="@{'/store/' + ${store.path} + '/removeFavorites'}">
+                <a th:if="${!store.isFavoritesable(#authentication.principal)}" class="btn btn-info"
+                   th:href="@{'/store/' + ${store.path} + '/removeFavorites'}"
+                   data-toggle="tooltip" data-placement="bottom" title="즐겨찾기 취소">
                     <i class="fa fa-user-o" aria-hidden="true"></i> 즐겨찾기 중
                 </a>
-                <a class="btn btn-outline-primary" th:href="@{'/store/' + ${store.path} + '/addFavorites'}"
-                   th:text="${store.getFavoritesList().size()}">1
+                <a class="btn btn-outline-primary" href="#"
+                   th:text="${store.getFavoritesList().size()}" data-toggle="tooltip" data-placement="bottom" title="즐겨찾기 수">1
                 </a>
+            </span>
+        </div>
+    </div>
+    <div class="row justify-content-center bg-light" style="padding-top: 1px;">
+        <div class="col-6">
+            <p class="lead" th:text="${store.getShortDescription()}"></p>
+        </div>
+        <div class="col-4 text-right justify-content-end">
+            <span  class="btn-group" role="group" aria-label="Basic example" th:if="${store.open}">
+                <a th:if="${!store.waiting}" class="btn btn-primary" th:href="@{'/store/'+${store.path}+'/settings/full'}"
+                   data-toggle="tooltip" data-placement="bottom" title="대기중 켜기">
+                    자리있음
+                </a>
+                <span sec:authorize="isAuthenticated()" th:if="${store.waiting && store.open}"
+                      class="btn-group" role="group" aria-label="Basic example">
+                    <a th:if="${store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}"
+                       data-toggle="tooltip" data-placement="bottom" title="대기표 발급">
+                        <i class="fa fa-user-o" aria-hidden="true"></i> 줄서기
+                    </a>
+                    <a th:if="${!store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/exit-waiting?personnel=4'}"
+                       data-toggle="tooltip" data-placement="bottom" title="대기 취소">
+                        <i class="fa fa-user-o" aria-hidden="true"></i> Waiting...
+                    </a>
+                    <a class="btn btn-outline-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}"
+                       th:text="${store.countWaitingList()}" data-toggle="tooltip" data-placement="bottom" title="현재 대기중인 인원">1
+                    </a>
+                    <a th:if="${store.checkOwner(#authentication.principal)}" class="btn btn-danger" th:href="@{'/store/'+${store.path}+'/settings/Unfilled'}"
+                       data-toggle="tooltip" data-placement="bottom" title="대기중 끄기">
+                        대기중
+                    </a>
+                </span>
             </span>
         </div>
     </div>
     <div class="row justify-content-center bg-light">
         <div class="col-6">
-            <p class="lead" th:text="${store.getShortDescription()}"></p>
+<!--            <p class="lead" th:text="${store.getShortDescription()}"></p>-->
         </div>
-        <div class="col-4 text-right justify-content-end">
+        <div class="col-4 text-right justify-content-end" th:if="${store.checkOwner(#authentication.principal)}">
             <span sec:authorize="isAuthenticated()" th:if="${store.waiting && store.open}"
                   class="btn-group" role="group" aria-label="Basic example">
                 <a class="btn btn-primary"
                    th:href="@{'/store/' + ${store.path} + '/waiting-list'}">
-                    <i class="fa fa-user-o" aria-hidden="true"></i> Waiting List
+                    <i class="fa fa-user-o" aria-hidden="true"></i> Waiting Table
                 </a>
                 <a class="btn btn-outline-primary" th:href="@{'/store/' + ${store.path} + '/waiting-list'}"
                    th:text="${store.getWaitingList().size()}">1
@@ -255,17 +258,12 @@
     <div class="row justify-content-center bg-light">
         <div class="col-10">
             <p>
-                <!--                <span th:each="tag: ${store.tags}"-->
-                <!--                      class="font-weight-light text-monospace badge badge-pill badge-info mr-3">-->
-                <!--                    <a th:href="@{'/search/tag/' + ${tag.title}}" class="text-decoration-none text-white">-->
-                <!--                        <i class="fa fa-tag"></i> <span th:text="${tag.title}">Tag</span>-->
-                <!--                    </a>-->
-                <!--                </span>-->
-                <!--                        <span th:each="zone: ${store.zones}" class="font-weight-light text-monospace badge badge-primary mr-3">-->
-                <!--                    <a th:href="@{'/search/zone/' + ${zone.id}}" class="text-decoration-none text-white">-->
-                <!--                        <i class="fa fa-globe"></i> <span th:text="${zone.localNameOfCity}">City</span>-->
-                <!--                    </a>-->
-                <!--                </span>-->
+                <span th:each="keyword: ${store.keywords}"
+                      class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                    <a th:href="@{'/search/keyward/' + ${keyword.name}}" class="text-decoration-none text-white">
+                        <i class="fa fa-tag"></i> <span th:text="${keyword.name}">Keyword</span>
+                    </a>
+                </span>
             </p>
         </div>
     </div>

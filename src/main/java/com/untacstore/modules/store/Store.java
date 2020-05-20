@@ -4,7 +4,6 @@ import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.authentication.PrincipalAccount;
 import com.untacstore.modules.favorites.Favorites;
 import com.untacstore.modules.keyword.Keyword;
-import com.untacstore.modules.location.Location;
 import com.untacstore.modules.menu.Menu;
 import com.untacstore.modules.menu.Setmenu;
 import com.untacstore.modules.review.Review;
@@ -63,8 +62,8 @@ public class Store {
     @ManyToMany
     List<Keyword> keywords = new ArrayList<>();
 
-    private boolean open = true; //TODO
-    private boolean waiting = true; //TODO
+    private boolean open = false;
+    private boolean waiting = false;
 
     @OneToMany(mappedBy = "store")
     @OrderBy("turn")
@@ -133,4 +132,21 @@ public class Store {
         this.waitingList.remove(waiting);
     }
 
+    public boolean checkOwner(PrincipalAccount principalAccount) {
+
+        boolean equals = this.getOwner().equals(principalAccount.getAccount());
+        if (equals)
+            System.out.println("주인");
+        return equals;
+    }
+
+    public void shiftTurn(Waiting waiting) {
+        waiting.setTurn(0);
+        waitingList.stream().filter(w -> w.getTurn() > waiting.getTurn()).forEach(fw -> fw.setTurn(fw.getTurn()-1));
+    }
+
+    /*실제 대기중인 인원의 수*/
+    public int countWaitingList() {
+        return waitingList.stream().filter(w->w.getTurn()!=0).collect(Collectors.toList()).size();
+    }
 }

@@ -292,4 +292,36 @@ public class StoreSettingsController {
 
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/store";
     }
+
+    /*상점 - 오픈*/
+    @GetMapping("/open")
+    public String openStore(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.openStore(store);
+        return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
+
+    /*상점 - 클로즈*/
+    @GetMapping("/close")
+    public String closeStore(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.closeStore(store);
+        return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
+
+    /*상점 - full*/
+    @GetMapping("/full")
+    public String fullStore(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.fullStore(store);
+        return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
+
+    /*상점 - Unfilled*/
+    @GetMapping("/Unfilled")
+    public String UnfilledStore(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.UnfilledStore(store);
+        return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8);
+    }
 }

@@ -25,7 +25,7 @@ public class WaitingService {
         waiting.setPersonnel(Integer.valueOf(personnel));
         waiting.setTurn(store.getWaitingList().size()+1);
         waiting.setWaitingAt(LocalDateTime.now());
-        waiting.setAvailable(true);
+        waiting.setAvailable(false);
         waiting.setAttended(false);
         store.addWaiting(waiting);
         waitingRepository.save(waiting);
@@ -37,10 +37,28 @@ public class WaitingService {
     }
 
     public void acceptWaiting(Waiting waiting) {
-        waiting.setAvailable(false);
+        if (!waiting.isAvailable() && !waiting.isAttended()) {
+            waiting.setAvailable(true);
+        }
     }
 
     public void rejectWaiting(Waiting waiting) {
-        waiting.setAvailable(true);
+        if (waiting.isAvailable() && !waiting.isAttended()) {
+            waiting.setAvailable(false);
+        }
+    }
+
+    public void checkIn(Store store, Waiting waiting) {
+        if (waiting.isAvailable() && !waiting.isAttended()) {
+            waiting.setAttended(true);
+            store.shiftTurn(waiting);
+        }
+    }
+
+    public void cancelCheck(Store store, Waiting waiting) {
+        if (waiting.isAvailable() && waiting.isAttended()) {
+            waiting.setAttended(false);
+            waiting.setTurn(store.countWaitingList()+1);
+        }
     }
 }

@@ -25,7 +25,7 @@ public class Waiting {
 
     private Integer turn; //순번
 
-    private boolean available = true; //유효한 티켓인지
+    private boolean available = false; //유효한 티켓인지
 
     private boolean attended = false;
 
