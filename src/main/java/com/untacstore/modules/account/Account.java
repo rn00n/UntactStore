@@ -36,11 +36,11 @@ public class Account {
     @Lob @Basic(fetch = FetchType.EAGER)
     private String profileImage;
 
-    //TODO keyword
+    //keyword
     @ManyToMany
     private List<Keyword> keywords = new ArrayList<>();
 
-    //TODO location 관심지역
+    //location 관심지역
     @ManyToMany
     private List<Location> locations = new ArrayList<>();
 

@@ -12,6 +12,7 @@ import com.untacstore.modules.waiting.Waiting;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class Store {
 
     private Double grade = 0.0;
 
-    private String operatingTime;
+    private String operatingTime; // 운영시간
 
     @OneToMany(mappedBy = "store")
     @OrderBy("tableNum")
@@ -133,16 +134,12 @@ public class Store {
     }
 
     public boolean checkOwner(PrincipalAccount principalAccount) {
-
-        boolean equals = this.getOwner().equals(principalAccount.getAccount());
-        if (equals)
-            System.out.println("주인");
-        return equals;
+        return this.getOwner().equals(principalAccount.getAccount());
     }
 
     public void shiftTurn(Waiting waiting) {
-        waiting.setTurn(0);
         waitingList.stream().filter(w -> w.getTurn() > waiting.getTurn()).forEach(fw -> fw.setTurn(fw.getTurn()-1));
+        waiting.setTurn(0);
     }
 
     /*실제 대기중인 인원의 수*/

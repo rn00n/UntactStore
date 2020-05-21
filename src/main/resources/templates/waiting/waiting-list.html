@@ -128,6 +128,10 @@
                                     <a th:if="${waiting.isAvailable() && waiting.isAttended()}" href="#" class="text-decoration-none"
                                        th:href="@{'/store/' + ${store.path} + '/waiting/check/cancel?id='+${waiting.getId()}}">체크인 취소</a>
                                 </td>
+<!--                                <td>TODO 빈 테이블 안내-->
+<!--                                    <a th:if="${waiting.isAvailable() && !waiting.isAttended()}" href="#" class="text-decoration-none"-->
+<!--                                       th:href="@{'/store/' + ${store.path} + '//check/in?id='+${waiting.getId()}}">테이블 안내</a>-->
+<!--                                </td>-->
                             </tr>
                             </tbody>
                         </table>

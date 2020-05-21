@@ -37,7 +37,7 @@
                 </p>
             </div>
             <small class="d-block text-right mt-3">
-                <a th:if="${store.isOwner(#authentication.principal)}" th:href="@{'/store/'+${store.getPath()}+'/settings/profile'}">All updates</a>
+                <a sec:authorize="isAuthenticated()" th:if="${store.isOwner(#authentication.principal)}" th:href="@{'/store/'+${store.getPath()}+'/settings/profile'}">All updates</a>
             </small>
         </div>
         </div>

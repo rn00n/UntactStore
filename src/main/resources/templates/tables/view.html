@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments.html :: head">
+</head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav(${account})"></div>
+    <div class="container">
+        <div class="row py-4 text-left justify-content-center bg-light">
+            <div class="col-6">
+                <span class="h2">
+                <a href="#" class="text-decoration-none" th:href="@{'/store/' + ${store.path}}">
+                    <span th:text="${store.name}">상점 이름</span>
+                </a> / </span>
+                <span class="h2" th:text="${tables.tableNum}+'번'"></span>
+            </div>
+            <div class="col-4 text-right justify-content-end">
+                <span sec:authorize="isAuthenticated()">
+                    <button th:if="${tables.isSitable(#authentication.principal)}"
+                            class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-down">
+                        <i class="fa fa-plus-circle"></i> 자리 신청
+                    </button>
+                    <button th:if="${!tables.isSitable(#authentication.principal)}"
+                            class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-up">
+                        <i class="fa fa-minus-circle"></i> 자리 신청 취소
+                    </button>
+<!--                    TODO 자리 신정을 하면 사장에게 알림이 가고 사장이 승인 해주어야 함-->
+                    <button th:if="${tables.isAdmin(store)}"
+                            class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-up">
+                        <i class="fa fa-desktop"></i> 자리 신청 현황
+                    </button>
+<!--                    <span class="text-success" th:if="${tables.isAttended(#authentication.principal)}" disabled>-->
+<!--                        <i class="fa fa-check-circle"></i> 사장이 ok해주면-->
+<!--                    </span>-->
+                </span>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-7 pt-3">
+                <ul class="list-unstyled">
+                    <div class="row px-3 justify-content-center">
+                        <div class="col my-3 p-3 bg-light rounded shadow-sm">
+                            <h6 class="border-bottom border-gray pb-2 mb-0">Set Menu List</h6>
+                            <div class="media text-muted pt-2 accordion" id="accordionExample" th:each="setmenu: ${setmenuList}" >
+                                <div class="card col pt-2 pb-2">
+                                    <button style="padding: unset" class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" th:data-target="'#target'+${setmenu.id}" aria-expanded="true" aria-controls="collapseOne">
+                                        <li class="media">
+                                            <svg th:if="${#strings.isEmpty(setmenu?.image)}" th:data-jdenticon-value="${setmenu.title}" width="64" height="64" class="rounded border bg-light mr-3"></svg>
+                                            <img th:if="${!#strings.isEmpty(setmenu?.image)}" th:src="${setmenu?.image}" width="64" height="64" class="rounded border mr-3"/>
+                                            <div class="media-body">
+                                                <h5 class="p-0 mt-0 mb-1 text-gray-dark col-10"><span th:text="${setmenu.title}"></span>&nbsp;<span class="badge badge-primary">세트메뉴</span></h5>
+                                                <span th:text="${#numbers.formatInteger(setmenu.getTotalPrice(), 0, 'COMMA')}">1,000</span>&nbsp;<span th:text="${setmenu.explanation}">설명</span>
+                                            </div>
+                                        </li>
+                                    </button>
+                                    <div th:id="'target'+${setmenu.id}" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                            <div class="card-body p-1" th:each="menu: ${setmenu.getMenuList()}">
+                                                <div>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <strong th:text="${menu.name}">이름</strong>-
+                                                    <span th:text="${menu.price}">가격</span>-
+                                                    <span th:text="${menu.explanation}">설명</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div style="width: 35px; white-space:nowrap;" class="col-sm-1 p-0"><a class="card text-center" th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/cart/add-setmenu?id='+${setmenu.id}}">담기</a></div>
+                            </div>
+                            <h6 class="border-bottom border-gray pb-2 mb-0">Single Menu List</h6>
+                            <div class="media text-muted pt-2" th:each="menu: ${menuList}" >
+                                <div class="card col pt-2 pb-2">
+                                    <div class="text-left" aria-expanded="true" aria-controls="collapseOne">
+                                        <li class="media">
+                                            <svg th:if="${#strings.isEmpty(menu?.image)}" th:data-jdenticon-value="${menu.name}" width="64" height="64" class="rounded border bg-light mr-3"></svg>
+                                            <img th:if="${!#strings.isEmpty(menu?.image)}" th:src="${menu?.image}" width="64" height="64" class="rounded border mr-3"/>
+                                            <div class="media-body">
+                                                <h5 class="p-0 mt-0 mb-1 text-gray-dark col-10"><span th:text="${menu.name}"></span>&nbsp;<span class="badge badge-secondary">단일메뉴</span></h5>
+                                                <span th:text="${#numbers.formatInteger(menu.getPrice(), 0, 'COMMA')}">1,000</span>&nbsp;<span th:text="${menu.explanation}">설명</span>
+                                            </div>
+                                        </li>
+                                    </div>
+                                </div>
+                                <div style="width: 35px; white-space:nowrap;" class="col-sm-1 p-0"><a class="card text-center" th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/cart/add-menu?id='+${menu.id}}">담기</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </ul>
+            </div>
+            <div class="col-sm-3 pt-3 text-right">
+                <dt>이용자</dt>
+                <dd>문병량</dd>
+                <dt>입장시간</dt>
+                <dd>10:00 20:24</dd>
+                <dt>Cart List</dt>
+                <div class="text-center" style="overflow: auto; height: 20%" >
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>가격</th>
+                                <th>개수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <div th:each="setmenuofcart: ${cart.orders.setMenuList}">
+                                <tr>
+                                    <td th:text="${setmenuofcart.title}">부리또</td>
+                                    <td th:text="${setmenuofcart.totalPrice}">5,000</td>
+                                    <td>1</td>
+                                </tr>
+                            </div>
+                            <div th:each="menuofcart: ${cart.orders.menuList}">
+                                <tr>
+                                    <td th:text="${menuofcart.name}">부리또</td>
+                                    <td th:text="${menuofcart.price}">5,000</td>
+                                    <td>1</td>
+                                </tr>
+                            </div>
+<!--                            <div th:each="request: ${}"> TODO 요청-->
+<!--                                <tr>-->
+<!--                                    <td th:text="${request.content}" colspan="3">요청사항</td>-->
+<!--                                </tr>-->
+<!--                            </div>-->
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    <a th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/add-orders'}">주문하기(임시)</a>
+                    <button class="btn btn-outline-primary col float-left">주문하기</button>
+                    <button class="btn btn-outline-danger col">취소</button>
+                </p>
+
+                <hr/>
+                <dt>Order List</dt>
+                <div class="text-center" style="overflow: auto; height: 20%" >
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>가격</th>
+                            <th>개수</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <div th:each="order: ${tables.orderList}">
+                            <tr>
+                                <td th:text="${order.title}">부리또</td>
+                                <td th:text="${order.ordersAmount}">5,000</td>
+                                <td>1</td>
+                            </tr>
+                        </div>
+                        <!--                            <div th:each="request: ${}"> TODO 요청-->
+                        <!--                                <tr>-->
+                        <!--                                    <td th:text="${request.content}" colspan="3">요청사항</td>-->
+                        <!--                                </tr>-->
+                        <!--                            </div>-->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <dt class="col text-left">금액</dt>
+                    <dt class="col justify-content-end" th:text="${tables.amount}">16,700</dt>
+                </div>
+                <p>
+                    <button class="btn btn-success col float-left">계산하기</button>
+                </p>
+            </div>
+        </div>
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
+    <script th:replace="fragments.html :: date-time"></script>
+</body>
+</html>

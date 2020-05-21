@@ -52,7 +52,6 @@ public class WaitingController {
     }
 
     /*admin 시점*/
-    //TODO 줄서기 확인
     /*대기표*/
     @GetMapping("/waiting-list")
     public String waitingListView(@CurrentAccount Account account, @PathVariable String path, Model model) {
@@ -65,18 +64,22 @@ public class WaitingController {
 
         return "waiting/waiting-list";
     }
-    //TODO 줄서기 확인취소
+    
+    /*대기자 - 입장 요청*/
     @GetMapping("/accept-waiting")
     public String acceptWaiting(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
         waitingService.acceptWaiting(waiting);
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
     }
+    
+    /*대기자 - 입장 요청 취소*/
     @GetMapping("/reject-waiting")
     public String rejectWaiting(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
         waitingService.rejectWaiting(waiting);
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
     }
 
+    /*대기자 - 체크인*/
     @GetMapping("/waiting/check/in")
     public String checkIn(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreByPath(path);
@@ -84,10 +87,12 @@ public class WaitingController {
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
     }
 
+    /*대기자 - 체크인 취소*/
     @GetMapping("/waiting/check/cancel")
     public String cancelCheck(@CurrentAccount Account account, @RequestParam(name="id") Waiting waiting, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreByPath(path);
         waitingService.cancelCheck(store, waiting);
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/waiting-list";
     }
+
 }

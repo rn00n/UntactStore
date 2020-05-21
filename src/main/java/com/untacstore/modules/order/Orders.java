@@ -19,8 +19,12 @@ public class Orders {
     @Id @GeneratedValue
     private Long id;
 
+    private String title;
+
     @ManyToOne
     private Tables tables;
+
+    private Integer ordersAmount = 0;
 
     @OneToMany
     private List<Menu> menuList = new ArrayList<>();

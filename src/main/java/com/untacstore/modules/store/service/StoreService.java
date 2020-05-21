@@ -107,7 +107,9 @@ public class StoreService {
     public void newTable(Account account, Store store, TablesForm tablesForm) {
         Tables tables = Tables.builder()
                 .tableNum(store.getTableList().size()+1)
-                .account(account)
+                .tablesPath(store.getTableList().size()+1+"")
+                .account(null)
+                .amount(0)
                 .store(store)
                 .personnel(tablesForm.getPersonnel())
                 .build();
@@ -180,7 +182,6 @@ public class StoreService {
     public void UnfilledStore(Store store) {
         store.setWaiting(false);
     }
+
     //TODO 리뷰 답글 삭제
-
-
 }

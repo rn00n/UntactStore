@@ -39,7 +39,7 @@ public class StoreController {
     private final ReviewRepository reviewRepository;
 
     @InitBinder("storeForm")
-        public void initBinder_storeForm(WebDataBinder webDataBinder) {
+    public void initBinder_storeForm(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(storeFormValidator);
     }
 
@@ -74,19 +74,18 @@ public class StoreController {
     /*Store view*/
     @GetMapping("/{path}")
     public String storePageView(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        model.addAttribute(account);
-
-        //TODO 가게 정보
-        //TODO 가게 메뉴
         Store store = storeRepository.findStoreWithReviewsByPath(path);
         model.addAttribute(store);
 
-        //TODO 리뷰
+        if (account != null) {
+            model.addAttribute(account);
+            model.addAttribute("isOwner", account.getUsername().equals(store.getOwner().getUsername()));
+        } else {
+            model.addAttribute("isOwner", false);
+        }
+        //리뷰
         List<Review> reviews = store.getReviews();
         model.addAttribute("review", reviews);
-
-        //TODO owner check
-        model.addAttribute("isOwner", account.getUsername().equals(store.getOwner().getUsername()));
 
         return "store/view";
     }
@@ -94,7 +93,10 @@ public class StoreController {
     /*menu 소개*/
     @GetMapping("/{path}/menu")
     public String menuView(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        model.addAttribute(account);
+        if (account != null) {
+            model.addAttribute(account);
+        }
+
         Store store = storeRepository.findStoreWithMenusByPath(path);
         model.addAttribute(store);
 
@@ -108,7 +110,9 @@ public class StoreController {
     /*리뷰게시판 - 폼*/
     @GetMapping("/{path}/review")
     public String reviewView(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        model.addAttribute(account);
+        if (account != null) {
+            model.addAttribute(account);
+        }
         Store store = storeRepository.findStoreWithReviewsByPath(path);
         model.addAttribute(store);
 
@@ -143,4 +147,5 @@ public class StoreController {
 
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/review";
     }
+
 }
