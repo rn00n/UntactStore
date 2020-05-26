@@ -32,6 +32,11 @@ public class WaitingService {
     }
 
     public void exitWaiting(Store store, Waiting waiting) {
+        store.getWaitingList().stream().forEach(w-> {
+            if (w.getTurn() > waiting.getTurn()) {
+                w.setTurn(w.getTurn()-1);
+            }
+        });
         store.removeWaiting(waiting);
         waitingRepository.delete(waiting);
     }

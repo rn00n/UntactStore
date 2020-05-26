@@ -1,6 +1,8 @@
 package com.untacstore.modules.account.service;
 
 import com.untacstore.modules.account.Account;
+import com.untacstore.modules.account.AccountReport;
+import com.untacstore.modules.account.AccountReportRepository;
 import com.untacstore.modules.account.authentication.PrincipalAccount;
 import com.untacstore.modules.account.form.Notifications;
 import com.untacstore.modules.account.form.Profile;
@@ -30,6 +32,7 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final AccountReportRepository accountReportRepository;
 
     /*시큐리티 로그인(UserDetails) 설정*/
     @Transactional(readOnly = true)
@@ -129,9 +132,13 @@ public class AccountService implements UserDetailsService {
         accountRepository.save(account);
     }
 
+    public void addReport(Account to, Account from) {
+        accountReportRepository.save(AccountReport.builder().to(to).from(from).build());
+    }
 
-    public void addReport(Account account) {
-        account.addReport();
-        accountRepository.save(account);
+    public void cancelReport(Account to, Account from) {
+        AccountReport accountReport = accountReportRepository.findByToAndFrom(to, from);
+        accountReportRepository.deleteByToAndFrom(to, from);
+        to.getReport().remove(accountReport);
     }
 }

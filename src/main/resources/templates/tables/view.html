@@ -52,11 +52,11 @@
             </div>
             <div class="col-3 text-right justify-content-end">
                 <span sec:authorize="isAuthenticated()">
-                    <button th:if="${tables.isSitable(#authentication.principal) && tables.checkSit(#authentication.principal)}"
+                    <button th:if="${tables.isSitable() && tables.checkSit(#authentication.principal)}"
                             class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-down">
                         <i class="fa fa-plus-circle"></i> 자리 신청
                     </button>
-                    <button th:if="${tables.isSitable(#authentication.principal) && !tables.checkSit(#authentication.principal)}"
+                    <button th:if="${tables.isSitable() && !tables.checkSit(#authentication.principal)}"
                             class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-up">
                         <i class="fa fa-minus-circle"></i> 자리 신청 취소
                     </button>
@@ -150,7 +150,7 @@
                                             <td th:text="${event.eventAt}">요청시간</td>
                                             <td>
                                                 <a th:href="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-accept?id='+${event.account.id}}">수락</a>
-                                                <a th:href="@{#}">취소</a>
+                                                <a th:href="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-accept-cancel?id='+${event.account.id}}">취소</a>
                                             </td>
                                         </tr>
                                     </div>
@@ -160,9 +160,6 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-<!--                            <form th:action="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-up'}" method="post">-->
-<!--                                <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">확인</button>-->
-<!--                            </form>-->
                         </div>
                     </div>
                 </div>
@@ -237,9 +234,9 @@
             </div>
             <div sec:authorize="isAuthenticated()" th:if="${tables.checkAccount(#authentication.principal) || store.isOwner(#authentication.principal)}" class="col-sm pt-3 text-right">
                 <dt>이용자</dt>
-                <dd>문병량</dd>
+                <dd th:if="${tables.account!=null}" th:text="${tables.account?.name}">문병량</dd>
                 <dt>입장시간</dt>
-                <dd>10:00 20:24</dd>
+                <dd th:if="${tables.startedAt!=null}" class="date-time" th:text="${tables.startedAt}">10:00 20:24</dd>
                 <dt>Cart List</dt>
                 <div th:if="${cart.orders.setMenuList.size() != 0 || cart.orders.menuList.size() != 0 || cart.orders.requestOrderList.size() != 0}">
                     <div class="text-center" style="overflow: auto; height: 150px" >
@@ -350,9 +347,42 @@
                     </div>
                     <div class="row">
                         <dt class="col text-left">금액</dt>
-                        <dt class="col justify-content-end" th:text="${tables.amount}">16,700</dt>
+                        <dt class="col justify-content-end" th:text="${tables.pay}">16,700</dt>
                     </div>
                     <button class="btn btn-success col float-left">계산하기</button>
+                </div>
+                <div th:if="${store.isOwner(#authentication.principal)}">
+                    <dt>Complete payment</dt>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#complete-payment">
+                            계산 완료
+                    </button>
+                    <div class="modal fade" id="complete-payment" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="complete-payment-title" th:text="${tables.tableNum+'번 테이블 / 결제 확인'}"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>테이블 결제 확인?</p>
+                                    <p><strong>확인</strong>하시면 테이블 결제를 완료합니다.</p>
+                                    <p>감사합니다.</p>
+                                    <small>중간계산은 버튼을 누르세요.</small>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                    <form th:action="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/complete-payment-middle'}" method="post">
+                                        <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">중간계산</button>
+                                    </form>
+                                    <form th:action="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/complete-payment'}" method="post">
+                                        <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">확인</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-2"></div>

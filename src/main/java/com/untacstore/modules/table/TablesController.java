@@ -5,17 +5,13 @@ import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.menu.Menu;
 import com.untacstore.modules.menu.Setmenu;
-import com.untacstore.modules.menu.form.SetmenuForm;
 import com.untacstore.modules.menu.repository.MenuRepository;
 import com.untacstore.modules.menu.repository.SetmenuRepository;
 import com.untacstore.modules.order.*;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
@@ -198,4 +194,26 @@ public class TablesController {
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/tables/"+URLEncoder.encode(tablesPath, StandardCharsets.UTF_8);
     }
 
+    /*테이블 착석 - 수락 취소*/
+    @GetMapping("/{tables-path}/sit-accept-cancel")
+    public String sitAcceptCancel(@CurrentAccount Account account, @RequestParam String id, @PathVariable("path") String path, @PathVariable("tables-path") String tablesPath, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
+
+        Optional<Account> byId = accountRepository.findById(Long.valueOf(id));
+        Event event = eventRepository.findByTablesAndAccount(tables, byId.orElseThrow());
+        tablesService.sitAcceptCancel(tables, event);
+
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/tables/"+URLEncoder.encode(tablesPath, StandardCharsets.UTF_8);
+    }
+
+    @PostMapping("/{tables-path}/complete-payment-middle")
+    public String completePaymentMiddle(@CurrentAccount Account account, @PathVariable("path") String path, @PathVariable("tables-path") String tablesPath, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
+
+        tablesService.completePaymentMiddle(tables);
+
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/tables/"+URLEncoder.encode(tablesPath, StandardCharsets.UTF_8);
+    }
 }

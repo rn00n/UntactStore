@@ -10,12 +10,14 @@ import com.untacstore.modules.menu.form.MenuForm;
 import com.untacstore.modules.menu.form.SetmenuForm;
 import com.untacstore.modules.menu.repository.MenuRepository;
 import com.untacstore.modules.menu.repository.SetmenuRepository;
+import com.untacstore.modules.order.OrdersRepository;
 import com.untacstore.modules.review.*;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.form.StoreForm;
 import com.untacstore.modules.store.form.StoreProfileForm;
 import com.untacstore.modules.store.form.StoreSettingsForm;
 import com.untacstore.modules.store.repository.StoreRepository;
+import com.untacstore.modules.table.EventRepository;
 import com.untacstore.modules.table.Tables;
 import com.untacstore.modules.table.TablesForm;
 import com.untacstore.modules.table.TablesRepository;
@@ -44,6 +46,8 @@ public class StoreService {
     private final ReviewRepository reviewRepository;
     private final ReplyRepository replyRepository;
     private final WaitingRepository waitingRepository;
+    private final EventRepository eventRepository;
+    private final OrdersRepository ordersRepository;
 
     public void newStore(Account account, StoreForm storeForm) {
         Account updateAccount = accountRepository.findById(account.getId()).orElseThrow();
@@ -109,7 +113,6 @@ public class StoreService {
                 .tableNum(store.getTableList().size()+1)
                 .tablesPath(store.getTableList().size()+1+"")
                 .account(null)
-                .amount(0)
                 .store(store)
                 .personnel(tablesForm.getPersonnel())
                 .build();
@@ -120,6 +123,8 @@ public class StoreService {
     /*테이블 - 테이블 삭제*/
     public void removeTable(Store store) {
         Tables tables = store.removeTable();
+        eventRepository.deleteAllByTables(tables);
+        ordersRepository.deleteAllByTables(tables);
         tablesRepository.delete(tables);
     }
 

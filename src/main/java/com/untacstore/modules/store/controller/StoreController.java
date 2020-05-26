@@ -11,8 +11,8 @@ import com.untacstore.modules.review.ReviewForm;
 import com.untacstore.modules.review.ReviewRepository;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.form.StoreForm;
-import com.untacstore.modules.store.service.StoreService;
 import com.untacstore.modules.store.repository.StoreRepository;
+import com.untacstore.modules.store.service.StoreService;
 import com.untacstore.modules.store.validator.StoreFormValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -25,7 +25,6 @@ import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/store")
@@ -137,6 +136,7 @@ public class StoreController {
 
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/review";
     }
+    //TODO 삭제
 
     /*리뷰게시판 - 답글 등록*/
     @PostMapping("/{path}/reply/add")
@@ -147,5 +147,5 @@ public class StoreController {
 
         return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/review";
     }
-
+    //TODO 삭제
 }

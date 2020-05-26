@@ -33,9 +33,7 @@ public class Tables {
 
     private LocalDateTime startedAt = null;
 
-    private LocalDateTime endAt = null;
-
-    private Integer amount = null; //가격
+    private Integer pay = null; //가격
 
     @OneToMany(mappedBy = "tables")
     @OrderBy("orderAt")
@@ -45,7 +43,7 @@ public class Tables {
     @OrderBy("eventAt")
     private List<Event> eventList = new ArrayList<>();
 
-    public boolean isSitable(PrincipalAccount principalAccount) {
+    public boolean isSitable() {
         return this.account == null;
     }
 

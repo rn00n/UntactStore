@@ -8,10 +8,10 @@
             <div class="col-sm-2">
                 <!-- Avatar -->
                 <svg class="img-fluid float-left rounded img-thumbnail"
-                     th:data-jdenticon-value="${account.username}" width="125" height="125"></svg>
+                     th:data-jdenticon-value="${profileAccount.username}" width="125" height="125"></svg>
             </div>
             <div class="col-sm-6">
-                <h1 class="display-4 " th:text="${account.username}">byungryang</h1>
+                <h1 class="display-4 " th:text="${profileAccount.username}">byungryang</h1>
             </div>
         </div>
 
@@ -27,17 +27,17 @@
             <div class="col-sm-6">
                 <div class="tab-content" id="v-pills-tabContent">
                     <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-home-tab">
-                        <p th:if="${!#strings.isEmpty(account.name)}">
+                        <p th:if="${!#strings.isEmpty(profileAccount.name)}">
                             <span style="font-size: 20px;">
                                 <i class="fa fa-link col-1"></i>
                             </span>
-                            <span th:text="${account.name}" class="col-11"></span>
+                            <span th:text="${profileAccount.name}" class="col-11"></span>
                         </p>
-                        <p th:if="${!#strings.isEmpty(account.email)}">
+                        <p th:if="${!#strings.isEmpty(profileAccount.email)}">
                             <span style="font-size: 20px;">
                                 <i class="fa fa-briefcase col-1"></i>
                             </span>
-                            <span th:text="${account.email}" class="col-9"></span>
+                            <span th:text="${profileAccount.email}" class="col-9"></span>
                         </p>
 <!--                        <p th:if="${!#strings.isEmpty(account.keywords)}">-->
 <!--                            <span style="font-size: 20px;">-->
@@ -51,14 +51,17 @@
 <!--                            </span>-->
 <!--                            <span th:text="${account.location}" class="col-9"></span>-->
 <!--                        </p>-->
-                        <p th:if="${!#strings.isEmpty(account.report)}">
+                        <p th:if="${!#strings.isEmpty(profileAccount.report)}">
                             <span style="font-size: 20px;">
                                 <i class="fa fa-location-arrow col-1"></i>
                             </span>
-                            <span th:text="${account.report}" class="col-9"></span>
+                            <span th:text="${profileAccount.reportSize()}" class="col-9"></span>
                             <div th:text="${profileUsername}">엥</div>
-                            <a th:href="'/profile/'+${profileUsername}+'/report'">신고</a>
-<!--                        TODO 신고는 가게 사장만 1회 할 수 있다-->
+                            <span>
+                                <a th:if="${profileAccount.isReportable(#authentication.principal)}" th:href="'/profile/'+${profileUsername}+'/report'">신고</a>
+                                <a th:if="${!profileAccount.isReportable(#authentication.principal)}" th:href="'/profile/'+${profileUsername}+'/report-cancel'">신고취소</a>
+                            </span>
+
                         </p>
                         <div th:if="${isOwner}">
                             <a class="btn btn-outline-primary" href="#" th:href="@{/settings/profile}">프로필 수정</a>

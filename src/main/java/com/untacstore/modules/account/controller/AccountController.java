@@ -55,8 +55,9 @@ public class AccountController {
     /*프로필 보기*/
     @GetMapping("/profile/{username}")
     public String viewProfile(@CurrentAccount Account account, @PathVariable String username, Model model) {
+        model.addAttribute(account);
         Account accountToView = accountService.getAccount(username);
-        model.addAttribute(accountToView);
+        model.addAttribute("profileAccount", accountToView);
         model.addAttribute("isOwner", accountToView.equals(account));
 
         List<Keyword> keywords = accountService.getKeywords(account);
@@ -72,8 +73,17 @@ public class AccountController {
     /*계정 - 신고*/
     @GetMapping("/profile/{username}/report")
     public String addReport(@CurrentAccount Account account, @PathVariable String username, Model model) {
-        accountService.addReport(account);
-        //TODO 신고 필드를 엔티티로 변경
+        Account to = accountRepository.findByUsername(username);
+        accountService.addReport(to, account);
+
+        return "redirect:/profile/"+username;
+    }
+    /*계정 - 신고취소*/
+    @GetMapping("/profile/{username}/report-cancel")
+    public String cancelReport(@CurrentAccount Account account, @PathVariable String username, Model model) {
+        Account to = accountRepository.findByUsername(username);
+        accountService.cancelReport(to, account);
+
         return "redirect:/profile/"+username;
     }
 

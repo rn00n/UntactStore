@@ -9,10 +9,12 @@ import com.untacstore.modules.order.*;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,8 @@ public class TablesService {
     private final MenuRepository menuRepository;
     private final EventRepository eventRepository;
     private final RequestOrderRepository requestOrderRepository;
+    private final PaymentRepository paymentRepository;
+    private final ModelMapper modelMapper;
 
     public void addOrders(Store store, Tables tables, Cart cart) {
         Orders orders = cart.getOrders();
@@ -49,12 +53,12 @@ public class TablesService {
         tables.getOrderList().add(orders);
         ordersRepository.save(orders);
 
-        tables.setAmount(tables.getAmount()+orders.getOrdersAmount());
+        tables.setPay(tables.getPay()+orders.getOrdersAmount());
     }
 
     public void removeOrders(Store store, Tables tables, Orders orders) {
         ordersRepository.delete(orders);
-        tables.setAmount(tables.getAmount()-orders.getOrdersAmount());
+        tables.setPay(tables.getPay()-orders.getOrdersAmount());
         tables.getOrderList().remove(orders);
     }
 
@@ -76,8 +80,18 @@ public class TablesService {
     public void sitAccept(Tables tables, Event event) {
         tables.setAccount(event.getAccount());
         tables.setStartedAt(LocalDateTime.now());
+        tables.setOrderList(new ArrayList<>());
+        tables.setEventList(new ArrayList<>());
+        tables.setPay(0);
         event.setAccept(true);
+
         //TODO 나머지 대기자들 요청취소 처리
+    }
+
+    public void sitAcceptCancel(Tables tables, Event event) {
+        tables.setStartedAt(null);
+        tables.setAccount(null);
+        event.setAccept(false);
     }
 
     public RequestOrder addRequestOrder(RequestOrder requestOrder) {
@@ -87,4 +101,19 @@ public class TablesService {
     public void removeRequestOrder(RequestOrder requestOrder) {
         requestOrderRepository.delete(requestOrder);
     }
+
+    public void completePaymentMiddle(Tables tables) {
+        Payment payment = modelMapper.map(tables, Payment.class);
+        payment.setTables(tables);
+        payment.setPaymentAt(LocalDateTime.now());
+        paymentRepository.save(payment);
+
+        tables.setAccount(null);
+        tables.setPay(0);
+        tables.setStartedAt(null);
+        tables.setEventList(null);
+        tables.setOrderList(null);
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.untacstore.modules.account;
 
+import com.untacstore.modules.account.authentication.PrincipalAccount;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.location.Location;
 import com.untacstore.modules.waiting.Waiting;
@@ -51,11 +52,16 @@ public class Account {
     @OneToMany(mappedBy = "account")
     private List<Waiting> waitingList = new ArrayList<>();
 
-    //TODO 신고
-    private Integer report = 0;
+    @OneToMany(mappedBy = "to")
+    private List<AccountReport> report = new ArrayList<>();
 
-    public void addReport() {
-        report++;
+    public int reportSize() {
+        return report.size();
+    }
+
+    public boolean isReportable(PrincipalAccount principalAccount) {
+        Account account = principalAccount.getAccount();
+        return report.stream().filter(r->r.getFrom().equals(account)).collect(Collectors.toList()).isEmpty();
     }
 
     public boolean hasStore() {
