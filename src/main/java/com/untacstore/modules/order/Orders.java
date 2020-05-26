@@ -26,11 +26,14 @@ public class Orders {
 
     private Integer ordersAmount = 0;
 
-    @OneToMany
+    @ManyToMany
     private List<Menu> menuList = new ArrayList<>();
 
-    @OneToMany
+    @ManyToMany
     private List<Setmenu> setMenuList = new ArrayList<>();
+
+    @ManyToMany
+    private List<RequestOrder> requestOrderList = new ArrayList<>();
 
     private LocalDateTime orderAt;
 }

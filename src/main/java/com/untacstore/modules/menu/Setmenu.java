@@ -22,7 +22,7 @@ public class Setmenu {
     @ManyToOne
     private Store store;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Menu> menuList = new ArrayList<>();
 
     private Integer totalPrice;

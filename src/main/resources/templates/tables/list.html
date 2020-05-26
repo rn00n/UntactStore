@@ -17,7 +17,7 @@
                                 <a class="btn btn-light bg-white" th:href="@{'/store/'+${store.path}+'/tables/'+${table.tableNum}}"
                                    data-toggle="tooltip" data-placement="bottom" title="Table Info">
                                     <h1 class="card-title text-left" th:text="${table.tableNum+' 번'}">turn</h1>
-                                    <h6 class="card-subtitle mb-2 text-muted text-left" th:text="${'총 '+table.personnel+'명'}">인원</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted text-left" th:text="${'최대 '+table.personnel+'좌석'}">인원</h6>
                                 </a>
                                 <a class="btn btn-light bg-white" th:href="@{'/profile/'+${table.account?.username}}"
                                    data-toggle="tooltip" data-placement="bottom" title="이용자">

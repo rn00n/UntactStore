@@ -137,6 +137,11 @@ public class Store {
         return this.getOwner().equals(principalAccount.getAccount());
     }
 
+    public boolean isAdmin(PrincipalAccount principalAccount) {
+        Account account = principalAccount.getAccount();
+        return this.owner.equals(account);
+    }
+
     public void shiftTurn(Waiting waiting) {
         waitingList.stream().filter(w -> w.getTurn() > waiting.getTurn()).forEach(fw -> fw.setTurn(fw.getTurn()-1));
         waiting.setTurn(0);

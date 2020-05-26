@@ -35,7 +35,7 @@
                                     </div>
                                     <div class="collapse" th:id="'taget'+${review.getId()}">
                                         <div class="card card-body pt-2 pb-2">
-                                            <form th:object="${replyForm}" th:action="@{'/store/'+store.path+'/reply/add'}" method="post">
+                                            <form th:object="${replyForm}" th:action="@{'/store/'+${store.path}+'/reply/add'}" method="post">
                                                 <input hidden name="review_id" th:value="${review.getId()}">
                                                 <div class="input-group">
                                                     <textarea class="form-control" type="textarea" th:field="*{content}" aria-label="With textarea" placeholder="답글을 작성해주세요." required></textarea>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body pt-2 pb-2">
-                        <form th:object="${reviewForm}" th:action="@{'/store/'+store.path+'/review/add'}" method="post">
+                        <form th:object="${reviewForm}" th:action="@{'/store/'+${store.path}+'/review/add'}" method="post">
                             <div class="input-group">
                                 <textarea class="form-control" type="textarea" th:field="*{content}" aria-label="With textarea" placeholder="댓글을 작성해주세요." required></textarea>
                                 <div class="input-group-prepend">

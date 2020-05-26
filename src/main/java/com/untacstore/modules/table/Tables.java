@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
@@ -28,7 +29,7 @@ public class Tables {
     @ManyToOne
     private Account account; //현재 손님
 
-    private Integer personnel;
+    private Integer personnel; //정원
 
     private LocalDateTime startedAt = null;
 
@@ -40,11 +41,36 @@ public class Tables {
     @OrderBy("orderAt")
     private List<Orders> orderList = new ArrayList<>(); //주문목록
 
+    @OneToMany(mappedBy = "tables")
+    @OrderBy("eventAt")
+    private List<Event> eventList = new ArrayList<>();
+
     public boolean isSitable(PrincipalAccount principalAccount) {
         return this.account == null;
     }
 
-    public boolean isAdmin(Store store) {
-        return this.store.equals(store);
+    public void addEvent(Event event) {
+        eventList.add(event);
+        event.setTables(this);
+    }
+
+    public void removeEvent(Event event) {
+        eventList.remove(event);
+    }
+
+    public boolean checkSit(PrincipalAccount principalAccount) {
+        Account account = principalAccount.getAccount();
+        return eventList.stream().filter(e->e.getAccount().equals(account)).collect(Collectors.toList()).isEmpty();
+    }
+
+    public boolean checkAccount(PrincipalAccount principalAccount) {
+        if (account == null) {
+            return false;
+        }
+        return this.account.equals(principalAccount.getAccount());
+    }
+
+    public boolean isfull() {
+        return this.account!=null;
     }
 }
