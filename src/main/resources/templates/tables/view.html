@@ -307,6 +307,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>상세보기</th>
+                                <th>진행상태</th>
                                 <th>가격</th>
                             </tr>
                             </thead>
@@ -319,6 +320,7 @@
                                             상세보기
                                         </button>
                                     </td>
+                                    <td th:text="${order.getStatus()}">진행상황</td>
                                     <td th:text="${order.ordersAmount}">5,000</td>
                                     <td><a th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/remove-orders?id='+${order.id}}">삭제</a></td>
                                 </tr>

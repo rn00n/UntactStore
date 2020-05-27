@@ -9,5 +9,9 @@ import java.util.List;
 @Transactional(readOnly=true)
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
     void deleteAllByTables(Tables tables);
-    List<Orders> findAllByTablesAndCompletePayment(Tables tables, boolean completePayment);
+    List<Orders> findAllByTablesAndOrderStatusTypeIsNot(Tables tables, OrderStatusType type);
+
+    List<Orders> findAllByTables(Tables tables);
+
+    //TODO table account n+1
 }

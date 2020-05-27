@@ -39,18 +39,6 @@
                             </span>
                             <span th:text="${profileAccount.email}" class="col-9"></span>
                         </p>
-<!--                        <p th:if="${!#strings.isEmpty(account.keywords)}">-->
-<!--                            <span style="font-size: 20px;">-->
-<!--                                <i class="fa fa-location-arrow col-1"></i>-->
-<!--                            </span>-->
-<!--                            <span th:text="${account.keywords}" class="col-9"></span>-->
-<!--                        </p>-->
-<!--                        <p th:if="${!#strings.isEmpty(account.location)}">-->
-<!--                            <span style="font-size: 20px;">-->
-<!--                                <i class="fa fa-location-arrow col-1"></i>-->
-<!--                            </span>-->
-<!--                            <span th:text="${account.location}" class="col-9"></span>-->
-<!--                        </p>-->
                         <p th:if="${!#strings.isEmpty(profileAccount.report)}">
                             <span style="font-size: 20px;">
                                 <i class="fa fa-location-arrow col-1"></i>
@@ -76,3 +64,65 @@
     </div>
 </body>
 </html>
+
+<div class="col-sm-2">
+    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <ul class="list-group">
+            <a class="nav-link active"
+               data-toggle="pill" href="#v-pills-newOrderList" role="tab" aria-controls="v-pills-profile" aria-selected="true" id="v-pills-newOrderList-tab">
+                새 주문
+                <span th:text="${newOrderList.size()}">3</span>
+            </a>
+            <a class="nav-link"
+               data-toggle="pill" href="#v-pills-confirmOrderList" role="tab" aria-controls="v-pills-study" aria-selected="false" id="v-pills-confirmOrderList-tab" >
+                확인한 주문
+                <span th:text="${confirmOrderList.size()}">5</span>
+            </a>
+        </ul>
+        <ul class="list-group mt-4">
+            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                준비중인 주문 목록
+                <span th:text="${beforeCompleteList.size()}">4</span>
+            </a>
+            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                준비완료한 주문 목록
+                <span th:text="${afterCompleteList.size()}">1</span>
+            </a>
+        </ul>
+        <ul class="list-group mt-4">
+            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                결제완료한 주문
+                <span th:text="${completePaymentList.size()}">2</span>
+            </a>
+        </ul>
+    </div>
+</div>
+<div class="col-sm-6">
+    <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-pane fade show active" id="v-pills-newOrderList" role="tabpanel" aria-labelledby="v-pills-home-tab"
+             th:if="${newOrderList.size() > 0}">
+            <dt>새 주문 목록</dt>
+            <div th:replace="fragments.html :: order-list (orderList=${newOrderList})"></div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-confirmOrderList" role="tabpanel" aria-labelledby="v-pills-profile-tab"
+             th:if="${confirmOrderList.size() > 0}">
+            <dt>확인한 주문 목록</dt>
+            <div th:replace="fragments.html :: order-list (orderList=${confirmOrderList})"></div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-beforeCompleteList" role="tabpanel" aria-labelledby="v-pills-profile-tab"
+             th:if="${beforeCompleteList.size() > 0}">
+            <dt>준비중인 주문 목록</dt>
+            <div th:replace="fragments.html :: order-list (orderList=${beforeCompleteList})"></div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-afterCompleteList" role="tabpanel" aria-labelledby="v-pills-profile-tab"
+             th:if="${afterCompleteList.size() > 0}">
+            <dt>준비완료한 주문 목록</dt>
+            <div th:replace="fragments.html :: order-list (orderList=${afterCompleteList})"></div>
+        </div>
+        <div class="tab-pane fade" id="v-pills-completePaymentList" role="tabpanel" aria-labelledby="v-pills-profile-tab"
+             th:if="${completePaymentList.size() > 0}">
+            <dt>결제완료한 주문 목록</dt>
+            <div th:replace="fragments.html :: order-list (orderList=${completePaymentList})"></div>
+        </div>
+    </div>
+</div>

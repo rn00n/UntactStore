@@ -346,4 +346,46 @@
         })
     </script>
 </div>
+
+<!--주문목록-->
+<div th:fragment="order-list (type, orderList)">
+    <div th:each="order: ${orderList}">
+        <div class="card">
+            <a class="btn btn-light card-header text-left  p-0" data-toggle="collapse" th:href="'#order'+${order.id}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <table class="table table-borderless m-0">
+                    <tr class="row text-center">
+                        <th class="col" th:text="'#table'+${order.tables.tableNum}">테이블 번호</th>
+                        <th class="col" th:text="${order.tables.account.name}">주문자</th>
+                        <th class="col"><strong>주문</strong></th>
+                        <th class="col"><span class="time" th:text="${order.orderAt}">시간</span></th>
+                        <th class="col"><span th:text="${order.ordersAmount>0?#numbers.formatInteger(order.ordersAmount, 0, 'COMMA'):'　　　'}">가격</span></th>
+                    </tr>
+                </table>
+            </a>
+        </div>
+        <div class="collapse" th:id="'order'+${order.id}">
+            <div class="card card-body">
+                <div class="row justify-content-center">
+                    <span class="col">
+                        <div class="row" th:each="setmenu: ${order.setMenuList}">
+                            <span class="col" th:text="${setmenu.title}">메뉴</span>
+                            <span class="col" th:text="${setmenu.totalPrice}">가격</span>
+                        </div>
+                        <div class="row" th:each="menu: ${order.menuList}">
+                            <span class="col" th:text="${menu.name}">메뉴</span>
+                            <span class="col" th:text="${menu.price}">가격</span>
+                        </div>
+                        <div class="row" th:each="request: ${order.requestOrderList}">
+                            <span class="col" th:text="${request.content}">요청</span>
+                        </div>
+                    </span>
+                    <span class="col justify-content-end text-right">
+                        <a th:if="${type == 'newOrderList'}" th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/management/confirm-orders?id='+${order.id}}">확인</a>
+                        <a th:if="${type == 'beforeCompleteList'}" th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/management/after-complete?id='+${order.id}}">완료</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </html>

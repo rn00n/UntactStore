@@ -18,6 +18,7 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,7 @@ public class TablesController {
         model.addAttribute(store);
         Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);//TODO n+1성능
         model.addAttribute("tables", tables);
-        List<Orders> ordersList = ordersRepository.findAllByTablesAndCompletePayment(tables, false);
+        List<Orders> ordersList = ordersRepository.findAllByTablesAndOrderStatusTypeIsNot(tables, OrderStatusType.COMPLETE_PAYMENT);
         model.addAttribute("orderList", ordersList);
         List<Setmenu> setmenuList = setmenuRepository.findAllByStore(store);
 //        List<Setmenu> setmenuList = store.getSetmenuList();
@@ -255,24 +256,48 @@ public class TablesController {
 
         Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
         model.addAttribute(tables);
-        List<Payment> paymentList = paymentRepository.findAllByTables(tables);
-        model.addAttribute(paymentList);
 
+        List<Orders> ordersList = ordersRepository.findAllByTables(tables);
+        putCategorizedOrders(model, ordersList);
         return "tables/management";
     }
 
-    /*테이블 완료된 주문목록 - 뷰*/
-    @GetMapping("/{tables-path}/management/old")
-    public String tableManagementOldView(@CurrentAccount Account account, @PathVariable("path") String path, @PathVariable("tables-path") String tablesPath, Model model) {
-        model.addAttribute(account);
-        Store store = storeRepository.findStoreByPath(path);
-        model.addAttribute(store);
+    private void putCategorizedOrders(Model model, List<Orders> ordersList) {
+        List<Orders> newOrderList = new ArrayList<>();
+        List<Orders> confirmOrderList = new ArrayList<>();
+        List<Orders> beforeCompleteList = new ArrayList<>();
+        List<Orders> afterCompleteList = new ArrayList<>();
+        List<Orders> completePaymentList = new ArrayList<>();
 
-        Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
-        model.addAttribute(tables);
-        List<Payment> paymentList = paymentRepository.findAllByTables(tables);
-        model.addAttribute(paymentList);
+        for (var orders: ordersList) {
+            confirmOrderList.add(orders);
+            switch (orders.getOrderStatusType()) {
+                case NEW_ORDER: newOrderList.add(orders); confirmOrderList.remove(orders); break;
+                case BEFORE_COMPLETE: beforeCompleteList.add(orders); break;
+                case AFTER_COMPLETE: afterCompleteList.add(orders); break;
+                case COMPLETE_PAYMENT: completePaymentList.add(orders); break;
+            }
+        }
 
-        return "tables/management";
+        model.addAttribute("ordersList", ordersList);
+        model.addAttribute("newOrderList", newOrderList);
+        model.addAttribute("confirmOrderList", confirmOrderList);
+        model.addAttribute("beforeCompleteList", beforeCompleteList);
+        model.addAttribute("afterCompleteList", afterCompleteList);
+        model.addAttribute("completePaymentList", completePaymentList);
+    }
+
+    @GetMapping("/{tables-path}/management/confirm-orders")
+    public String confirmOrders(@CurrentAccount Account account, @PathVariable("path") String path, @PathVariable("tables-path") String tablesPath, @RequestParam String id, Model model) {
+        Orders orders = ordersRepository.findById(Long.valueOf(id)).orElseThrow();
+        tablesService.confirmOrders(orders);
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/tables/"+URLEncoder.encode(tablesPath, StandardCharsets.UTF_8)+"/management";
+    }
+
+    @GetMapping("/{tables-path}/management/after-complete")
+    public String afterComplete(@CurrentAccount Account account, @PathVariable("path") String path, @PathVariable("tables-path") String tablesPath, @RequestParam String id, Model model) {
+        Orders orders = ordersRepository.findById(Long.valueOf(id)).orElseThrow();
+        tablesService.afterComplete(orders);
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8)+"/tables/"+URLEncoder.encode(tablesPath, StandardCharsets.UTF_8)+"/management";
     }
 }

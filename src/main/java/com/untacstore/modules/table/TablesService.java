@@ -9,6 +9,7 @@ import com.untacstore.modules.order.*;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.criterion.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,8 @@ public class TablesService {
         }
 
         orders.setOrdersAmount(totalPrice);
+
+        orders.setOrderStatusType(OrderStatusType.NEW_ORDER);
 
         tables.getOrderList().add(orders);
         ordersRepository.save(orders);
@@ -117,7 +120,7 @@ public class TablesService {
         payment.setPaymentAt(LocalDateTime.now());
         payment = paymentRepository.save(payment);
 
-        payment.getOrderList().stream().forEach(o->o.setCompletePayment(true));
+        payment.getOrderList().stream().forEach(o->o.setOrderStatusType(OrderStatusType.COMPLETE_PAYMENT));
 
         ordersRepository.saveAll(payment.getOrderList());
 
@@ -137,5 +140,13 @@ public class TablesService {
         tables.setEventList(null);
         tables.setOrderList(null);
         tables.setRequestPayment(false);
+    }
+
+    public void confirmOrders(Orders orders) {
+        orders.setOrderStatusType(OrderStatusType.BEFORE_COMPLETE);
+    }
+
+    public void afterComplete(Orders orders) {
+        orders.setOrderStatusType(OrderStatusType.AFTER_COMPLETE);
     }
 }
