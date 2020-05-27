@@ -85,7 +85,8 @@ public class TablesService {
         tables.setPay(0);
         event.setAccept(true);
 
-        //TODO 나머지 대기자들 요청취소 처리
+        //나머지 대기자들 요청취소 처리
+//        eventRepository.deleteAllByTables(tables);
     }
 
     public void sitAcceptCancel(Tables tables, Event event) {
@@ -102,18 +103,39 @@ public class TablesService {
         requestOrderRepository.delete(requestOrder);
     }
 
-    public void completePaymentMiddle(Tables tables) {
+    public void requestPayment(Tables tables) {
+        tables.setRequestPayment(true);
+    }
+
+    public void cancelRequestPayment(Tables tables) {
+        tables.setRequestPayment(false);
+    }
+
+    public Tables completePaymentMiddle(Tables tables) {
         Payment payment = modelMapper.map(tables, Payment.class);
         payment.setTables(tables);
         payment.setPaymentAt(LocalDateTime.now());
-        paymentRepository.save(payment);
+        payment = paymentRepository.save(payment);
+
+        payment.getOrderList().stream().forEach(o->o.setCompletePayment(true));
+
+        ordersRepository.saveAll(payment.getOrderList());
+
+        tables.setPay(0);
+        tables.setOrderList(new ArrayList<>());
+        tables.setRequestPayment(false);
+        return tables;
+    }
+
+    public void completePayment(Tables tables) {
+        tables = completePaymentMiddle(tables);
+        eventRepository.deleteAllByTables(tables);
 
         tables.setAccount(null);
-        tables.setPay(0);
+        tables.setPay(null);
         tables.setStartedAt(null);
         tables.setEventList(null);
         tables.setOrderList(null);
+        tables.setRequestPayment(false);
     }
-
-
 }

@@ -66,18 +66,18 @@
                     <i class="fa fa-bell-o" aria-hidden="true"></i>
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="isAuthenticated()" th:if="${!account.hasStore()}">
-                <a class="nav-link btn btn-outline-primary" th:href="@{/my-waiting}">
+            <li class="nav-item" sec:authorize="isAuthenticated()" >
+                <a th:if="${!account.hasStore()}" class="nav-link btn btn-outline-primary" th:href="@{/my-waiting}">
                     <i class="fa fa-list-ul" aria-hidden="true"></i> 대기표
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="isAuthenticated()" th:if="${account.hasStore()}" >
-                <a class="nav-link btn btn-outline-primary" th:href="@{'/store/mystore'}">
+            <li class="nav-item" sec:authorize="isAuthenticated()" >
+                <a th:if="${account.hasStore()}" class="nav-link btn btn-outline-primary" th:href="@{'/store/mystore'}">
                     <i class="fa fa-home" aria-hidden="true"></i> 내 가게
                 </a>
             </li>
-            <li class="nav-item" sec:authorize="isAuthenticated()" th:if="${!account.hasStore()}" >
-                <a class="nav-link btn btn-outline-primary" th:href="@{'/store/new-store'}">
+            <li class="nav-item" sec:authorize="isAuthenticated()" >
+                <a th:if="${!account.hasStore()}" class="nav-link btn btn-outline-primary" th:href="@{'/store/new-store'}">
                     <i class="fa fa-cog" aria-hidden="true"></i> 새 가게
                 </a>
             </li>

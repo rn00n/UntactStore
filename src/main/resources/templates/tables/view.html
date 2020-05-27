@@ -64,7 +64,6 @@
                             class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-up" disabled>
                         <i class="fa fa-minus-circle"></i> 자리 신청 마감
                     </button>
-<!--                    TODO 자리 신정을 하면 사장에게 알림이 가고 사장이 승인 해주어야 함-->
                     <button th:if="${store.isAdmin(#authentication.principal)}"
                             class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-request">
                         <i class="fa fa-desktop"></i> 자리 신청 현황
@@ -129,34 +128,32 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            <div>
+                        <div class="modal-body" align="center">
                                 <table>
                                     <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>이름</th>
-                                        <th>인원</th>
-                                        <th>시간</th>
-                                        <th>수락</th>
+                                        <th class="text-center">#</th>
+                                        <th class="text-center">이름</th>
+                                        <th class="text-center">인원</th>
+                                        <th class="text-center">시간</th>
+                                        <th class="text-center">수락</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <div th:each="event: ${tables.eventList}">
                                         <tr>
-                                            <th th:text="${event.turn}">1</th>
-                                            <td th:text="${event.account.name}">이름</td>
-                                            <td th:text="${event.personnel}">인원</td>
-                                            <td th:text="${event.eventAt}">요청시간</td>
-                                            <td>
-                                                <a th:href="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-accept?id='+${event.account.id}}">수락</a>
-                                                <a th:href="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-accept-cancel?id='+${event.account.id}}">취소</a>
+                                            <th class="text-center" th:text="${event.turn}">1</th>
+                                            <td class="text-center" th:text="${event.account.name}">이름</td>
+                                            <td class="text-center" th:text="${event.personnel}">인원</td>
+                                            <td class="text-center time" th:text="${event.eventAt}">시간</td>
+                                            <td class="">
+                                                <a th:if="${tables.account == null}" th:href="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-accept?id='+${event.account.id}}">수락</a>
+                                                <a th:if="${tables.account != null}" th:href="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-accept-cancel?id='+${event.account.id}}">취소</a>
                                             </td>
                                         </tr>
                                     </div>
                                     </tbody>
                                 </table>
-                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
@@ -275,16 +272,36 @@
                             </tbody>
                         </table>
                     </div>
-                    <p >
-                        <a th:href="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/add-orders'}">주문하기(임시)</a>
-                        <button class="btn btn-outline-primary col float-left">주문하기</button>
-                        <button class="btn btn-outline-danger col">취소</button>
+                    <p>
+                        <button class="btn btn-outline-primary col float-left" data-toggle="modal" data-target="#add-orders">주문하기</button>
                     </p>
+                </div>
+                <div class="modal fade" id="add-orders" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="add-orders-title" th:text="${tables.tableNum+'번 테이블 / 정원 '+tables.personnel+'명'}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" align="center">
+                                <p>메뉴를 주문합니다.</p>
+                                <small>조리에 들어간 메뉴는 취소가 불가능합니다.</small>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                <form th:action="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/add-orders'}" method="post">
+                                    <input class="btn btn-primary" type="submit" value="주문">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <hr/>
                 <dt>Order List</dt>
-                <div th:if="${orders.size()!=0}">
-                    <div class="text-center" style="overflow: auto; height: 150px" >
+                <div th:if="${orderList.size()!=0}">
+                    <div class="text-center" style="overflow: auto; height: 150px">
                         <table class="table table-sm">
                             <thead>
                             <tr>
@@ -293,7 +310,7 @@
                                 <th>가격</th>
                             </tr>
                             </thead>
-                            <div th:each="order: ${tables.orderList}">
+                            <div th:each="order: ${orderList}">
                                 <tr>
                                     <td class="time" th:text="${order.orderAt}">주문 시간</td>
                                     <td>
@@ -321,19 +338,19 @@
                                                         <strong class="col">메뉴</strong>
                                                         <strong class="col">가격</strong>
                                                     </div>
-                                                    <div class="row" th:each="orderSetmenuInfo: ${order.setMenuList}">
+                                                    <div class="row" th:each="orderSetmenuInfo: ${order.getSetMenuList()}">
                                                         <span class="col" th:text="${orderSetmenuInfo.title}">메뉴</span>
                                                         <span class="col" th:text="${#numbers.formatInteger(orderSetmenuInfo.totalPrice, 0, 'COMMA')}">가격</span>
                                                     </div>
-                                                    <div class="row" th:each="orderMenuInfo: ${order.menuList}">
+                                                    <div class="row" th:each="orderMenuInfo: ${order.getMenuList()}">
                                                         <span class="col" th:text="${orderMenuInfo.name}">메뉴</span>
                                                         <span class="col" th:text="${#numbers.formatInteger(orderMenuInfo.price, 0, 'COMMA')}">가격</span>
                                                     </div>
-                                                    <div class="row" th:each="orderRequestInfo: ${order.requestOrderList}">
+                                                    <div class="row" th:each="orderRequestInfo: ${order.getRequestOrderList()}">
                                                         <span class="col" th:text="${orderRequestInfo.content}">내용</span>
                                                     </div>
                                                     <hr/>
-                                                    <strong class="col text-right" th:text="${#numbers.formatInteger(order.ordersAmount, 0, 'COMMA')}">5,000</strong>
+                                                    <strong class="col text-right" th:text="${#numbers.formatInteger(order.getOrdersAmount(), 0, 'COMMA')}">5,000</strong>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -349,9 +366,53 @@
                         <dt class="col text-left">금액</dt>
                         <dt class="col justify-content-end" th:text="${tables.pay}">16,700</dt>
                     </div>
-                    <button class="btn btn-success col float-left">계산하기</button>
+                    <button th:if="${!tables.requestPayment}" class="btn btn-success col float-left" data-toggle="modal" data-target="#request-payment">계산요청</button>
+                    <button th:if="${tables.requestPayment}" class="btn btn-success col float-left" data-toggle="modal" data-target="#cancel-request-payment">요청취소</button>
                 </div>
-                <div th:if="${store.isOwner(#authentication.principal)}">
+                <div class="modal fade" id="request-payment" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="request-payment-title" th:text="${tables.tableNum+'번 테이블 / 정원 '+tables.personnel+'명'}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" align="center">
+                                <p>계산을 요청합니다.</p>
+                                <small>계산이 완료되어야 처리됩니다.</small>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                <form th:action="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/request-payment'}" method="post">
+                                    <input class="btn btn-primary" type="submit" value="요청">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="cancel-request-payment" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancel-request-payment-title" th:text="${tables.tableNum+'번 테이블 / 정원 '+tables.personnel+'명'}"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" align="center">
+                                <p>계산요청을 취소합니다.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                <form th:action="@{'/store/'+${store.path}+'/tables/'+${tables.tablesPath}+'/cancel-request-payment'}" method="post">
+                                    <input class="btn btn-primary" type="submit" value="요청취소">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${store.isOwner(#authentication.principal) && tables.requestPayment}">
                     <dt>Complete payment</dt>
                     <button class="btn btn-danger" data-toggle="modal" data-target="#complete-payment">
                             계산 완료

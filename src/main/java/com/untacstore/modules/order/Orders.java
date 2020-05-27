@@ -36,4 +36,6 @@ public class Orders {
     private List<RequestOrder> requestOrderList = new ArrayList<>();
 
     private LocalDateTime orderAt;
+
+    private boolean completePayment = false;
 }

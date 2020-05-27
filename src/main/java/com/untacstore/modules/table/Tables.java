@@ -43,6 +43,8 @@ public class Tables {
     @OrderBy("eventAt")
     private List<Event> eventList = new ArrayList<>();
 
+    public boolean requestPayment = false;
+
     public boolean isSitable() {
         return this.account == null;
     }
