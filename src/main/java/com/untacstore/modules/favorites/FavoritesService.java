@@ -15,12 +15,15 @@ public class FavoritesService {
     public void addFavorites(Account account, Store store) {
         Favorites favorites = new Favorites();
         favorites.setAccount(account);
-        favorites.setStore(store);
+
+        store.addFavorites(favorites);
 
         favoritesRepository.save(favorites);
     }
 
     public void removeFavorites(Account account, Store store) {
-        favoritesRepository.deleteByAccountAndStore(account, store);
+        Favorites favorites = favoritesRepository.findByAccountAndStore(account, store);
+        store.removeFavorites(favorites);
+        favoritesRepository.delete(favorites);
     }
 }

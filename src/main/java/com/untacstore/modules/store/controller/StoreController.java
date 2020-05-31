@@ -24,6 +24,8 @@ import com.untacstore.modules.store.service.StoreService;
 import com.untacstore.modules.store.validator.StoreFormValidator;
 import com.untacstore.modules.table.Tables;
 import com.untacstore.modules.table.TablesRepository;
+import com.untacstore.modules.waiting.Waiting;
+import com.untacstore.modules.waiting.WaitingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +53,7 @@ public class StoreController {
     private final ReviewRepository reviewRepository;
     private final PaymentRepository paymentRepository;
     private final TablesRepository tablesRepository;
+    private final WaitingRepository waitingRepository;
     private final ObjectMapper objectMapper;
 
     @InitBinder("storeForm")
@@ -227,5 +230,12 @@ public class StoreController {
         });
 
         model.addAttribute("statistics", statistics.values().stream().collect(Collectors.toList()));
+    }
+
+
+    @GetMapping("/data")
+    public String generateTestStoreData(@CurrentAccount Account account) {
+        storeService.generateTestStoreDate(account);
+        return "redirect:/";
     }
 }

@@ -77,7 +77,8 @@
             </li>
             <li class="nav-item" sec:authorize="isAuthenticated()">
                 <a class="nav-link" th:href="@{/notifications}">
-                    <i class="fa fa-bell-o" aria-hidden="true"></i>
+                    <i th:if="${!hasNotification}" class="fa fa-bell-o" aria-hidden="true"></i>
+                    <span class="text-info"><i th:if="${hasNotification}" class="fa fa-bell" aria-hidden="true"></i></span>
                 </a>
             </li>
             <li class="nav-item" sec:authorize="isAuthenticated()" >
@@ -268,7 +269,7 @@
             <span sec:authorize="isAuthenticated()" th:if="${store.waiting && store.open}"
                   class="btn-group" role="group" aria-label="Basic example">
                 <a class="btn btn-outline-primary" th:href="@{'/store/' + ${store.path} + '/waiting-list'}"
-                   th:text="${store.getWaitingList().size()}">1
+                   th:text="${store.countWaitingList()}">1
                 </a>
                 <a class="btn btn-primary"
                    th:href="@{'/store/' + ${store.path} + '/waiting-list '}">
@@ -361,6 +362,9 @@
             $(".date-weekday-time").text(function(index, dateTime) {
                 return moment(dateTime, "YYYY-MM-DD`T`hh:mm").format('LLLL');
             });
+            $(".abcd").text(function(index, dateTime) {
+                return moment(dateTime, "YYYY-MM-DD`T`hh:mm").fromNow();
+            });
         })
     </script>
 </div>
@@ -436,7 +440,7 @@
         <div class="media">
             <div class="media-body text-left">
                 <p class="m-0 h6">
-                    <a th:href="@{#}" class="text-decoration-nen">
+                    <a th:href="@{'/store/'+${store.path}}" class="text-decoration-nen">
                         <strong class="card-title context" th:text="${store.name}"></strong>
                         <small class="badge badge-primary" th:if="${store.open}">OPEN</small>
                         <small class="badge badge-secondary" th:if="${!store.open}">CLOSE</small>
@@ -474,4 +478,37 @@
     <img th:src="${store.image}"/>
 </div>
 
+<!--알림 리스트-->
+<ul th:fragment="notification-list (notifications)" class="list-group list-group-flush">
+    <a href="#" th:href="@{${noti.link}}" th:each="noti: ${notifications}"
+       class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <small class="text-muted" th:text="${noti.title}">Noti title</small>
+            <small class="fromNow text-muted" th:text="${noti.createdLocalDateTime}">3 days ago</small>
+        </div>
+        <p th:text="${noti.message}" class="text-left mb-0 mt-1">message</p>
+    </a>
+</ul>
+
+<!--페이징-->
+<div th:fragment="pagination (page, sortProperty)">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!page.hasPrevious()}? disabled">
+                <a th:href="@{'/search/store?keyword='+${keyword}+'&sort='+${sortProperty}+',desc&page='+${page.getNumber()-1}}" class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li class="page-item" th:classappend="${i == page.getNumber()}? active"
+                th:each="i: ${#numbers.sequence(0, page.getTotalPages() - 1)}">
+                <a th:href="@{'/search/store?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + ',desc&page=' + ${i}}"
+                   class="page-link" href="#" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${!page.hasNext()}? disabled">
+                <a th:href="@{'/search/store?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + ',desc&page=' + ${page.getNumber() + 1}}"
+                   class="page-link">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 </html>

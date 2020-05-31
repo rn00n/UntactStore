@@ -46,6 +46,7 @@ public class Account {
     private List<Location> locations = new ArrayList<>();
 
     //TODO notifications
+    private boolean storeCreatedByWeb = true;
     private boolean ticketByWeb = true;
 //    private boolean ticketByKakao; TODO
 

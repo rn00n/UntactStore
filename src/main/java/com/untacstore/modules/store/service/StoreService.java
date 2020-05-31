@@ -4,6 +4,7 @@ import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.account.service.AccountService;
 import com.untacstore.modules.keyword.Keyword;
+import com.untacstore.modules.keyword.KeywordRepository;
 import com.untacstore.modules.menu.Menu;
 import com.untacstore.modules.menu.Setmenu;
 import com.untacstore.modules.menu.form.MenuForm;
@@ -13,6 +14,7 @@ import com.untacstore.modules.menu.repository.SetmenuRepository;
 import com.untacstore.modules.order.OrdersRepository;
 import com.untacstore.modules.review.*;
 import com.untacstore.modules.store.Store;
+import com.untacstore.modules.store.event.StoreCreateEvent;
 import com.untacstore.modules.store.form.StoreForm;
 import com.untacstore.modules.store.form.StoreProfileForm;
 import com.untacstore.modules.store.form.StoreSettingsForm;
@@ -24,11 +26,14 @@ import com.untacstore.modules.table.TablesRepository;
 import com.untacstore.modules.waiting.Waiting;
 import com.untacstore.modules.waiting.WaitingRepository;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,12 +49,14 @@ public class StoreService {
     private final SetmenuRepository setmenuRepository;
     private final TablesRepository tablesRepository;
     private final ReviewRepository reviewRepository;
+    private final KeywordRepository keywordRepository;
     private final ReplyRepository replyRepository;
     private final WaitingRepository waitingRepository;
     private final EventRepository eventRepository;
     private final OrdersRepository ordersRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public void newStore(Account account, StoreForm storeForm) {
+    public Store newStore(Account account, StoreForm storeForm) {
         Account updateAccount = accountRepository.findById(account.getId()).orElseThrow();
 
         Store store = modelMapper.map(storeForm, Store.class);
@@ -59,6 +66,7 @@ public class StoreService {
         accountService.login(updateAccount); //현재 로그인된 정보 업데이트
 
         Store newStore = storeRepository.save(store);
+        return newStore;
     }
 
     /*상점 프로필 - 수정*/
@@ -155,6 +163,7 @@ public class StoreService {
     public void addKeyword(Store store, Keyword keyword) {
         Optional<Store> byId = storeRepository.findById(store.getId());
         byId.ifPresent(a -> a.getKeywords().add(keyword));
+        eventPublisher.publishEvent(new StoreCreateEvent(store));
     }
 
     /*키워드 - 상에서 키워드 삭제*/
@@ -203,6 +212,23 @@ public class StoreService {
 
     public void UnfilledStore(Store store) {
         store.setWaiting(false);
+    }
+
+    /*테스트 데이터*/
+    public void generateTestStoreDate(Account account) {
+        for (int i = 0; i < 30; i++) {
+            String randomvalue = RandomString.make(5);
+            StoreForm store = new StoreForm();
+            store.setName("테스트 상점 " + randomvalue);
+            store.setPath("test-" + randomvalue);
+            store.setShortDescription("테스트용 상점 입니다.");
+            store.setFullDescription("테스트용 상점 입니다.");
+            store.setLicensee("테스트용 사업자 등록번호");
+
+            Store newStore = this.newStore(account, store);
+            Keyword keyword = keywordRepository.findByName("부리또");
+            newStore.getKeywords().add(keyword);
+        }
     }
 
     //TODO 리뷰 답글 삭제

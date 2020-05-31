@@ -4,7 +4,10 @@ import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
+import com.untacstore.modules.waiting.event.AcceptWaitingEvent;
+import com.untacstore.modules.waiting.event.NewWaitingEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,18 +20,20 @@ public class WaitingService {
     private final WaitingRepository waitingRepository;
     private final StoreRepository storeRepository;
     private final AccountRepository accountRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**/
     public void newWaiting(Account account, Store store, String personnel) {
         Waiting waiting = new Waiting();
         waiting.setAccount(account);
         waiting.setPersonnel(Integer.valueOf(personnel));
-        waiting.setTurn(store.getWaitingList().size()+1);
+        waiting.setTurn(store.countWaitingList()+1);
         waiting.setWaitingAt(LocalDateTime.now());
         waiting.setAvailable(false);
         waiting.setAttended(false);
         store.addWaiting(waiting);
         waitingRepository.save(waiting);
+        eventPublisher.publishEvent(new NewWaitingEvent(waiting));
     }
 
     public void exitWaiting(Store store, Waiting waiting) {
@@ -44,6 +49,7 @@ public class WaitingService {
     public void acceptWaiting(Waiting waiting) {
         if (!waiting.isAvailable() && !waiting.isAttended()) {
             waiting.setAvailable(true);
+            eventPublisher.publishEvent(new AcceptWaitingEvent(waiting));
         }
     }
 

@@ -33,6 +33,11 @@ public class AccountController {
         webDataBinder.addValidators(signUpFormValidator);
     }
 
+    @GetMapping("/email")
+    public String emailTest() {
+        accountService.sendSignUpConfirmEmail();
+        return "redirect:/";
+    }
     /*회원가입 - 폼*/
     @GetMapping("/sign-up")
     public String signUpForm(Model model) {

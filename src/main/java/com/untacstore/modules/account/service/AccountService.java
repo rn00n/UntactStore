@@ -1,5 +1,7 @@
 package com.untacstore.modules.account.service;
 
+import com.untacstore.infra.mail.EmailMessage;
+import com.untacstore.infra.mail.EmailService;
 import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.AccountReport;
 import com.untacstore.modules.account.AccountReportRepository;
@@ -12,6 +14,7 @@ import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.location.Location;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +24,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +78,28 @@ public class AccountService implements UserDetailsService {
     public Account getAccount(String username) {
         Account account = accountRepository.findByUsername(username);
         return account;
+    }
+
+    @Autowired
+    EmailService emailService;
+    @Autowired
+    TemplateEngine templateEngine;
+    public void sendSignUpConfirmEmail() {
+        Context context = new Context();
+        context.setVariable("link", "/check-email-token?token=[토큰값]");
+        context.setVariable("nickname", "안농");
+        context.setVariable("linkName", "이메일 인증하기");
+        context.setVariable("message", "메시지.");
+        context.setVariable("host", "http://localhost:8081");
+        String message = templateEngine.process("mail/simple-link", context);
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to("rn00n@naver.com")
+                .subject("회원 가입 인증")
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
     }
 
     /*##################

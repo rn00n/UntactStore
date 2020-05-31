@@ -8,9 +8,13 @@ import com.untacstore.modules.menu.repository.SetmenuRepository;
 import com.untacstore.modules.order.*;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
+import com.untacstore.modules.table.event.TableAcceptEvent;
+import com.untacstore.modules.table.event.TableRequestEvent;
+import com.untacstore.modules.waiting.event.AcceptWaitingEvent;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.criterion.Order;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +36,7 @@ public class TablesService {
     private final RequestOrderRepository requestOrderRepository;
     private final PaymentRepository paymentRepository;
     private final ModelMapper modelMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public void addOrders(Store store, Tables tables, Cart cart) {
         Orders orders = cart.getOrders();
@@ -73,6 +78,7 @@ public class TablesService {
         event.setEventAt(LocalDateTime.now());
         tables.addEvent(event);
         eventRepository.save(event);
+        eventPublisher.publishEvent(new TableRequestEvent(event));
     }
 
     public void sitUpRequest(Tables tables, Event event) {
@@ -88,8 +94,7 @@ public class TablesService {
         tables.setPay(0);
         event.setAccept(true);
 
-        //나머지 대기자들 요청취소 처리
-//        eventRepository.deleteAllByTables(tables);
+        eventPublisher.publishEvent(new TableAcceptEvent(event));
     }
 
     public void sitAcceptCancel(Tables tables, Event event) {

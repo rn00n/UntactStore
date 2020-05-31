@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head">
+</head>
+<body class="bg-light">
+    <div th:replace="fragments.html :: main-nav(${account})"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-2"></div>
+            <div class="col-8 text-center"><strong class="text-muted">대기표</strong></div>
+            <div class="col-2"></div>
+            <div class="row col-8 text-center justify-content-center">
+                <div class="card col-4 p-0 shadow-sm my-2" th:each="waiting: ${waitingList}">
+                    <img th:src="${waiting.store.getImage()}" class="card-img-top" >
+                    <div class="media card-body p-0">
+                        <div class="text-center h6 card m-1">
+                            <strong>번호</strong>
+                            <strong th:text="${waiting.turn}">05</strong>
+                        </div>
+                        <div class="media-body text-left">
+                            <p class="m-0">
+                                <a th:href="@{'/store/'+${waiting.store.path}}">
+                                    <strong th:text="${waiting.store.name}" class="card-title context">상점이름</strong>
+                                </a>
+                                <small>
+                                    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                    <span th:text="${waiting.store.grade}">별점</span>
+                                </small>
+                                <small>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <span th:text="${waiting.store.favoritesList.size()}">즐겨찾기</span>
+                                </small>
+                            </p>
+                            <p class="m-0 text-muted">
+                                <a>
+                                    <span th:text="${waiting.account.name}"></span>
+                                </a>
+                                <small th:text="'총 '+${waiting.personnel}+'명'"></small>
+                                <small class="abcd" th:text="${waiting.waitingAt}">대기표 뽑은 시간</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="card">
+                            평점순
+                            <div th:replace="fragments.html :: store-list-small (storeList=${gradePage.getContent()})"></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            즐겨찾기순
+                            <div th:replace="fragments.html :: store-list-small (storeList=${favoritesPage.getContent()})"></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            방문상점
+                            <div th:replace="fragments.html :: store-list-small (storeList=${myFavoritesList})"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row justify-content-center">
+            <div th:replace="fragments.html :: store-list (storeList=${myKeywordStoreList})"></div>
+        </div>
+        <div th:replace="fragments.html :: footer"></div>
+    </div>
+    <script th:replace="fragments.html :: date-time"></script>
+</body>
+</html>

@@ -1,6 +1,8 @@
 package com.untacstore.modules.store.form;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -33,4 +35,5 @@ public class StoreForm {
 
     @NotBlank
     private String fullDescription;
+
 }

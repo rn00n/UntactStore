@@ -74,8 +74,10 @@ public class Store {
     @OrderBy("turn")
     private List<Waiting> waitingList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "store")
+    @OneToMany
     private List<Favorites> favoritesList = new ArrayList<>();
+
+    private int favoritesCount = 0;
 
     //TODO waiting
     public boolean isOwner(PrincipalAccount principalAccount) {
@@ -119,7 +121,7 @@ public class Store {
     public boolean isWaitingable(PrincipalAccount principalAccount) {
         Account account = principalAccount.getAccount();
 
-        return waitingList.stream().map(Waiting::getAccount).filter(a -> a.equals(account)).collect(Collectors.toList()).isEmpty();
+        return waitingList.stream().filter(w->!w.isAttended()).map(Waiting::getAccount).filter(a -> a.equals(account)).collect(Collectors.toList()).isEmpty();
     }
 
     public boolean isFavoritesable(PrincipalAccount principalAccount) {
@@ -153,10 +155,21 @@ public class Store {
 
     /*실제 대기중인 인원의 수*/
     public int countWaitingList() {
-        return waitingList.stream().filter(w->w.getTurn()!=0).collect(Collectors.toList()).size();
+        return waitingList.stream().filter(w->w.getTurn()!=0 && !w.isAttended()).collect(Collectors.toList()).size();
     }
 
     public String getImage() {
         return image != null ? image : "/images/default_banner3.jpg";
+    }
+
+    public void addFavorites(Favorites favorites) {
+        this.favoritesList.add(favorites);
+        favorites.setStore(this);
+        this.favoritesCount++;
+    }
+
+    public void removeFavorites(Favorites favorites) {
+        this.favoritesList.remove(favorites);
+        this.favoritesCount--;
     }
 }

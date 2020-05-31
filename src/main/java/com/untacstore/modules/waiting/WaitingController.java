@@ -32,7 +32,7 @@ public class WaitingController {
     public String newWaiting(@CurrentAccount Account account, @RequestParam String personnel, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreWithWaitingByPath(path);
 
-        if (store.getWaitingList().stream().map(Waiting::getAccount).filter(a -> a.equals(account)).collect(Collectors.toList()).isEmpty()) {
+        if (store.getWaitingList().stream().filter(a -> !a.isAttended()).map(Waiting::getAccount).filter(a -> a.equals(account)).collect(Collectors.toList()).isEmpty()) {
             waitingService.newWaiting(account, store, personnel);
         }
 
@@ -42,9 +42,9 @@ public class WaitingController {
     @GetMapping("/exit-waiting")
     public String exitWaiting(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreWithWaitingByPath(path);
-        Waiting waiting = waitingRepository.findByAccountAndStore(account, store);
+        Waiting waiting = waitingRepository.findByAccountAndStoreAndAttended(account, store, false);
 
-        if (!store.getWaitingList().stream().map(Waiting::getAccount).filter(a -> a.equals(account)).collect(Collectors.toList()).isEmpty()) {
+        if (!store.getWaitingList().stream().filter(a -> !a.isAttended()).map(Waiting::getAccount).filter(a -> a.equals(account)).collect(Collectors.toList()).isEmpty()) {
             waitingService.exitWaiting(store, waiting);
         }
 
@@ -59,7 +59,7 @@ public class WaitingController {
         Store store = storeRepository.findStoreByPath(path);
         model.addAttribute(store);
 
-        List<Waiting> waitingList = waitingRepository.findAllByStoreOrderByTurnAscWaitingAtAsc(store);
+        List<Waiting> waitingList = waitingRepository.findAllByStoreAndAttendedOrderByTurnAscWaitingAtAsc(store, false);
         model.addAttribute("waitingList", waitingList);
 
         return "waiting/waiting-list";
