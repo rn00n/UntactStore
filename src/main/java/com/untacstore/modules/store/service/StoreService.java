@@ -54,6 +54,7 @@ public class StoreService {
 
         Store store = modelMapper.map(storeForm, Store.class);
         store.setOwner(updateAccount);
+        store.setUseBanner(false);
 
         accountService.login(updateAccount); //현재 로그인된 정보 업데이트
 
@@ -66,6 +67,21 @@ public class StoreService {
         storeRepository.save(store);
     }
 
+    /*상점 이미지 - 추가*/
+    public void updateStoreImage(Store store, String image) {
+        store.setImage(image);
+    }
+
+    /*상점 이미지 - 사용*/
+    public void enableStoreBanner(Store store) {
+        store.setUseBanner(true);
+    }
+
+    /*상점 이미지 - 사용 안함*/
+    public void disableStoreBanner(Store store) {
+        store.setUseBanner(false);
+    }
+
     /*메뉴 - 메뉴 추가*/
     public void addMenu(Store store, MenuForm menuForm) {
         Menu newMenu = modelMapper.map(menuForm, Menu.class);
@@ -73,6 +89,7 @@ public class StoreService {
 
         Menu menu = menuRepository.save(newMenu);
     }
+
     /*메뉴 - 메뉴 삭제*/
     public void removeMenu(Store store, Menu menu) {
         store.removeMenu(menu);

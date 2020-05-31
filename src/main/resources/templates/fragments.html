@@ -23,6 +23,20 @@
             margin: 0;
         }
 
+        #store-logo {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+
+        #store-logo img {
+            height: auto;
+            width: 100%;
+            overflow: hidden;
+        }
+
         body,
         input,
         button,
@@ -48,7 +62,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <form th:action="@{/search/study}" class="form-inline" method="get">
+                <form th:action="@{/search/store}" class="form-inline" method="get">
                     <input class="form-control mr-sm-2" name="keyword" type="search" placeholder="Store 찾기" aria-label="Search" />
                 </form>
             </li>
@@ -165,7 +179,7 @@
 <!--상점 정보-->
 <div th:fragment="store-info">
     <div class="row pt-4 text-left justify-content-center bg-light">
-        <div class="col-6">
+        <div class="col-4">
             <a href="#" class="text-decoration-none" th:href="@{'/store/' + ${store.path}}">
                 <span class="h2" th:text="${store.name}">상점 이름</span>
             </a>
@@ -208,7 +222,7 @@
         </div>
     </div>
     <div class="row pt-1 justify-content-center bg-light">
-        <div class="col-6">
+        <div class="col-4">
             <p class="lead" th:text="${store.getShortDescription()}" style="margin: unset"></p>
         </div>
         <div class="col-4 text-right justify-content-end">
@@ -238,13 +252,15 @@
             </span>
         </div>
     </div>
-
     <div class="row pt-1 justify-content-center bg-light">
-        <div class="col-6">
+        <div class="col-4">
             <span sec:authorize="isAuthenticated()"
                   class="btn-group" role="group" aria-label="Basic example">
-                <a class="btn btn-primary" th:if="${store.open && store.checkOwner(#authentication.principal)}" th:href="@{'/store/' + ${store.path} + '/tables/list'}">
+                <a class="btn btn-primary" th:if="${store.checkOwner(#authentication.principal)}" th:href="@{'/store/' + ${store.path} + '/tables/list'}">
                     <i class="fa fa-table" aria-hidden="true"></i> Table list
+                </a>
+                <a class="btn btn-primary" th:if="${store.checkOwner(#authentication.principal)}" th:href="@{'/store/' + ${store.path} + '/management'}">
+                    매출
                 </a>
             </span>
         </div>
@@ -255,14 +271,14 @@
                    th:text="${store.getWaitingList().size()}">1
                 </a>
                 <a class="btn btn-primary"
-                   th:href="@{'/store/' + ${store.path} + '/waiting-list'}">
+                   th:href="@{'/store/' + ${store.path} + '/waiting-list '}">
                     <i class="fa fa-users" aria-hidden="true"></i> Waiting Table
                 </a>
             </span>
         </div>
     </div>
     <div class="row pt-1 justify-content-center bg-light">
-        <div class="col-10">
+        <div class="col-8">
             <p>
                 <span th:each="keyword: ${store.keywords}"
                       class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
@@ -277,7 +293,7 @@
 
 <!--상점 메인 메뉴-->
 <div th:fragment="store-menu (storeMenu)" class="row px-3 justify-content-center bg-light">
-    <nav class="col-10 nav nav-tabs">
+    <nav class="col-8 nav nav-tabs">
         <a class="nav-item nav-link" href="#" th:classappend="${storeMenu == 'info'}? active" th:href="@{'/store/' + ${store.path}}">
             <i class="fa fa-info-circle"></i> 소개
         </a>
@@ -298,6 +314,8 @@
 <div th:fragment="store-settings-menu (currentMenu)" class="list-group">
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'profile'}? active"
        href="#" th:href="@{'/store/' + ${store.path} + '/settings/profile'}">소개</a>
+    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'banner'}? active"
+       href="#" th:href="@{'/store/' + ${store.path} + '/settings/banner'}">배너</a>
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'menu'}? active"
        href="#" th:href="@{'/store/' + ${store.path} + '/settings/menu'}">메뉴</a>
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'tables'}? active"
@@ -355,7 +373,7 @@
                 <table class="table table-borderless m-0">
                     <tr class="row text-center">
                         <th class="col" th:text="'#table'+${order.tables.tableNum}">테이블 번호</th>
-                        <th class="col" th:text="${order.tables.account.name}">주문자</th>
+                        <th class="col" th:text="${order.tables.account?.name}">주문자</th>
                         <th class="col"><strong>주문</strong></th>
                         <th class="col"><span class="time" th:text="${order.orderAt}">시간</span></th>
                         <th class="col"><span th:text="${order.ordersAmount>0?#numbers.formatInteger(order.ordersAmount, 0, 'COMMA'):'　　　'}">가격</span></th>
@@ -388,4 +406,72 @@
         </div>
     </div>
 </div>
+<!--1587 x 244-->
+<!--상점 리스트 카드-->
+<div th:fragment="store-list (storeList)" class="col-sm-8">
+    <div class="row">
+        <div class="col-md-4" th:each="store: ${storeList}">
+            <div class="card md-4 shadow-sm my-2">
+                <img th:src="${store.getImage()}" class="card-img-top" >
+                <div class="card-body">
+                    <a th:href="@{#}" class="text-decoration-nen">
+                        <h5 class="card-title context" th:text="${store.name}"></h5>
+                    </a>
+                    <p class="card-text" th:text="${store.shortDescription}"></p>
+                    <p class="card-text context">
+                        <span th:each="sKeyword: ${store.keywords}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
+                            <i class="fa fa-tag"></i> <span th:text="${sKeyword.name}">keyword</span>
+                        </span>
+                    </p>
+<!--                    TODO 평점-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--작은 상점 리스트 카드-->
+<div th:fragment="store-list-small (storeList)">
+    <div class="card" th:each="store: ${storeList}">
+        <div class="media">
+            <div class="media-body text-left">
+                <p class="m-0 h6">
+                    <a th:href="@{#}" class="text-decoration-nen">
+                        <strong class="card-title context" th:text="${store.name}"></strong>
+                        <small class="badge badge-primary" th:if="${store.open}">OPEN</small>
+                        <small class="badge badge-secondary" th:if="${!store.open}">CLOSE</small>
+                    </a>
+                </p>
+                <p class="m-0">
+                    <span class="card-subtitle text-muted" th:text="${store.shortDescription}"></span>
+                </p>
+                <p class="m-0 text-dark">
+                    <span th:text="${store.operatingTime}"></span>
+                    <small>
+                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                        <span th:text="${store.grade}">
+                            4.5
+                        </span>
+                        <span>
+                            (17)
+                        </span>
+                    </small>
+                    <span class="text-dark">|</span>
+                    <small>
+                        <i class="fa fa-star-o" aria-hidden="true"></i>
+                        <span th:text="${store.favoritesList.size()}">
+                            12
+                        </span>
+                    </small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--배너-->
+<div th:fragment="store-banner" th:if="${store.useBanner}" class="row" id="store-logo">
+    <img th:src="${store.image}"/>
+</div>
+
 </html>

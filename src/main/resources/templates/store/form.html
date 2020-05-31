@@ -9,7 +9,7 @@
             <h2>상점 개설</h2>
         </div>
         <div class="row justify-content-center">
-            <form class="needs-validation col-sm-10" th:action="@{/store/new-store}" th:object="${storeForm}" method="post" novalidate>
+            <form class="needs-validation col-sm-8" th:action="@{/store/new-store}" th:object="${storeForm}" method="post" novalidate>
                 <div class="form-group">
                     <label for="licensee">사업자등록번호</label>
                     <input id="licensee" type="text" th:field="*{licensee}" class="form-control"

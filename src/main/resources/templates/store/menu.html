@@ -4,14 +4,14 @@
 </head>
 <body class="bg-light">
     <div th:replace="fragments.html :: main-nav(${account})"></div>
-
+    <div th:replace="fragments.html :: store-banner"></div>
     <div class="container">
         <div th:replace="fragments.html :: store-info"></div>
         <div th:replace="fragments.html :: store-menu(storeMenu='menu')"></div>
 
         <ul class="list-unstyled">
         <div class="row px-3 justify-content-center">
-            <div class="col-10 my-3 p-3 bg-light rounded shadow-sm">
+            <div class="col-8 my-3 p-3 bg-light rounded shadow-sm">
                 <h6 class="border-bottom border-gray pb-2 mb-0">Set Menu List</h6>
                 <div class="media text-muted pt-2 accordion" id="accordionExample" th:each="setmenu: ${setmenuList}" >
                     <div class="card col pt-2 pb-2">

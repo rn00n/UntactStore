@@ -7,7 +7,42 @@
 
     <div class="container">
         <div align="center">Main Page</div>
-
+        <h5>즐겨찾기</h5>
+        <div class="row justify-content-center">
+            <div class="row" th:replace="fragments.html :: store-list (storeList=${storeList})"></div>
+        </div>
+        <hr/>
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="card">
+                            평점순
+                            <div th:replace="fragments.html :: store-list-small (storeList=${storeList})"></div>
+                            more
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            즐겨찾기순
+                            <div th:replace="fragments.html :: store-list-small (storeList=${storeList})"></div>
+                            more
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            방문상점
+                            <div th:replace="fragments.html :: store-list-small (storeList=${storeList})"></div>
+                            more
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row justify-content-center">
+            <div th:replace="fragments.html :: store-list (storeList=${storeList})"></div>
+        </div>
         <div th:replace="fragments.html :: footer"></div>
     </div>
 </body>

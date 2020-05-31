@@ -46,6 +46,10 @@ public class Store {
 
     private String operatingTime; // 운영시간
 
+    @Lob @Basic(fetch = FetchType.EAGER)
+    private String image;
+    private boolean useBanner;
+
     @OneToMany(mappedBy = "store")
     @OrderBy("tableNum")
     private List<Tables> tableList = new ArrayList<>();
@@ -150,5 +154,9 @@ public class Store {
     /*실제 대기중인 인원의 수*/
     public int countWaitingList() {
         return waitingList.stream().filter(w->w.getTurn()!=0).collect(Collectors.toList()).size();
+    }
+
+    public String getImage() {
+        return image != null ? image : "/images/default_banner3.jpg";
     }
 }

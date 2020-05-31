@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="col-3 text-right justify-content-end">
-                <span sec:authorize="isAuthenticated()">
+                <span sec:authorize="isAuthenticated()" th:if="${store.open}">
                     <button th:if="${tables.isSitable() && tables.checkSit(#authentication.principal)}"
                             class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-down">
                         <i class="fa fa-plus-circle"></i> 자리 신청

@@ -4,7 +4,7 @@
 </head>
 <body class="bg-light">
     <div th:replace="fragments.html :: main-nav(${account})"></div>
-
+    <div th:replace="fragments.html :: store-banner"></div>
     <div class="container">
         <div th:replace="fragments.html :: store-info"></div>
         <div th:replace="fragments.html :: store-menu(storeMenu='settings')"></div>
@@ -12,7 +12,7 @@
             <div class="col-2">
                 <div th:replace="fragments.html :: store-settings-menu(currentMenu='store')"></div>
             </div>
-            <div class="col-8">
+            <div class="col-6">
                 <div th:replace="fragments.html :: message"></div>
                 <h5><i class="fa fa-list" aria-hidden="true"></i> 내 Store 관리</h5>
                 <div class="col-6">

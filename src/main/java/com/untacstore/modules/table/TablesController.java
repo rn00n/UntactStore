@@ -257,7 +257,7 @@ public class TablesController {
         Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
         model.addAttribute(tables);
 
-        List<Orders> ordersList = ordersRepository.findAllByTables(tables);
+        List<Orders> ordersList = ordersRepository.findAllByTablesOrderByOrderAtDesc(tables);
         putCategorizedOrders(model, ordersList);
         return "tables/management";
     }

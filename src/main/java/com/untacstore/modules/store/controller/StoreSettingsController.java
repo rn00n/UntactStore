@@ -32,6 +32,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.net.URLEncoder;
@@ -82,6 +83,37 @@ public class StoreSettingsController {
         storeService.updateProfile(store, storeProfileForm);
 
         return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/profile";
+    }
+
+    @GetMapping("/banner")
+    public String studyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        model.addAttribute(account);
+        model.addAttribute(store);
+        return "store/settings/banner";
+    }
+
+    @PostMapping("/banner")
+    public String studyImageSubmit(@CurrentAccount Account account, @PathVariable String path,
+                                   String image, RedirectAttributes attributes) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.updateStoreImage(store, image);
+        attributes.addFlashAttribute("message", "상점 이미지를 수정했습니다.");
+        return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/banner";
+    }
+
+    @PostMapping("/banner/enable")
+    public String enableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.enableStoreBanner(store);
+        return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/banner";
+    }
+
+    @PostMapping("/banner/disable")
+    public String disableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.disableStoreBanner(store);
+        return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/banner";
     }
 
     /*상점 setting 메뉴 - 폼*/
@@ -298,6 +330,7 @@ public class StoreSettingsController {
     public String openStore(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreByPath(path);
         storeService.openStore(store);
+        
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 
@@ -306,6 +339,7 @@ public class StoreSettingsController {
     public String closeStore(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreByPath(path);
         storeService.closeStore(store);
+        //TODO table 착석 요청 초기화
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 

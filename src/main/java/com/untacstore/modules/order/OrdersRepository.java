@@ -11,7 +11,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     void deleteAllByTables(Tables tables);
     List<Orders> findAllByTablesAndOrderStatusTypeIsNot(Tables tables, OrderStatusType type);
 
-    List<Orders> findAllByTables(Tables tables);
+    List<Orders> findAllByTablesOrderByOrderAtDesc(Tables tables);
 
     //TODO table account n+1
 }
