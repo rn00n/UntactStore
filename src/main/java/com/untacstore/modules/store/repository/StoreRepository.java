@@ -40,4 +40,6 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
 //
     List<Store> findAllByOrderByFavoritesCount();
 
+
+    List<Store> findFirst5AllByOwner(Account accountLoaded);
 }

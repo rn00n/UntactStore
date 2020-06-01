@@ -18,7 +18,7 @@
     </section>
     <div class="container">
         <div class="row justify-content-center">
-            <div th:replace="fragments.html :: store-list (storeList=${storeList})"></div>
+            <div th:replace="fragments.html :: store-list (storeList=${storePage.getContent()})"></div>
         </div>
         <div th:replace="fragments.html :: footer"></div>
     </div>

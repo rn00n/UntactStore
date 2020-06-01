@@ -4,14 +4,75 @@
 </head>
 <body class="bg-light">
     <div th:replace="fragments.html :: main-nav(${account})"></div>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-2"></div>
-            <div class="col-8 text-center"><strong class="text-muted">대기표</strong></div>
-            <div class="col-2"></div>
-            <div class="row col-8 text-center justify-content-center">
-                <div class="card col-4 p-0 shadow-sm my-2" th:each="waiting: ${waitingList}">
-                    <img th:src="${waiting.store.getImage()}" class="card-img-top" >
+    <div class="container mt-4">
+        <div class="row">
+        <div class="col-md-3">
+            <h5 class="font-weight-light">관심 키워드</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="keyword: ${account.keywords}">
+                    <i class="fa fa-tag"></i>
+                    <span th:text="${keyword.name}">키워드</span>
+                </li>
+                <li class="list-group-item" th:if="${account.keywords.size() == 0}">
+                    <a th:href="@{/settings/keyword-location}">관심 키워드</a>를 등록하시요.
+                </li>
+            </ul>
+            <h5 class="font-weight-light mt-3">추천 상점</h5>
+            <div class="card">
+                <h5 class="font-weight-light text-center"><i class="fa fa-list" aria-hidden="true"></i> 평점 순</h5>
+                <div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="store: ${gradePage.getContent()}">
+                            <a class="btn btn-link p-0" th:href="@{'/store/'+${store.path}}">
+                                <span th:text="${store.name}">키워드</span>
+                            </a>
+                            <span>
+                                <small>
+                                    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                    <span th:text="${store.grade}">4.5</span>
+                                </small>
+                                <small>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <span th:text="${store.favoritesList.size()}">12</span>
+                                </small>
+                            </span>
+                            <small class="badge badge-primary" th:if="${store.open}">OPEN</small>
+                            <small class="badge badge-secondary" th:if="${!store.open}">CLOSE</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card mt-2">
+                <h5 class="font-weight-light text-center"><i class="fa fa-list" aria-hidden="true"></i> 즐겨찾기 순</h5>
+                <div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" th:each="store: ${favoritesPage.getContent()}">
+                            <a class="btn btn-link p-0" th:href="@{'/store/'+${store.path}}">
+                                <span th:text="${store.name}">키워드</span>
+                            </a>
+                            <span>
+                                <small>
+                                    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                    <span th:text="${store.grade}">4.5</span>
+                                </small>
+                                <small>
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <span th:text="${store.favoritesList.size()}">12</span>
+                                </small>
+                                <small class="badge badge-primary" th:if="${store.open}">OPEN</small>
+                            <small class="badge badge-secondary" th:if="${!store.open}">CLOSE</small>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h5 th:if="${waitingList.size() == 0}" class="font-weight-light">대기중인 상점이 없습니다.</h5>
+            <h5 th:if="${waitingList.size() > 0}" class="font-weight-light">대기중인 상점 목록</h5>
+            <div class="row row-cols-1 row-cols-md-2">
+                <div class="card col md-4 p-0 shadow-sm my-2" th:each="waiting: ${waitingList}">
+<!--                    <img th:src="${waiting.store.getImage()}" class="card-img-top" >-->
                     <div class="media card-body p-0">
                         <div class="text-center h6 card m-1">
                             <strong>번호</strong>
@@ -42,35 +103,30 @@
                     </div>
                 </div>
             </div>
+            <h5 class="font-weight-light mt-3">내 키워드 상점 목록.</h5>
+            <h6 th:if="${myKeywordStoreList.size() == 0}" class="font-weight-light mt-3">등록한 키워드가 없습니다.</h6>
+            <div class="row justify-content-conter">
+                <div th:replace="fragments.html :: store-list (storeList=${myKeywordStoreList})"></div>
+            </div>
         </div>
-        <hr/>
-        <div class="row justify-content-center">
-            <div class="col-8">
-                <div class="row text-center">
-                    <div class="col-4">
-                        <div class="card">
-                            평점순
-                            <div th:replace="fragments.html :: store-list-small (storeList=${gradePage.getContent()})"></div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="card">
-                            즐겨찾기순
-                            <div th:replace="fragments.html :: store-list-small (storeList=${favoritesPage.getContent()})"></div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="card">
-                            방문상점
-                            <div th:replace="fragments.html :: store-list-small (storeList=${myFavoritesList})"></div>
-                        </div>
-                    </div>
+        <div class="col-md-3">
+<!--            관리자용-->
+            <div>
+                <h5 th:if="${!account.hasStore()}" class="font-weight-light">관리중인 상점이 없습니다.</h5>
+                <h5 th:if="${account.hasStore()}" class="font-weight-light">관리중인 상점</h5>
+                <div th:if="${account.hasStore()}" class="list-group">
+                    <a href="#" th:href="@{'/store/' + ${store.path}}" class="list-group-item list-group-item-action" th:each="store: ${myStoreList}" th:text="${store.name}">store name</a>
+                </div>
+            </div>
+<!--            손님용-->
+            <div class="mt-2">
+                <h5 th:if="${tablesList.size() == 0}" class="font-weight-light">이용중인 상점이 없습니다.</h5>
+                <h5 th:if="${tablesList.size() > 0}" class="font-weight-light">이용중인 상점</h5>
+                <div th:if="${tablesList.size() > 0}" class="list-group">
+                    <a href="#" th:href="@{'/store/' + ${table.store.path}+'/tables/'+${table.tablesPath}}" class="list-group-item list-group-item-action" th:each="table: ${tablesList}" th:text="${table.store.name}">store name</a>
                 </div>
             </div>
         </div>
-        <hr/>
-        <div class="row justify-content-center">
-            <div th:replace="fragments.html :: store-list (storeList=${myKeywordStoreList})"></div>
         </div>
         <div th:replace="fragments.html :: footer"></div>
     </div>

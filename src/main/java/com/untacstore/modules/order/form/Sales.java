@@ -9,5 +9,5 @@ import java.time.LocalDate;
 @Builder
 public class Sales {
     private LocalDate date;
-    private Integer sales;
+    private int sales;
 }

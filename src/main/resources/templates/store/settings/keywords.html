@@ -40,6 +40,7 @@
     <script type="application/javascript" th:inline="javascript">
         $(function() {
             var studyPath = "[(${store.path})]";
+            alert(studyPath);
             function keywordRequest(url, name) {
                 $.ajax({
                     dataType: "json",

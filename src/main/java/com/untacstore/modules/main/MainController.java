@@ -9,6 +9,8 @@ import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordRepository;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
+import com.untacstore.modules.table.Tables;
+import com.untacstore.modules.table.TablesRepository;
 import com.untacstore.modules.waiting.Waiting;
 import com.untacstore.modules.waiting.WaitingForm;
 import com.untacstore.modules.waiting.WaitingRepository;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 public class MainController {
     private final AccountRepository accountRepository;
     private final StoreRepository storeRepository;
+    private final TablesRepository tablesRepository;
     private final WaitingRepository waitingRepository;
     private final KeywordRepository keywordRepository;
     private final FavoritesRepository favoritesRepository;
@@ -43,7 +46,7 @@ public class MainController {
     public String home(@CurrentAccount Account account, Model model) {
         if (account != null) {
             Account accountLoaded = accountRepository.findAccountWithKeywordsById(account.getId());
-            model.addAttribute(account);
+            model.addAttribute(accountLoaded);
 
 //            내가 등록한 키워드 리스트
             List<Store> myKeywordStoreList = storeRepository.findStoreWithKeywordByOwner(accountLoaded.getKeywords());
@@ -60,16 +63,21 @@ public class MainController {
             Pageable pageableGrade = PageRequest.of(0,5, Sort.by("grade").descending());
             Page<Store> gradePage = storeRepository.findAll(pageableGrade);
             model.addAttribute("gradePage", gradePage);
-
 //            대기표
             List<Waiting> waitingList = waitingRepository.findAllByAccountAndAttendedOrderByTurnAscWaitingAtAsc(account, false);
             model.addAttribute("waitingList", waitingList);
-
+//            이용중인 테이블
+            List<Tables> tablesList = tablesRepository.findByAccount(accountLoaded);
+            model.addAttribute("tablesList", tablesList);
+//            내 상점 목록
+            List<Store> myStoreList = storeRepository.findFirst5AllByOwner(accountLoaded);
+            model.addAttribute("myStoreList", myStoreList);
             return "index-after-login";
         }
 
-        List<Store> storeList = storeRepository.findAll();//TODO
-        model.addAttribute("storeList", storeList);
+        Pageable pageable = PageRequest.of(0,9, Sort.by("grade").descending());
+        Page<Store> storePage = storeRepository.findAll(pageable);//TODO
+        model.addAttribute("storePage", storePage);
 
         return "index";
     }

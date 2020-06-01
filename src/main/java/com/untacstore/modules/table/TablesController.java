@@ -1,5 +1,6 @@
 package com.untacstore.modules.table;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.account.repository.AccountRepository;
@@ -37,6 +38,7 @@ public class TablesController {
     private final AccountRepository accountRepository;
     private final RequestOrderRepository requestOrderRepository;
     private final PaymentRepository paymentRepository;
+    private final ObjectMapper objectMapper;
 
     /*테이블 리스트 - 뷰*/
     @GetMapping("/list")

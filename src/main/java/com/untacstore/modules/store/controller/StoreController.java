@@ -85,7 +85,7 @@ public class StoreController {
     @GetMapping("mystore")
     public String myStorePage(@CurrentAccount Account account) {
         Store store = storeRepository.findByOwner(account);
-
+        //TODO 목록을 만들든 덤프를 지우든
         return "redirect:/store/"+ URLEncoder.encode(store.getPath(), StandardCharsets.UTF_8);
     }
 
@@ -187,17 +187,27 @@ public class StoreController {
         putStatistics(paymentList, model);
 
         //TODO 정보를 (월or일/매출) 맵핑
-        Map<LocalDate, Integer> salesList = new HashMap<>();
-        //년-월-일
-        paymentList.stream().forEach(p->{
-            if (salesList.containsKey(LocalDate.from(p.getPaymentAt()))) {//있으면
-                salesList.put(LocalDate.from(p.getPaymentAt()), salesList.get(LocalDate.from(p.getPaymentAt()))+p.getPay());
-            } else {//없으면
-                salesList.put(LocalDate.from(p.getPaymentAt()), p.getPay());
+        List<Sales> salesList = new ArrayList<>();
+        //년-월-일 list
+        paymentList.stream().forEach(p-> {
+            boolean flag = false;
+            int index = 0;
+            for (Sales s: salesList) {
+                if (s.getDate().equals(LocalDate.from(p.getPaymentAt()))) {
+                    s.setSales(s.getSales()+p.getPay());
+                    flag = true;
+                    break;
+                } else {
+                    flag = false;
+                }
+            }
+            if (!flag) {
+                salesList.add(Sales.builder().date(LocalDate.from(p.getPaymentAt())).sales(p.getPay()).build());
             }
         });
-        String map = objectMapper.writeValueAsString(salesList);
-        System.out.println(map);
+        String chartData = objectMapper.writeValueAsString(salesList);
+        System.out.println(chartData);
+        model.addAttribute("chartData", chartData);
 
         model.addAttribute(remoteControl);
         return "store/management";

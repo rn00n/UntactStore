@@ -52,7 +52,7 @@
 <!--메인 네비게이터-->
 <nav th:fragment="main-nav(account)" class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="/" th:href="@{/}">
-        <label>UntacStore</label>
+        <th>UntacStore</th>
 <!--        <img src="/images/logo_sm.png" width="30" height="30">-->
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -228,7 +228,7 @@
         </div>
         <div class="col-4 text-right justify-content-end">
             <span  class="btn-group" role="group" aria-label="Basic example" th:if="${store.open}">
-                <a th:if="${!store.waiting}" class="btn btn-primary" th:href="@{'/store/'+${store.path}+'/settings/full'}"
+                <a th:if="${!store.waiting && store.checkOwner(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/'+${store.path}+'/settings/full'}"
                    data-toggle="tooltip" data-placement="bottom" title="대기중 켜기">
                     자리있음
                 </a>
@@ -412,13 +412,13 @@
 </div>
 <!--1587 x 244-->
 <!--상점 리스트 카드-->
-<div th:fragment="store-list (storeList)" class="col-sm-8">
+<div th:fragment="store-list (storeList)" class="col-sm-12">
     <div class="row">
         <div class="col-md-4" th:each="store: ${storeList}">
-            <div class="card md-4 shadow-sm my-2">
+            <div class="card md-4 shadow-sm">
                 <img th:src="${store.getImage()}" class="card-img-top" >
                 <div class="card-body">
-                    <a th:href="@{#}" class="text-decoration-nen">
+                    <a th:href="@{'/store/'+${store.path}}" class="text-decoration-nen">
                         <h5 class="card-title context" th:text="${store.name}"></h5>
                     </a>
                     <p class="card-text" th:text="${store.shortDescription}"></p>

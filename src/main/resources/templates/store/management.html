@@ -106,7 +106,7 @@
                         </div>
                         <div class="tab-pane fade" id="v-pills-graph" role="tabpanel" aria-labelledby="v-pills-graph-tab">
                             <div th:if="${remoteControl.menu =='salesTable'}">매출 그래프
-                                <div id="chart_line"></div>
+                                <div id="chart_div"></div>
                             </div>
                             <div th:if="${remoteControl.menu =='menuStatistics'}">메뉴별 그래프
                                 <div id="chart_pie"></div>
@@ -120,37 +120,48 @@
     </div>
     <script th:replace="fragments.html :: date-time"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
         google.charts.load('current', {'packages':['corechart']});
 
         google.charts.setOnLoadCallback(drawChart);
-        // google.charts.setOnLoadCallback(drawChart2);
-
         function drawChart() {
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Topping');
-            data.addColumn('number', 'Slices');
-            data.addRows([
-                ['Mushrooms', 3],
-                ['Onions', 1],
-                ['Olives', 1],
-                ['Zucchini', 1],
-                ['Pepperoni', 2]
-            ]);
+            data.addColumn('string', 'date');
+            data.addColumn('number', 'sales');
+
+            var chartData = /*[[${chartData}]]*/ null;
+
+            var obj = JSON.parse(chartData);
+
+            var arr = [];
+            for (key in obj) {
+                var row = [obj[key].date,obj[key].sales];
+                arr.push(row);
+            }
+            data.addRows(arr);
 
             // Set chart options
-            var options = {'title':'How Much Pizza I Ate Last Night',
+            var options = {'title':'매출 그래프',
                 'width':400,
                 'height':300};
 
             // Instantiate and draw our chart, passing in some options.
-            var chart = new google.visualization.LineChart(document.getElementById('chart_line'));
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
     </script>
 
-<script>
-
-</script>
+<!--    <script type="application/javascript" th:inline="javascript">-->
+<!--        $(function () {-->
+<!--            // /*<![CDATA[*/-->
+<!--            var map = [[${map}]];-->
+<!--            // alert("1"+map);-->
+<!--            // /*]]>*/-->
+<!--            // var map2 = /*[[${map}]]*/ null;-->
+<!--            // alert("2"+map2);-->
+<!--            // var map3 = "[(${map})]";-->
+<!--            alert("3"+map);-->
+<!--        })-->
+<!--    </script>-->
 </body>
 </html>
