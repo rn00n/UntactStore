@@ -87,14 +87,12 @@ class StoreControllerTest {
     @Test
     void StoreMypage() throws Exception {
         StoreForm storeForm = new StoreForm();
-        storeForm.setAddress("address");
         storeForm.setLicensee("licensee");
         storeForm.setPhone("010-2228-5677");
         storeForm.setName("name");
         storeForm.setPath("store-path");
         storeForm.setShortDescription("shortDescription");
         storeForm.setFullDescription("fullDescription");
-        storeForm.setAddress("address");
 
         Account account = accountRepository.findByUsername("byungryang");
         storeService.newStore(account, storeForm);

@@ -41,16 +41,6 @@
                     <small class="form-text text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</small>
                 </div>
                 <div class="form-group">
-                    <label for="address">상점 위치</label>
-                    <input id="address" type="text" th:field="*{address}" class="form-control"
-                           placeholder="상점 위치" aria-describedby="addressHelp" required max="50">
-                    <small id="addressHelp" class="form-text text-muted">
-                        상점 이름을 50자 이내로 입력하세요.
-                    </small>
-                    <small class="invalid-feedback">상점 주소를 입력하세요.</small>
-                    <small class="form-text text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Address Error</small>
-                </div>
-                <div class="form-group">
                     <label for="shortDescription">짧은 소개</label>
                     <textarea id="shortDescription" type="textarea" th:field="*{shortDescription}" class="form-control"
                               placeholder="상점을 짧게 소개해 주세요." aria-describedby="shortDescriptionHelp" required maxlength="100"></textarea>

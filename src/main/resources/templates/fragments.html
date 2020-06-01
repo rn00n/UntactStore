@@ -187,7 +187,7 @@
         </div>
         <div class="col-4 text-right justify-content-end">
             <!--            -->
-            <span class="btn-group" role="group" aria-label="Basic example" data-toggle="tooltip" data-placement="bottom" title="상점 오픈 하기">
+            <span sec:authorize="isAuthenticated()" class="btn-group" role="group" aria-label="Basic example" data-toggle="tooltip" data-placement="bottom" title="상점 오픈 하기">
                 <button th:if="${!store.open && !store.checkOwner(#authentication.principal)}" class="btn btn-secondary btn-sm" disabled>
                     CLOSE
                 </button>

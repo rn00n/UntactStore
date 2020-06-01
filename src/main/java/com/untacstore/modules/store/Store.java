@@ -2,6 +2,7 @@ package com.untacstore.modules.store;
 
 import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.authentication.PrincipalAccount;
+import com.untacstore.modules.address.Address;
 import com.untacstore.modules.favorites.Favorites;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.menu.Menu;
@@ -30,7 +31,9 @@ public class Store {
 
     private String name;
 
-    private String address;
+    @OneToOne
+    private Address address; //TODO 필드 전부 바꿔야함
+//    private String address; //TODO 필드 전부 바꿔야함
 
     private String phone;
 

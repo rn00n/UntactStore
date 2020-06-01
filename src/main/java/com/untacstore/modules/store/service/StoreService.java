@@ -3,6 +3,8 @@ package com.untacstore.modules.store.service;
 import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.account.service.AccountService;
+import com.untacstore.modules.address.Address;
+import com.untacstore.modules.address.AddressRepository;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordRepository;
 import com.untacstore.modules.menu.Menu;
@@ -54,7 +56,9 @@ public class StoreService {
     private final WaitingRepository waitingRepository;
     private final EventRepository eventRepository;
     private final OrdersRepository ordersRepository;
+    private final AddressRepository addressRepository;
     private final ApplicationEventPublisher eventPublisher;
+
 
     public Store newStore(Account account, StoreForm storeForm) {
         Account updateAccount = accountRepository.findById(account.getId()).orElseThrow();
@@ -62,6 +66,10 @@ public class StoreService {
         Store store = modelMapper.map(storeForm, Store.class);
         store.setOwner(updateAccount);
         store.setUseBanner(false);
+
+        Address address = addressRepository.save(new Address());
+        address.setStore(store);
+        store.setAddress(address);
 
         accountService.login(updateAccount); //현재 로그인된 정보 업데이트
 

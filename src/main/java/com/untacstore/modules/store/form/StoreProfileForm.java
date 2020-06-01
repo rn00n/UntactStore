@@ -14,8 +14,6 @@ public class StoreProfileForm {
 
     //TODO 영업
     private String operatingTime;
-    
-    private String address;
 
     private String phone;
 

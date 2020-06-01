@@ -20,9 +20,34 @@
                 </div>
                 <div class="media text-muted pt-3" th:if="${store.address}">
                     <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-                        <strong class="d-block text-gray-dark"><i class="fa fa-map-marker" aria-hidden="true"></i> 위치</strong>
-                        <span class="col-10" th:text="${store.getAddress()}"></span>
+                        <strong class="d-block text-gray-dark">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i> 위치
+                            <a th:href="@{'https://map.kakao.com/link/search/'+${store.name}}" target="_blank">link</a>
+<!--                            <button class="p-0 m-0 btn btn-link"-->
+<!--                                    data-toggle="modal" data-target="#map" data-placement="bottom" title="QR코드 확인">-->
+<!--                                <i class="fa fa-qrcode" aria-hidden="true"></i> QR_CODE-->
+<!--                            </button>-->
+                        </strong>
+<!--                        <span class="col-10" th:text="${store.getAddress()}"></span>-->
                     </p>
+                </div>
+                <div class="modal fade" id="map" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="qr_code-title">위치</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <iframe src="https://map.kakao.com/link/search/카카오"></iframe>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="media text-muted pt-3" th:if="${store.phone}">
                     <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
@@ -46,5 +71,15 @@
         <div th:replace="fragments.html :: footer"></div>
     </div>
     <script th:replace="fragments.html :: tooltip"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=965498d4db4b10fc849c5635abaac78b"></script>
+    <script type="text/javascript">
+        // var container = document.getElementById('map');
+        // var options = {
+        //     center: new kakao.maps.LatLng(33.450701, 126.570667),
+        //     level: 3
+        // };
+        //
+        // var map = new kakao.maps.Map(container, options);
+    </script>
 </body>
 </html>

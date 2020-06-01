@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.authentication.CurrentAccount;
+import com.untacstore.modules.address.Address;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordForm;
 import com.untacstore.modules.keyword.KeywordRepository;
@@ -18,6 +19,7 @@ import com.untacstore.modules.menu.form.SetmenuForm;
 import com.untacstore.modules.menu.repository.MenuRepository;
 import com.untacstore.modules.menu.repository.SetmenuRepository;
 import com.untacstore.modules.store.Store;
+import com.untacstore.modules.address.AddressForm;
 import com.untacstore.modules.store.form.StoreSettingsForm;
 import com.untacstore.modules.store.form.StoreProfileForm;
 import com.untacstore.modules.store.repository.StoreRepository;
@@ -265,6 +267,10 @@ public class StoreSettingsController {
         //전체 keyword
         List<String> allKeywords = keywordRepository.findAll().stream().map(Keyword::getName).collect(Collectors.toList());
         model.addAttribute("whitelistOfKeyword", objectMapper.writeValueAsString(allKeywords));
+
+        //TODO Store에서 address 정보 가져와서 넣어줘야함
+        AddressForm addressForm = modelMapper.map(store.getAddress(), AddressForm.class);
+        model.addAttribute(addressForm);
 
         return "store/settings/keywords";
     }

@@ -10,5 +10,4 @@ import javax.validation.constraints.NotBlank;
 public class StoreSettingsForm {
     @NotBlank
     private String licensee;
-
 }

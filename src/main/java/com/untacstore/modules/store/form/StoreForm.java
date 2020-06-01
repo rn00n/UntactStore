@@ -24,9 +24,6 @@ public class StoreForm {
     @Length(max = 50)
     private String name;
 
-    @NotBlank
-    private String address;
-
     private String phone;
 
     @NotBlank
