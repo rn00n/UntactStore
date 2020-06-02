@@ -46,30 +46,43 @@ public class MainController {
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
         if (account != null) {
+            System.out.println("log-account");
             Account accountLoaded = accountRepository.findAccountWithKeywordsById(account.getId());
             model.addAttribute(accountLoaded);
 
+            System.out.println("log-store");
 //            내가 등록한 키워드 리스트
             List<Store> myKeywordStoreList = storeRepository.findStoreWithKeywordByOwner(accountLoaded.getKeywords());
             model.addAttribute("myKeywordStoreList", myKeywordStoreList);
 //            내즐겨찾기 리스트
+            System.out.println("log-myfavorites");
             List<Favorites> favorites = favoritesRepository.findByAccount(accountLoaded);
             List<Store> myFavoritesList = storeRepository.findStoreByFavoritesList(favorites);
             model.addAttribute("myFavoritesList", myFavoritesList);
+
+            System.out.println("log-favorites-store");
 //            즐겨찾기순 리스트
             Pageable pageableFavorites = PageRequest.of(0,5, Sort.by("favoritesCount").descending());
             Page<Store> favoritesPage = storeRepository.findAll(pageableFavorites);
             model.addAttribute("favoritesPage", favoritesPage);
+
+            System.out.println("log-grade-store");
 //            평점순 리스트
             Pageable pageableGrade = PageRequest.of(0,5, Sort.by("grade").descending());
             Page<Store> gradePage = storeRepository.findAll(pageableGrade);
             model.addAttribute("gradePage", gradePage);
+
+            System.out.println("log-waitingList");
 //            대기표
             List<Waiting> waitingList = waitingRepository.findAllByAccountAndAttendedOrderByTurnAscWaitingAtAsc(account, false);
             model.addAttribute("waitingList", waitingList);
+
+            System.out.println("log-myTableList");
 //            이용중인 테이블
             List<Tables> tablesList = tablesRepository.findByAccount(accountLoaded);
             model.addAttribute("tablesList", tablesList);
+
+            System.out.println("log-myStore");
 //            내 상점 목록
             List<Store> myStoreList = storeRepository.findFirst5AllByOwner(accountLoaded);
             model.addAttribute("myStoreList", myStoreList);

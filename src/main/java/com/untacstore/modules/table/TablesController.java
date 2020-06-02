@@ -57,15 +57,16 @@ public class TablesController {
         if (account != null) {
             model.addAttribute(account);
         }
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithSetmenuListAndMenuListByPath(path);
         model.addAttribute(store);
-        Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);//TODO n+1성능
+
+        Tables tables = tablesRepository.findTablesWithAccountAndEventByStoreAndTablesPath(store, tablesPath);//TODO n+1성능
         model.addAttribute("tables", tables);
-        List<Orders> ordersList = ordersRepository.findAllByTablesAndOrderStatusTypeIsNot(tables, OrderStatusType.COMPLETE_PAYMENT);
+        List<Orders> ordersList = ordersRepository.findOrdersWithSetmenuListAndMenuListAndRequestOrderListByTablesAndOrderStatusTypeIsNot(tables, OrderStatusType.COMPLETE_PAYMENT);
         model.addAttribute("orderList", ordersList);
-        List<Setmenu> setmenuList = setmenuRepository.findAllByStore(store);
+//        List<Setmenu> setmenuList = setmenuRepository.findSetmenuWithMenuListByStore(store);
 //        List<Setmenu> setmenuList = store.getSetmenuList();
-        model.addAttribute("setmenuList", setmenuList);
+        model.addAttribute("setmenuList", store.getSetmenuList());
         model.addAttribute("menuList", store.getMenuList());
         model.addAttribute("cart", cart);
 
@@ -135,8 +136,7 @@ public class TablesController {
     /*테이블 주문 - 추가*/
     @PostMapping("/{tables-path}/add-orders")
     public String addOrders(@CurrentAccount Account account, @PathVariable("path") String path, Cart cart, @PathVariable("tables-path") String tablesPath, Model model, SessionStatus sessionStatus) {
-        Store store = storeRepository.findStoreWithMenusByPath(path);
-
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
         tablesService.addOrders(store, tables, cart);
 
@@ -148,7 +148,7 @@ public class TablesController {
     /*테이블 주문 - 제거*/
     @GetMapping("/{tables-path}/remove-orders")
     public String removeOrders(@CurrentAccount Account account, @PathVariable("path") String path, @RequestParam("id") String id, @PathVariable("tables-path") String tablesPath, Model model) {
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
 
         Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
 
@@ -252,15 +252,17 @@ public class TablesController {
     /*테이블 주문목록 - 뷰*/
     @GetMapping("/{tables-path}/management")
     public String tableManagementView(@CurrentAccount Account account, @PathVariable("path") String path, @PathVariable("tables-path") String tablesPath, Model model) {
+        System.out.println("log");
         model.addAttribute(account);
         Store store = storeRepository.findStoreByPath(path);
         model.addAttribute(store);
-
+        System.out.println("log2");
         Tables tables = tablesRepository.findByStoreAndTablesPath(store, tablesPath);
         model.addAttribute(tables);
-
-        List<Orders> ordersList = ordersRepository.findAllByTablesOrderByOrderAtDesc(tables);
+        System.out.println("log3");
+        List<Orders> ordersList = ordersRepository.findOrdersWithSetmenuListAndMenuListAndRequestOrderListByTables(tables);
         putCategorizedOrders(model, ordersList);
+        System.out.println("log3");
         return "tables/management";
     }
 

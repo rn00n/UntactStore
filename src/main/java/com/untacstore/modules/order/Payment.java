@@ -8,7 +8,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,8 +31,8 @@ public class Payment {
     @ManyToOne
     private Account account;
 
-    @ManyToMany //TODO OneToMany
-    private List<Orders> orderList = new ArrayList<>();
+    @OneToMany
+    private Set<Orders> orderList = new HashSet<>();
 
     private Integer pay = 0;
 

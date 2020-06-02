@@ -5,7 +5,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @EqualsAndHashCode(of = "id")
@@ -22,8 +24,8 @@ public class Setmenu {
     @ManyToOne
     private Store store;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Menu> menuList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Menu> menuList = new HashSet<>();
 
     private Integer totalPrice;
 

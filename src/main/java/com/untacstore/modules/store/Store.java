@@ -33,7 +33,7 @@ public class Store {
 
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Address address; //TODO 필드 전부 바꿔야함
 //    private String address; //TODO 필드 전부 바꿔야함
 
@@ -70,7 +70,7 @@ public class Store {
     private Set<Setmenu> setmenuList = new HashSet<>();
 
     @ManyToMany
-    Set<Keyword> keywords = new HashSet<>();
+    private Set<Keyword> keywords = new HashSet<>();
 
     private boolean open = false;
     private boolean waiting = false;

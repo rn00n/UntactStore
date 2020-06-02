@@ -23,8 +23,7 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
 
     Store findByOwner(Account account);
 
-    @EntityGraph(attributePaths = {"menuList"})
-    Store findStoreWithMenusByPath(String path);
+
 
     Store findStoreWithKeywordByPath(String path);
 
@@ -40,6 +39,13 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
 //
     List<Store> findAllByOrderByFavoritesCount();
 
-
     List<Store> findFirst5AllByOwner(Account accountLoaded);
+
+    //store profile
+    @EntityGraph(attributePaths = {"keywords", "waitingList", "favoritesList"})
+    Store findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(String path);
+
+    //table view
+    @EntityGraph(attributePaths = {"setmenuList", "menuList"})
+    Store findStoreWithSetmenuListAndMenuListByPath(String path);
 }

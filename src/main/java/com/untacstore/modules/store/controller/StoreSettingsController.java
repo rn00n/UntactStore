@@ -68,7 +68,7 @@ public class StoreSettingsController {
     public String storeProfileForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         model.addAttribute(account);
 
-        Store store = storeRepository.findStoreByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
         StoreProfileForm storeProfileForm = modelMapper.map(store, StoreProfileForm.class);
         model.addAttribute("storeProfileForm", storeProfileForm);
@@ -90,14 +90,16 @@ public class StoreSettingsController {
         return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/profile";
     }
 
+    /*상점 setting 배너 - 폼*/
     @GetMapping("/banner")
     public String studyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Store store = storeRepository.findStoreByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(account);
         model.addAttribute(store);
         return "store/settings/banner";
     }
 
+    /*상점 setting 배너 - 수정*/
     @PostMapping("/banner")
     public String studyImageSubmit(@CurrentAccount Account account, @PathVariable String path,
                                    String image, RedirectAttributes attributes) {
@@ -107,6 +109,7 @@ public class StoreSettingsController {
         return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/banner";
     }
 
+    /*상점 setting 배너 - 사용*/
     @PostMapping("/banner/enable")
     public String enableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
         Store store = storeRepository.findStoreByPath(path);
@@ -114,6 +117,7 @@ public class StoreSettingsController {
         return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/banner";
     }
 
+    /*상점 setting 배너 - 사용안함*/
     @PostMapping("/banner/disable")
     public String disableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
         Store store = storeRepository.findStoreByPath(path);
@@ -126,19 +130,22 @@ public class StoreSettingsController {
     public String storeMenuForm(@CurrentAccount Account account, SetmenuForm setmenuForm, @PathVariable String path, Model model) {
         model.addAttribute(account);
 
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
         // 세트메뉴
 //        model.addAttribute("setmenuList", store.getSetmenuList()); //성능이 안좋음
-        List<Setmenu> setmenuList = setmenuRepository.findAllByStore(store);
+        List<Setmenu> setmenuList = setmenuRepository.findSetmenuWithMenuListByStore(store);
         model.addAttribute("setmenuList", setmenuList);
 
         // 메뉴
         model.addAttribute("menuList", store.getMenuList());
 
         model.addAttribute("menuForm", new MenuForm());
-        model.addAttribute("readyMenuList", setmenuForm.getMenuList());
 
+        List<Menu> menuList = menuRepository.findByStore(store);
+        model.addAttribute("readyMenuList", menuList);
+
+        System.out.println("log2");
         return "store/settings/menu";
     }
 
@@ -150,7 +157,7 @@ public class StoreSettingsController {
             return "store/settings/menu";
         }
 
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         storeService.addMenu(store, menuForm);
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/menu";
     }
@@ -158,7 +165,7 @@ public class StoreSettingsController {
     /*상점 setting 메뉴 - 메뉴 삭제*/
     @GetMapping("/remove-menu")
     public String removeMenu(@CurrentAccount Account account, @PathVariable String path, @RequestParam(name = "id") Menu menu) {
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         storeService.removeMenu(store, menu);
 
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/menu";
@@ -172,7 +179,7 @@ public class StoreSettingsController {
             return "store/settings/menu";
         }
 
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
 
         Menu newMenu = modelMapper.map(menuForm, Menu.class);
         setmenuForm.getMenuList().add(newMenu);
@@ -187,7 +194,7 @@ public class StoreSettingsController {
     /*상점 setting 메뉴 - 세트메뉴에서 메뉴 제거*/
     @PostMapping("/remove-ready-setmenu")
     public String removeMenuOfSetmenu(@CurrentAccount Account account, Menu menu, SetmenuForm setmenuForm, @PathVariable String path, Model model) {
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
 
         setmenuForm.getMenuList().remove(menu);
 
@@ -199,7 +206,7 @@ public class StoreSettingsController {
     /*상점 setting 메뉴 - 세트메뉴 추가*/
     @PostMapping("/setmenu")
     public String addSetmenu(@CurrentAccount Account account, SetmenuForm setmenuForm, @PathVariable String path, Model model, SessionStatus sessionStatus) {
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
 
         storeService.addSetmenu(store, setmenuForm);
 
@@ -211,7 +218,7 @@ public class StoreSettingsController {
     /*상점 setting 메뉴 - 세트메뉴 삭제*/
     @GetMapping("/remove-setmenu")
     public String removeSetmenu(@CurrentAccount Account account, @PathVariable String path, @RequestParam(name = "id") Setmenu setmenu) {
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
 
         storeService.removeSetmenu(store, setmenu);
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/menu";
@@ -222,7 +229,7 @@ public class StoreSettingsController {
     public String storeTablesForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         model.addAttribute(account);
 
-        Store store = storeRepository.findStoreByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
 
         model.addAttribute("tableList", store.getTableList());
@@ -261,7 +268,7 @@ public class StoreSettingsController {
     public String keyword_addressForm(@CurrentAccount Account account, @PathVariable String path, Model model) throws JsonProcessingException {
         model.addAttribute(account);
 
-        Store store = storeRepository.findStoreWithKeywordByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
 
         //상점에 설정된 keyword
@@ -321,7 +328,7 @@ public class StoreSettingsController {
     public String storeSettingForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         model.addAttribute(account);
 
-        Store store = storeRepository.findStoreByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
 
         model.addAttribute("storeSettingsForm", modelMapper.map(store, StoreSettingsForm.class));

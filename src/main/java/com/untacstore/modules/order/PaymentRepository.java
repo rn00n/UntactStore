@@ -2,6 +2,7 @@ package com.untacstore.modules.order;
 
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.table.Tables;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +16,17 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findAllByStoreAndTables(Store store, Tables tables);
 
-    List<Payment> findAllByStoreOrderByPaymentAtDesc(Store store);
 
-    List<Payment> findAllByStoreAndTablesOrderByPaymentAtDesc(Store store, Tables tables);
+
+
 //    select * form payment where store_id='store' and tables_id='tables' and startedAt > '2020-05-27' and paymentAt < '2020-05-28';
+
+    //store management
+    //order, order, order
+    @EntityGraph(attributePaths = {"orderList"})
+    List<Payment> findPaymentWithOrderListByStoreOrderByPaymentAtDesc(Store store);
+
+    //store management table one
+    @EntityGraph(attributePaths = {"orderList"})
+    List<Payment> findPaymentWithOrderListByStoreAndTablesOrderByPaymentAtDesc(Store store, Tables tables);
 }

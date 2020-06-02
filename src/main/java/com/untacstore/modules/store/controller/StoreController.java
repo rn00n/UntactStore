@@ -85,16 +85,15 @@ public class StoreController {
     @GetMapping("mystore")
     public String myStorePage(@CurrentAccount Account account) {
         Store store = storeRepository.findByOwner(account);
-        //TODO 목록을 만들든 덤프를 지우든
+
         return "redirect:/store/"+ URLEncoder.encode(store.getPath(), StandardCharsets.UTF_8);
     }
 
     /*Store view*/
     @GetMapping("/{path}")
     public String storePageView(@CurrentAccount Account account, @PathVariable String path, Model model) {
-        Store store = storeRepository.findStoreWithReviewsByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
-
         if (account != null) {
             model.addAttribute(account);
             model.addAttribute("isOwner", account.getUsername().equals(store.getOwner().getUsername()));
@@ -115,13 +114,14 @@ public class StoreController {
             model.addAttribute(account);
         }
 
-        Store store = storeRepository.findStoreWithMenusByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
 
-        List<Setmenu> setmenuList = setmenuRepository.findAllByStore(store);
+        List<Setmenu> setmenuList = setmenuRepository.findSetmenuWithMenuListByStore(store);
         model.addAttribute("setmenuList", setmenuList);
 
-        model.addAttribute("menuList", store.getMenuList());
+        List<Menu> menuList = menuRepository.findByStore(store);
+        model.addAttribute("menuList", menuList);
         return "store/menu";
     }
 
@@ -131,13 +131,11 @@ public class StoreController {
         if (account != null) {
             model.addAttribute(account);
         }
-        Store store = storeRepository.findStoreWithReviewsByPath(path);
+        Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
 
         List<Review> review = reviewRepository.findReviewWithReplyByStore(store);
         model.addAttribute("reviews", review);
-
-//        model.addAttribute("reply", review);
 
         model.addAttribute("reviewForm", new ReviewForm());
 
@@ -174,19 +172,18 @@ public class StoreController {
         model.addAttribute(account);
         Store store = storeRepository.findStoreByPath(path);
         model.addAttribute(store);
-
         List<Payment> paymentList;
         if (remoteControl.getTableNo().equals("all")) {
-            paymentList = paymentRepository.findAllByStoreOrderByPaymentAtDesc(store);
+            paymentList = paymentRepository.findPaymentWithOrderListByStoreOrderByPaymentAtDesc(store);
+
         } else {
             Tables tables = tablesRepository.findByStoreAndTablesPath(store, remoteControl.getTableNo());
-            paymentList = paymentRepository.findAllByStoreAndTablesOrderByPaymentAtDesc(store, tables);
+            paymentList = paymentRepository.findPaymentWithOrderListByStoreAndTablesOrderByPaymentAtDesc(store, tables);
         }
         model.addAttribute("paymentList", paymentList);
 
         putStatistics(paymentList, model);
 
-        //TODO 정보를 (월or일/매출) 맵핑
         List<Sales> salesList = new ArrayList<>();
         //년-월-일 list
         paymentList.stream().forEach(p-> {
@@ -230,7 +227,6 @@ public class StoreController {
                 statistics.put(sm.getId(), Statistics.builder().name(sm.getTitle()).price(sm.getTotalPrice()).count(1).build());
             }
         });
-
         menuList.stream().forEach(m->{
             if (statistics.containsKey(m.getId())) {
                 statistics.get(m.getId()).addCount();
@@ -238,7 +234,6 @@ public class StoreController {
                 statistics.put(m.getId(), Statistics.builder().name(m.getName()).price(m.getPrice()).count(1).build());
             }
         });
-
         model.addAttribute("statistics", statistics.values().stream().collect(Collectors.toList()));
     }
 

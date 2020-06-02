@@ -8,7 +8,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,14 +28,14 @@ public class Orders {
 
     private Integer ordersAmount = 0;
 
-    @ManyToMany
-    private List<Menu> menuList = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Menu> menuList = new HashSet<>();
 
-    @ManyToMany
-    private List<Setmenu> setMenuList = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Setmenu> setMenuList = new HashSet<>();
 
-    @ManyToMany
-    private List<RequestOrder> requestOrderList = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<RequestOrder> requestOrderList = new HashSet<>();
 
     private LocalDateTime orderAt;
 
