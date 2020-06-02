@@ -102,7 +102,7 @@ public class StoreController {
             model.addAttribute("isOwner", false);
         }
         //리뷰
-        List<Review> reviews = store.getReviews();
+        Set<Review> reviews = store.getReviews();
         model.addAttribute("review", reviews);
 
         return "store/view";

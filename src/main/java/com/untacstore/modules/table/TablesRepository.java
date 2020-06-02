@@ -11,5 +11,7 @@ import java.util.List;
 public interface TablesRepository extends JpaRepository<Tables, Long> {
     Tables findByStoreAndTablesPath(Store store, String tablesPath);
 
+    Tables findFirstByStoreOrderByTableNumDesc(Store store);
+
     List<Tables> findByAccount(Account accountLoaded);
 }

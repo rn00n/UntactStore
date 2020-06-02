@@ -15,7 +15,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -55,30 +57,30 @@ public class Store {
 
     @OneToMany(mappedBy = "store")
     @OrderBy("tableNum")
-    private List<Tables> tableList = new ArrayList<>();
+    private Set<Tables> tableList = new HashSet<>();
 
     @OneToMany(mappedBy = "store")
     @OrderBy("reviewAt")
-    private List<Review> reviews = new ArrayList<>();
+    private Set<Review> reviews = new HashSet<>();
 
     @OneToMany(mappedBy = "store")
-    private List<Menu> menuList = new ArrayList<>();
+    private Set<Menu> menuList = new HashSet<>();
 
     @OneToMany(mappedBy = "store")
-    private List<Setmenu> setmenuList = new ArrayList<>();
+    private Set<Setmenu> setmenuList = new HashSet<>();
 
     @ManyToMany
-    List<Keyword> keywords = new ArrayList<>();
+    Set<Keyword> keywords = new HashSet<>();
 
     private boolean open = false;
     private boolean waiting = false;
 
     @OneToMany(mappedBy = "store")
     @OrderBy("turn")
-    private List<Waiting> waitingList = new ArrayList<>();
+    private Set<Waiting> waitingList = new HashSet<>();
 
     @OneToMany
-    private List<Favorites> favoritesList = new ArrayList<>();
+    private Set<Favorites> favoritesList = new HashSet<>();
 
     private int favoritesCount = 0;
 
@@ -116,9 +118,8 @@ public class Store {
         tables.setStore(this);
     }
 
-    public Tables removeTable() {
-        Tables tables = tableList.remove(tableList.size()-1);
-        return tables;
+    public void removeTable(Tables remove) {
+        tableList.remove(remove);
     }
 
     public boolean isWaitingable(PrincipalAccount principalAccount) {

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import java.util.List;
+import java.util.Set;
 
 public class StoreRepositoryExtensionImpl extends QuerydslRepositorySupport implements StoreRepositoryExtension{
 
@@ -36,7 +37,7 @@ public class StoreRepositoryExtensionImpl extends QuerydslRepositorySupport impl
     }
 
     @Override
-    public List<Store> findStoreWithKeywordByOwner(List<Keyword> keywords) {
+    public List<Store> findStoreWithKeywordByOwner(Set<Keyword> keywords) {
         QStore store = QStore.store;
         JPQLQuery<Store> query = from(store).where(store.keywords.any().in(keywords))
                 .leftJoin(store.keywords, QKeyword.keyword).fetchJoin()

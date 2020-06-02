@@ -30,21 +30,21 @@
                         <div class="alert alert-info" role="alert">
                             해당 상점의 주소를 입력해 주세요.
                         </div>
-                        <form th:action="@{'/store/'+${store.path}+'/settings/address/add'}" th:object="${addressForm}">
+                        <form th:action="@{'/store/'+${store.path}+'/settings/address/add'}" th:object="${addressForm}" method="post">
                             <div class="form-group">
                                 <div class="input-group">
-                                    <input class="form-control" type="text" th:field="*{postcode}" id="sample4_postcode" placeholder="우편번호" disabled>
+                                    <input class="form-control" type="text" th:field="*{postcode}" id="sample4_postcode" placeholder="우편번호" readonly="true">
                                     <input class="btn btn-outline-secondary" type="button" onclick="sample4_execDaumPostcode()" value="우편번호 찾기"><br>
                                     <input class="btn btn-outline-danger" type="submit" value="저장하기"><br>
                                 </div>
                                 <div class="input-group">
-                                    <input class="form-control" type="text" th:field="*{roadAddress}" id="sample4_roadAddress" placeholder="도로명주소" disabled>
-                                    <input class="form-control" type="text" th:field="*{jibunAddress}" id="sample4_jibunAddress" placeholder="지번주소" disabled>
+                                    <input class="form-control" type="text" th:field="*{roadAddress}" id="sample4_roadAddress" placeholder="도로명주소" readonly="true">
+                                    <input class="form-control" type="text" th:field="*{jibunAddress}" id="sample4_jibunAddress" placeholder="지번주소" readonly="true">
                                 </div>
                                 <div class="input-group">
                                     <span id="guide" style="color:#999;"></span>
                                     <input class="form-control" type="text" th:field="*{detailAddress}" id="sample4_detailAddress" placeholder="상세주소">
-                                    <input class="form-control" type="text" th:field="*{extraAddress}" id="sample4_extraAddress" placeholder="참고항목" disabled>
+                                    <input class="form-control" type="text" th:field="*{extraAddress}" id="sample4_extraAddress" placeholder="참고항목" readonly="true">
                                 </div>
                             </div>
 

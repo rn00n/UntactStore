@@ -4,6 +4,7 @@ import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.account.service.AccountService;
 import com.untacstore.modules.address.Address;
+import com.untacstore.modules.address.AddressForm;
 import com.untacstore.modules.address.AddressRepository;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordRepository;
@@ -155,10 +156,11 @@ public class StoreService {
 
     /*테이블 - 테이블 삭제*/
     public void removeTable(Store store) {
-        Tables tables = store.removeTable();
-        eventRepository.deleteAllByTables(tables);
-        ordersRepository.deleteAllByTables(tables);
-        tablesRepository.delete(tables);
+        Tables remove = tablesRepository.findFirstByStoreOrderByTableNumDesc(store);
+        store.removeTable(remove);
+        eventRepository.deleteAllByTables(remove);
+        ordersRepository.deleteAllByTables(remove);
+        tablesRepository.delete(remove);
     }
 
     /*테이블 - 테이블 수정*/
@@ -178,6 +180,12 @@ public class StoreService {
     public void removeKeyword(Store store, Keyword keyword) {
         Optional<Store> byId = storeRepository.findById(store.getId());
         byId.ifPresent(a -> a.getKeywords().remove(keyword));
+    }
+
+    /*상점 주소 수정*/
+    public void updateAddress(Store store, AddressForm addressForm) {
+        Address address = addressRepository.findByStore(store);
+        modelMapper.map(addressForm, address);
     }
 
     /*사업자등록번호 - 수정*/

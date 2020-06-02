@@ -7,6 +7,7 @@ import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.account.form.Notifications;
 import com.untacstore.modules.account.form.PasswordForm;
 import com.untacstore.modules.account.form.Profile;
+import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.account.service.AccountService;
 import com.untacstore.modules.account.validator.PasswordFormValidator;
 import com.untacstore.modules.keyword.Keyword;
@@ -29,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -48,6 +50,7 @@ public class AccountSettingsController {
     private final KeywordRepository keywordRepository;
     private final KeywordService keywordService;
     private final LocationRepository locationRepository;
+    private final AccountRepository accountRepository;
     private final LocationService locationService;
     private final ObjectMapper objectMapper;
 
@@ -61,7 +64,6 @@ public class AccountSettingsController {
     public String profileForm(@CurrentAccount Account account, Model model) {
         model.addAttribute(account);
         model.addAttribute(modelMapper.map(account, Profile.class));
-
         return SETTINGS + PROFILE;
     }
     /*프로필 - 수정*/
@@ -79,22 +81,24 @@ public class AccountSettingsController {
     /*키워드 / 지역 - 폼*/
     @GetMapping(KEYWORD_LOCATION)
     public String keyword_locationForm(@CurrentAccount Account account, Model model) throws JsonProcessingException {
-        model.addAttribute(account);
+        Account accountLoad = accountRepository.findAccountWithKeywordsAndLocationsById(account.getId());
+        model.addAttribute(accountLoad);
 
         //로그인된 계정의 keyword
-        List<Keyword> keywords = accountService.getKeywords(account);
+        Set<Keyword> keywords = accountService.getKeywords(accountLoad);
         model.addAttribute("keywords", keywords.stream().map(Keyword::getName).collect(Collectors.toList()));
         //전체 keyword
         List<String> allKeywords = keywordRepository.findAll().stream().map(Keyword::getName).collect(Collectors.toList());
         model.addAttribute("whitelistOfKeyword", objectMapper.writeValueAsString(allKeywords));
 
         //로그인된 계정의 location
-        List<Location> locations = accountService.getLocations(account);
+        Set<Location> locations = accountService.getLocations(accountLoad);
         model.addAttribute("locations", locations.stream().map(Location::getName).collect(Collectors.toList()));
         //전체 location
         List<String> allLocation = locationRepository.findAll().stream().map(Location::getName).collect(Collectors.toList());
         model.addAttribute("whitelistOfLocation", objectMapper.writeValueAsString(allLocation));
 
+        System.out.println("log");
         return SETTINGS + KEYWORD_LOCATION;
     }
     /*키워드 추가*/

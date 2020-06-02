@@ -29,6 +29,7 @@ import org.thymeleaf.context.Context;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -118,7 +119,7 @@ public class AccountService implements UserDetailsService {
     }
     
     /*키워드 - 계정에 포함된 키워드 가져오기*/
-    public List<Keyword> getKeywords(Account account) {
+    public Set<Keyword> getKeywords(Account account) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         return byId.orElseThrow().getKeywords();
     }
@@ -136,7 +137,7 @@ public class AccountService implements UserDetailsService {
     }
 
     /*장소 - 계정에 포함된 장소 가져오기*/
-    public List<Location> getLocations(Account account) {
+    public Set<Location> getLocations(Account account) {
         Optional<Account> byId = accountRepository.findById(account.getId());
         return byId.orElseThrow().getLocations();
     }

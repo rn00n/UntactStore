@@ -19,6 +19,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -65,10 +66,10 @@ public class AccountController {
         model.addAttribute("profileAccount", accountToView);
         model.addAttribute("isOwner", accountToView.equals(account));
 
-        List<Keyword> keywords = accountService.getKeywords(account);
+        Set<Keyword> keywords = accountService.getKeywords(account);
         model.addAttribute("keywords", keywords.stream().map(Keyword::getName).collect(Collectors.toList()));
         //로그인된 계정의 location
-        List<Location> locations = accountService.getLocations(account);
+        Set<Location> locations = accountService.getLocations(account);
         model.addAttribute("locations", locations.stream().map(Location::getName).collect(Collectors.toList()));
 
         model.addAttribute("profileUsername", username);

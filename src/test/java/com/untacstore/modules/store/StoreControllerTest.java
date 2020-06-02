@@ -77,7 +77,6 @@ class StoreControllerTest {
         assertEquals("licensee", store.getLicensee());
         assertEquals("store-path", store.getPath());
         assertEquals("문병량", store.getName());
-        assertEquals("address", store.getAddress());
         assertEquals("shortDescription", store.getShortDescription());
         assertEquals(fullDescription, store.getFullDescription());
     }

@@ -8,12 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Transactional(readOnly = true)
 public interface StoreRepositoryExtension {
     Page<Store> findByKeyword(String keyword, Pageable pageable);
 
-    List<Store> findStoreWithKeywordByOwner(List<Keyword> keywords);
+    List<Store> findStoreWithKeywordByOwner(Set<Keyword> keywords);
 
 
     List<Store> findStoreByFavoritesList(List<Favorites> favorites);

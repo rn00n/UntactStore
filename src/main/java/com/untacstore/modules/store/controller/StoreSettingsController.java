@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.address.Address;
+import com.untacstore.modules.address.AddressRepository;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordForm;
 import com.untacstore.modules.keyword.KeywordRepository;
@@ -40,6 +41,7 @@ import javax.validation.Valid;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -55,6 +57,7 @@ public class StoreSettingsController {
     private final MenuRepository menuRepository;
     private final SetmenuRepository setmenuRepository;
     private final KeywordRepository keywordRepository;
+    private final AddressRepository addressRepository;
     private final KeywordService keywordService;
     private final LocationRepository locationRepository;
     private final LocationService locationService;
@@ -262,20 +265,20 @@ public class StoreSettingsController {
         model.addAttribute(store);
 
         //상점에 설정된 keyword
-        List<Keyword> keywords = store.getKeywords();
+        Set<Keyword> keywords = store.getKeywords();
         model.addAttribute("keywords", keywords.stream().map(Keyword::getName).collect(Collectors.toList()));
         //전체 keyword
         List<String> allKeywords = keywordRepository.findAll().stream().map(Keyword::getName).collect(Collectors.toList());
         model.addAttribute("whitelistOfKeyword", objectMapper.writeValueAsString(allKeywords));
 
-        //TODO Store에서 address 정보 가져와서 넣어줘야함
-        AddressForm addressForm = modelMapper.map(store.getAddress(), AddressForm.class);
+        Address address = addressRepository.findByStore(store);
+        AddressForm addressForm = modelMapper.map(address, AddressForm.class);
         model.addAttribute(addressForm);
 
         return "store/settings/keywords";
     }
 
-    /*키워드 / 주소 - 키워드 추가*/
+    /*키워드 - 키워드 추가*/
     @PostMapping("/keywords/add")
     @ResponseBody
     public ResponseEntity addKeyword(@CurrentAccount Account account, @PathVariable String path, @RequestBody KeywordForm keywordForm) {
@@ -290,7 +293,7 @@ public class StoreSettingsController {
         return ResponseEntity.ok().build();
     }
 
-    /*키워드 / 주소 - 키워드 삭제*/
+    /*키워드 - 키워드 삭제*/
     @PostMapping("/keywords/remove")
     @ResponseBody
     public ResponseEntity removeKeyword(@CurrentAccount Account account, @PathVariable String path, @RequestBody KeywordForm keywordForm) {
@@ -303,6 +306,14 @@ public class StoreSettingsController {
 
         storeService.removeKeyword(store, keyword);
         return ResponseEntity.ok().build();
+    }
+
+    /*주소 - 수정*/
+    @PostMapping("/address/add")
+    public String updateAddress(@CurrentAccount Account account, @PathVariable String path, AddressForm addressForm, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.updateAddress(store, addressForm);
+        return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/keywords";
     }
 
     /*상점 - 폼*/

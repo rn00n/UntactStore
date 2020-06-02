@@ -9,7 +9,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -39,11 +41,11 @@ public class Account {
 
     //keyword
     @ManyToMany
-    private List<Keyword> keywords = new ArrayList<>();
+    private Set<Keyword> keywords = new HashSet<>();
 
     //location 관심지역
     @ManyToMany
-    private List<Location> locations = new ArrayList<>();
+    private Set<Location> locations = new HashSet<>();
 
     //TODO notifications
     private boolean storeCreatedByWeb = true;

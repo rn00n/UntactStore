@@ -3,6 +3,7 @@ package com.untacstore.modules.account.repository;
 import com.untacstore.modules.account.Account;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,4 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>, Queryds
 
     @EntityGraph(attributePaths = {"keywords"})
     Account findAccountWithKeywordsById(Long id);
+
+    @EntityGraph(attributePaths = {"keywords", "locations"})
+    Account findAccountWithKeywordsAndLocationsById(Long id);
 }
