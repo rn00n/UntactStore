@@ -2,6 +2,7 @@ package com.untacstore.modules.store.repository;
 
 import com.untacstore.modules.favorites.Favorites;
 import com.untacstore.modules.keyword.Keyword;
+import com.untacstore.modules.location.Location;
 import com.untacstore.modules.store.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ public interface StoreRepositoryExtension {
 
     List<Store> findStoreWithKeywordByOwner(Set<Keyword> keywords);
 
-
     List<Store> findStoreByFavoritesList(List<Favorites> favorites);
+
+    List<List<Store>> findStoreWithAddressByOwner(Set<Location> locations);
 }

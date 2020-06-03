@@ -22,7 +22,7 @@
                 <h5 class="font-weight-light text-center"><i class="fa fa-list" aria-hidden="true"></i> 평점 순</h5>
                 <div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item" th:each="store: ${gradePage.getContent()}">
+                        <li class="list-group-item " th:each="store: ${gradePage.getContent()}">
                             <a class="btn btn-link p-0" th:href="@{'/store/'+${store.path}}">
                                 <span th:text="${store.name}">키워드</span>
                             </a>
@@ -103,11 +103,58 @@
                     </div>
                 </div>
             </div>
-            <h5 class="font-weight-light mt-3">내 키워드 상점 목록.</h5>
-            <h6 th:if="${myKeywordStoreList.size() == 0}" class="font-weight-light mt-3">등록한 키워드가 없습니다.</h6>
-            <div class="row justify-content-conter">
-                <div th:replace="fragments.html :: store-list (storeList=${myKeywordStoreList})"></div>
+            <div>
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">키워드</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">지역</a>
+                        <div class="dropdown-menu" >
+                            <div class="dropdown-divider"></div>
+                            <div th:if="${listOfMyLocationStoreList.size() != 0}">
+                                <a th:each="index: ${#numbers.sequence(0, listOfMyLocationStoreList.size()-1)}"
+                                   th:if="${listOfMyLocationStoreList.get(index).size() != 0}"
+                                   th:text="${locationList.get(index).name}" class="dropdown-item" th:id="'pills-location-tab'+${locationList.get(index).id}" data-toggle="pill" th:href="'#pills-location'+${locationList.get(index).id}" role="tab" aria-controls="pills-profile" aria-selected="false">지역1</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <h5 class="font-weight-light mt-3">모든 상점 목록.</h5>
+                        <h6 th:if="${storePage.getTotalElements() == 0}" class="font-weight-light mt-3">등록된 상점이 없습니다.</h6>
+                        <div class="row justify-content-conter">
+                            <div th:replace="fragments.html :: store-list (storeList=${storePage.getContent()})"></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <h5 class="font-weight-light mt-3">내 키워드 상점 목록.</h5>
+                        <h6 th:if="${myKeywordStoreList.size() == 0}" class="font-weight-light mt-3">등록한 키워드가 없습니다.</h6>
+                        <div class="row justify-content-conter">
+                            <div th:replace="fragments.html :: store-list (storeList=${myKeywordStoreList})"></div>
+                        </div>
+                    </div>
+
+                    <div th:if="${listOfMyLocationStoreList.size() != 0}" th:each="index: ${#numbers.sequence(0, listOfMyLocationStoreList.size()-1)}" class="tab-pane fade" th:id="'pills-location'+${locationList.get(index).id}" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <h5 class="font-weight-light mt-3">내 지역 상점 목록.</h5>
+                        <h6 th:if="${listOfMyLocationStoreList.get(index).size() == 0}" class="font-weight-light mt-3">등록한 지역이 없습니다.</h6>
+                        <div class="row justify-content-conter">
+                            <div th:replace="fragments.html :: store-list (storeList=${listOfMyLocationStoreList.get(index)})"></div>
+                        </div>
+                    </div>
+
+<!--                    비상용-->
+<!--                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">지역</a>-->
+<!--                    <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">-->
+<!--                    </div>-->
+
+                </div>
             </div>
+
         </div>
         <div class="col-md-3">
 <!--            관리자용-->

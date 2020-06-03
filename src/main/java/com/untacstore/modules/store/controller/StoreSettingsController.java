@@ -92,7 +92,7 @@ public class StoreSettingsController {
 
     /*상점 setting 배너 - 폼*/
     @GetMapping("/banner")
-    public String studyImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+    public String storeImageForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
         Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(account);
         model.addAttribute(store);
@@ -101,7 +101,7 @@ public class StoreSettingsController {
 
     /*상점 setting 배너 - 수정*/
     @PostMapping("/banner")
-    public String studyImageSubmit(@CurrentAccount Account account, @PathVariable String path,
+    public String storeImageSubmit(@CurrentAccount Account account, @PathVariable String path,
                                    String image, RedirectAttributes attributes) {
         Store store = storeRepository.findStoreByPath(path);
         storeService.updateStoreImage(store, image);
@@ -142,11 +142,20 @@ public class StoreSettingsController {
 
         model.addAttribute("menuForm", new MenuForm());
 
-        List<Menu> menuList = menuRepository.findByStore(store);
+        List<Menu> menuList = setmenuForm.getMenuList();
         model.addAttribute("readyMenuList", menuList);
 
-        System.out.println("log2");
         return "store/settings/menu";
+    }
+
+    /*상점 setting 메뉴 - 이미지 수정*/
+    @PostMapping("/menu/add-image")
+    public String storeMenuImageSubmit(@CurrentAccount Account account, @PathVariable String path, @RequestParam String id,
+                                   String image, RedirectAttributes attributes) {
+        Menu menu = menuRepository.findById(Long.valueOf(id)).orElseThrow();
+        storeService.updateMenuImage(menu, image);
+        attributes.addFlashAttribute("message", "메뉴 이미지를 수정했습니다.");
+        return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/settings/banner";
     }
 
     /*상점 setting 메뉴 - 메뉴 추가*/

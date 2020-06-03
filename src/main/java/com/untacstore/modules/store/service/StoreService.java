@@ -118,11 +118,8 @@ public class StoreService {
         List<Menu> newMenus = setmenuForm.getMenuList();
         menuRepository.saveAll(newMenus);
 
-        System.out.println("보자보자");
         setmenuForm.getMenuList().stream().forEach(menu -> {
-            System.out.print(menu.getName()+":"+ setmenuForm.getTotalPrice() + "+"+menu.getPrice()+":");
             setmenuForm.setTotalPrice(setmenuForm.getTotalPrice() + menu.getPrice());
-            System.out.println(setmenuForm.getTotalPrice());
         });
 
 //        setmenuForm.getMenuList().stream().forEach(m -> );
@@ -245,6 +242,10 @@ public class StoreService {
             Keyword keyword = keywordRepository.findByName("부리또");
             newStore.getKeywords().add(keyword);
         }
+    }
+
+    public void updateMenuImage(Menu menu, String image) {
+        menu.setImage(image);
     }
 
     //TODO 리뷰 답글 삭제

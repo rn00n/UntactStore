@@ -7,6 +7,7 @@ import com.untacstore.modules.favorites.Favorites;
 import com.untacstore.modules.favorites.FavoritesRepository;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordRepository;
+import com.untacstore.modules.location.Location;
 import com.untacstore.modules.store.Store;
 import com.untacstore.modules.store.repository.StoreRepository;
 import com.untacstore.modules.table.Tables;
@@ -26,6 +27,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +56,16 @@ public class MainController {
 //            내가 등록한 키워드 리스트
             List<Store> myKeywordStoreList = storeRepository.findStoreWithKeywordByOwner(accountLoaded.getKeywords());
             model.addAttribute("myKeywordStoreList", myKeywordStoreList);
-//            내즐겨찾기 리스트
+
             System.out.println("log-myfavorites");
+//            내가 등록한 지역 리스트
+            List<List<Store>> listOfMyLocationStoreList = storeRepository.findStoreWithAddressByOwner(accountLoaded.getLocations());
+            model.addAttribute("listOfMyLocationStoreList", listOfMyLocationStoreList);
+            List<Location> locations = accountLoaded.getLocations().stream().collect(Collectors.toList());
+            model.addAttribute("locationList", locations);
+
+            System.out.println("log-myLocation");
+//            내즐겨찾기 리스트
             List<Favorites> favorites = favoritesRepository.findByAccount(accountLoaded);
             List<Store> myFavoritesList = storeRepository.findStoreByFavoritesList(favorites);
             model.addAttribute("myFavoritesList", myFavoritesList);
@@ -86,6 +96,11 @@ public class MainController {
 //            내 상점 목록
             List<Store> myStoreList = storeRepository.findFirst5AllByOwner(accountLoaded);
             model.addAttribute("myStoreList", myStoreList);
+
+//            모든 상점
+            Pageable pageable = PageRequest.of(0,9, Sort.by("grade").descending());
+            Page<Store> storePage = storeRepository.findAll(pageable);//TODO
+            model.addAttribute("storePage", storePage);
             return "index-after-login";
         }
 

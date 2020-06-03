@@ -3,10 +3,12 @@ package com.untacstore.modules.store.repository;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.JPQLQuery;
 import com.untacstore.modules.account.QAccount;
+import com.untacstore.modules.address.QAddress;
 import com.untacstore.modules.favorites.Favorites;
 import com.untacstore.modules.favorites.QFavorites;
 import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.QKeyword;
+import com.untacstore.modules.location.Location;
 import com.untacstore.modules.store.QStore;
 import com.untacstore.modules.store.Store;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -56,5 +59,24 @@ public class StoreRepositoryExtensionImpl extends QuerydslRepositorySupport impl
                 .distinct()
                 .limit(5);
         return query.fetch();
+    }
+
+    @Override
+    public List<List<Store>> findStoreWithAddressByOwner(Set<Location> locations) {
+        List<List<Store>> storeList = new ArrayList<>();
+
+        QStore store = QStore.store;
+        JPQLQuery<Store> query;
+        for (Location location: locations) {
+            query = from(store).where(store.address.jibunAddress.containsIgnoreCase(location.getName())
+                    .or(store.address.roadAddress.containsIgnoreCase(location.getName())
+                    .or(store.address.detailAddress.containsIgnoreCase(location.getName())
+                    .or(store.address.extraAddress.containsIgnoreCase(location.getName())))))
+                    .leftJoin(store.address, QAddress.address).fetchJoin()
+                    .distinct().limit(9);
+            List<Store> fetch = query.fetch();
+            storeList.add(fetch);
+        }
+        return storeList;
     }
 }
