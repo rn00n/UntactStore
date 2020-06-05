@@ -22,13 +22,12 @@
                     <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                         <strong class="d-block text-gray-dark">
                             <i class="fa fa-map-marker" aria-hidden="true"></i> 위치
-                            <a th:href="@{'https://map.kakao.com/link/search/'+${store.name}}" target="_blank">link</a>
-<!--                            <button class="p-0 m-0 btn btn-link"-->
-<!--                                    data-toggle="modal" data-target="#map" data-placement="bottom" title="QR코드 확인">-->
-<!--                                <i class="fa fa-qrcode" aria-hidden="true"></i> QR_CODE-->
-<!--                            </button>-->
+                            <a th:href="@{'https://map.kakao.com/link/search/'+${store.address.roadAddress}+' '+${store.address.detailAddress}}" target="_blank">link</a>
                         </strong>
-<!--                        <span class="col-10" th:text="${store.getAddress()}"></span>-->
+                        <span class="col-10">
+                            <span th:text="${store.address.roadAddress}"></span>
+                            <span th:text="${store.address.detailAddress}"></span>
+                        </span>
                     </p>
                 </div>
                 <div class="modal fade" id="map" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">

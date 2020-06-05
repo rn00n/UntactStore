@@ -34,8 +34,7 @@ public class Store {
     private String name;
 
     @OneToOne(fetch = FetchType.EAGER)
-    private Address address; //TODO 필드 전부 바꿔야함
-//    private String address; //TODO 필드 전부 바꿔야함
+    private Address address;
 
     private String phone;
 
@@ -84,7 +83,6 @@ public class Store {
 
     private int favoritesCount = 0;
 
-    //TODO waiting
     public boolean isOwner(PrincipalAccount principalAccount) {
         return this.owner.equals(principalAccount.getAccount());
     }

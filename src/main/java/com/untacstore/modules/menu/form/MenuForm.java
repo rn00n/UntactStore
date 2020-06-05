@@ -11,5 +11,7 @@ public class MenuForm {
 
     private Integer price;
 
+    private String image = null;
+
     private String explanation;
 }

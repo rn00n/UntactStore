@@ -24,7 +24,7 @@ public class Setmenu {
     @ManyToOne
     private Store store;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     private Set<Menu> menuList = new HashSet<>();
 
     private Integer totalPrice;

@@ -35,7 +35,6 @@ public class Account {
 
     private boolean hasStore = false;
 
-    //TODO profileImage;
     @Lob @Basic(fetch = FetchType.EAGER)
     private String profileImage;
 
@@ -47,10 +46,8 @@ public class Account {
     @ManyToMany
     private Set<Location> locations = new HashSet<>();
 
-    //TODO notifications
     private boolean storeCreatedByWeb = true;
     private boolean ticketByWeb = true;
-//    private boolean ticketByKakao; TODO
 
     @OneToMany(mappedBy = "account")
     private List<Waiting> waitingList = new ArrayList<>();

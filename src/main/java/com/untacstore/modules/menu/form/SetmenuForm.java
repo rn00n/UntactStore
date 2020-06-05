@@ -16,5 +16,7 @@ public class SetmenuForm {
 
     private Integer totalPrice = 0;
 
+    private String image = null;
+
     private String explanation;
 }

@@ -6,6 +6,8 @@ import com.untacstore.modules.account.Account;
 import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.menu.Menu;
 import com.untacstore.modules.menu.Setmenu;
+import com.untacstore.modules.menu.form.MenuForm;
+import com.untacstore.modules.menu.form.SetmenuForm;
 import com.untacstore.modules.menu.repository.MenuRepository;
 import com.untacstore.modules.menu.repository.SetmenuRepository;
 import com.untacstore.modules.order.Payment;
@@ -28,6 +30,7 @@ import com.untacstore.modules.waiting.Waiting;
 import com.untacstore.modules.waiting.WaitingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
@@ -42,7 +45,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/store")@SessionAttributes("remoteControl")
+@RequestMapping("/store")
+@SessionAttributes("remoteControl")
+@Transactional
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;

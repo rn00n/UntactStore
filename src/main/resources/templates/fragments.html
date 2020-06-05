@@ -182,7 +182,7 @@
     <div class="row pt-4 text-left justify-content-center bg-light">
         <div class="col-4">
             <a href="#" class="text-decoration-none" th:href="@{'/store/' + ${store.path}}">
-                <span class="h2" th:text="${store.name}">상점 이름</span>
+                <strong class="h2" th:text="${store.name}">상점 이름</strong>
             </a>
         </div>
         <div class="col-4 text-right justify-content-end">
@@ -263,7 +263,30 @@
                 <a class="btn btn-primary" th:if="${store.checkOwner(#authentication.principal)}" th:href="@{'/store/' + ${store.path} + '/management'}">
                     매출
                 </a>
+                <button th:if="${store.checkOwner(#authentication.principal)}" class="btn btn-primary"
+                        data-toggle="modal" data-target="#qr_code"
+                        data-placement="bottom" title="QR코드 확인">
+                    <i class="fa fa-qrcode" aria-hidden="true"></i> QR_CODE
+                </button>
             </span>
+            <div class="modal fade" id="qr_code" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="qr_code-title" th:text="${store.name+'상점 / QR 코드'}"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <iframe th:src="@{'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=http://localhost:8080/store/'+${store.path}}" style="width: 255px; height: 255px"></iframe>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div sec:authorize="isAuthenticated()" class="col-4 text-right justify-content-end" th:if="${store.checkOwner(#authentication.principal)}">
             <span sec:authorize="isAuthenticated()" th:if="${store.waiting && store.open}"
@@ -419,9 +442,9 @@
                 <img th:src="${store.getImage()}" class="card-img-top" >
                 <div class="card-body">
                     <a th:href="@{'/store/'+${store.path}}" class="text-decoration-nen">
-                        <h5 class="card-title context" th:text="${store.name}"></h5>
+                        <h5 class="card-title context m-0" th:text="${store.name}"></h5>
                     </a>
-                    <p class="card-text" th:text="${store.shortDescription}"></p>
+                    <p class="card-text text-muted" th:text="${store.shortDescription}"></p>
                     <p class="card-text context">
                         <span th:each="sKeyword: ${store.keywords}" class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
                             <i class="fa fa-tag"></i> <span th:text="${sKeyword.name}">keyword</span>

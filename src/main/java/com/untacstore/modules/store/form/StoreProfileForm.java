@@ -8,11 +8,6 @@ import javax.persistence.Lob;
 
 @Data
 public class StoreProfileForm {
-//    private String path;
-// 상점설정으로 이동
-//    private String name;
-
-    //TODO 영업
     private String operatingTime;
 
     private String phone;

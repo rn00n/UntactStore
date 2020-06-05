@@ -133,7 +133,7 @@ public class StoreService {
     }
     /*메뉴 - 세트메뉴 삭제*/
     public void removeSetmenu(Store store, Setmenu setmenu) {
-        setmenu.getMenuList().stream().forEach(menu -> menuRepository.delete(menu)); //TODO 쿼리 개선
+        setmenu.getMenuList().stream().forEach(menu -> menuRepository.delete(menu));
         store.removeSetmenu(setmenu);
         setmenuRepository.delete(setmenu);
     }

@@ -24,7 +24,7 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item " th:each="store: ${gradePage.getContent()}">
                             <a class="btn btn-link p-0" th:href="@{'/store/'+${store.path}}">
-                                <span th:text="${store.name}">키워드</span>
+                                <strong th:text="${store.name}">이름</strong>
                             </a>
                             <span>
                                 <small>
@@ -48,7 +48,7 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" th:each="store: ${favoritesPage.getContent()}">
                             <a class="btn btn-link p-0" th:href="@{'/store/'+${store.path}}">
-                                <span th:text="${store.name}">키워드</span>
+                                <strong th:text="${store.name}">이름</strong>
                             </a>
                             <span>
                                 <small>

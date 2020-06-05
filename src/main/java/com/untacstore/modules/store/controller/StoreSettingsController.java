@@ -138,12 +138,13 @@ public class StoreSettingsController {
         model.addAttribute("setmenuList", setmenuList);
 
         // 메뉴
-        model.addAttribute("menuList", store.getMenuList());
+        List<Menu> menuList = menuRepository.findByStore(store);
+        model.addAttribute("menuList", menuList);
 
         model.addAttribute("menuForm", new MenuForm());
 
-        List<Menu> menuList = setmenuForm.getMenuList();
-        model.addAttribute("readyMenuList", menuList);
+        List<Menu> menuListOfSetmenu = setmenuForm.getMenuList();
+        model.addAttribute("readyMenuList", menuListOfSetmenu);
 
         return "store/settings/menu";
     }
@@ -197,6 +198,15 @@ public class StoreSettingsController {
 
         model.addAttribute("setmenuForm", setmenuForm);
 
+        return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/menu";
+    }
+
+    /*상점 setting 메뉴 - 세트메뉴에 이미지 추가*/
+    @PostMapping("/image-setmenu")
+    public String setImageOfSetmenu(@CurrentAccount Account account, String setmenuImage, SetmenuForm setmenuForm, @PathVariable String path, Model model) {
+        setmenuForm.setImage(setmenuImage);
+
+        model.addAttribute("setmenuForm", setmenuForm);
         return "redirect:/store/"+URLEncoder.encode(path, StandardCharsets.UTF_8)+"/settings/menu";
     }
 

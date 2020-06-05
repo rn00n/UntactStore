@@ -31,8 +31,5 @@ public class SignUpFormValidator implements Validator {
             errors.rejectValue("email", "invalid.email",
                     new Object[]{signUpForm.getEmail()}, "이미 사용중인 email 입니다.");
         }
-        
-        //TODO 사업자 등록번호 중복 확인
-
     }
 }

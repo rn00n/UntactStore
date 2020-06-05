@@ -99,13 +99,13 @@ public class MainController {
 
 //            모든 상점
             Pageable pageable = PageRequest.of(0,9, Sort.by("grade").descending());
-            Page<Store> storePage = storeRepository.findAll(pageable);//TODO
+            Page<Store> storePage = storeRepository.findAll(pageable);
             model.addAttribute("storePage", storePage);
             return "index-after-login";
         }
 
         Pageable pageable = PageRequest.of(0,9, Sort.by("grade").descending());
-        Page<Store> storePage = storeRepository.findAll(pageable);//TODO
+        Page<Store> storePage = storeRepository.findAll(pageable);
         model.addAttribute("storePage", storePage);
 
         return "index";
