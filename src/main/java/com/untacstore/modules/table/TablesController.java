@@ -78,8 +78,9 @@ public class TablesController {
     /*테이블 장바구니 - 세트메뉴 추가*/
     @GetMapping("/{tables-path}/cart/add-setmenu")
     public String addSetmenuOfCart(@CurrentAccount Account account, @RequestParam("id") String id, @PathVariable("path") String path, Cart cart, @PathVariable("tables-path") String tablesPath, Model model) {
-        Optional<Setmenu> setmenu = setmenuRepository.findById(Long.valueOf(id));
-        cart.getOrders().getSetMenuList().add(setmenu.orElseThrow());
+        Setmenu setmenu = setmenuRepository.findById(Long.valueOf(id)).orElseThrow();
+
+        cart.getOrders().getSetMenuList().add(setmenu);
 
         return "redirect:/store/" + URLEncoder.encode(path, StandardCharsets.UTF_8) + "/tables/" + URLEncoder.encode(tablesPath, StandardCharsets.UTF_8);
     }

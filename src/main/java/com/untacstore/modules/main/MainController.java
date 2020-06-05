@@ -5,7 +5,6 @@ import com.untacstore.modules.account.authentication.CurrentAccount;
 import com.untacstore.modules.account.repository.AccountRepository;
 import com.untacstore.modules.favorites.Favorites;
 import com.untacstore.modules.favorites.FavoritesRepository;
-import com.untacstore.modules.keyword.Keyword;
 import com.untacstore.modules.keyword.KeywordRepository;
 import com.untacstore.modules.location.Location;
 import com.untacstore.modules.store.Store;
@@ -16,7 +15,6 @@ import com.untacstore.modules.waiting.Waiting;
 import com.untacstore.modules.waiting.WaitingForm;
 import com.untacstore.modules.waiting.WaitingRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,15 +23,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Controller
 @RequiredArgsConstructor
@@ -72,15 +66,13 @@ public class MainController {
 
             System.out.println("log-favorites-store");
 //            즐겨찾기순 리스트
-            Pageable pageableFavorites = PageRequest.of(0,5, Sort.by("favoritesCount").descending());
-            Page<Store> favoritesPage = storeRepository.findAll(pageableFavorites);
-            model.addAttribute("favoritesPage", favoritesPage);
+            List<Store> favoritesList = storeRepository.findFirst5ByOrderByFavoritesCountDesc();
+            model.addAttribute("favoritesList", favoritesList);
 
             System.out.println("log-grade-store");
 //            평점순 리스트
-            Pageable pageableGrade = PageRequest.of(0,5, Sort.by("grade").descending());
-            Page<Store> gradePage = storeRepository.findAll(pageableGrade);
-            model.addAttribute("gradePage", gradePage);
+            List<Store> gradeList = storeRepository.findFirst5ByOrderByGradeDesc();
+            model.addAttribute("gradeList", gradeList);
 
             System.out.println("log-waitingList");
 //            대기표

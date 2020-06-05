@@ -41,6 +41,9 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
 
     List<Store> findFirst5AllByOwner(Account accountLoaded);
 
+    List<Store> findFirst5ByOrderByFavoritesCountDesc();
+    List<Store> findFirst5ByOrderByGradeDesc();
+
     //store profile
     @EntityGraph(attributePaths = {"keywords", "waitingList", "favoritesList"})
     Store findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(String path);

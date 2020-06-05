@@ -306,7 +306,7 @@
             <p>
                 <span th:each="keyword: ${store.keywords}"
                       class="font-weight-light text-monospace badge badge-pill badge-info mr-3">
-                    <a th:href="@{'/search/keyward/' + ${keyword.name}}" class="text-decoration-none text-white">
+                    <a th:href="@{'/search/store?keyword=' + ${keyword.name}}" class="text-decoration-none text-white">
                         <i class="fa fa-tag"></i> <span th:text="${keyword.name}">Keyword</span>
                     </a>
                 </span>

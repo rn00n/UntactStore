@@ -139,7 +139,7 @@ public class StoreController {
         Store store = storeRepository.findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(path);
         model.addAttribute(store);
 
-        List<Review> review = reviewRepository.findReviewWithReplyByStore(store);
+        List<Review> review = reviewRepository.findReviewWithReplyByStoreOrderByReviewAt(store);
         model.addAttribute("reviews", review);
 
         model.addAttribute("reviewForm", new ReviewForm());

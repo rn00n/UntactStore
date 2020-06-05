@@ -12,5 +12,5 @@ import java.util.Set;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @EntityGraph(attributePaths = {"replies"})
-    List<Review> findReviewWithReplyByStore(Store store);
+    List<Review> findReviewWithReplyByStoreOrderByReviewAt(Store store);
 }
