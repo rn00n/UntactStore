@@ -1,15 +1,16 @@
 package com.untacstore.modules.store;
 
-import com.untacstore.modules.account.Account;
+import com.untactstore.modules.account.Account;
 import com.untacstore.modules.account.WithAccount;
-import com.untacstore.modules.account.repository.AccountRepository;
-import com.untacstore.modules.keyword.KeywordRepository;
-import com.untacstore.modules.menu.repository.MenuRepository;
-import com.untacstore.modules.menu.repository.SetmenuRepository;
-import com.untacstore.modules.store.form.StoreForm;
-import com.untacstore.modules.store.repository.StoreRepository;
-import com.untacstore.modules.store.service.StoreService;
-import com.untacstore.modules.table.TablesRepository;
+import com.untactstore.modules.account.repository.AccountRepository;
+import com.untactstore.modules.keyword.KeywordRepository;
+import com.untactstore.modules.menu.repository.MenuRepository;
+import com.untactstore.modules.menu.repository.SetmenuRepository;
+import com.untactstore.modules.store.Store;
+import com.untactstore.modules.store.form.StoreForm;
+import com.untactstore.modules.store.repository.StoreRepository;
+import com.untactstore.modules.store.service.StoreService;
+import com.untactstore.modules.table.TablesRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -32,7 +32,7 @@
         }
 
         #store-logo img {
-            height: auto;
+            height: 100%;
             width: 100%;
             overflow: hidden;
         }
@@ -52,7 +52,7 @@
 <!--메인 네비게이터-->
 <nav th:fragment="main-nav(account)" class="navbar navbar-expand-sm navbar-dark bg-dark">
     <a class="navbar-brand" href="/" th:href="@{/}">
-        <th>UntacStore</th>
+        <th>UntactStore</th>
 <!--        <img src="/images/logo_sm.png" width="30" height="30">-->
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,7 +120,7 @@
 <!--메인 푸터-->
 <footer th:fragment="footer">
     <div class="row justify-content-center">
-        <span>UntacStore.</span>
+        <span>UntactStore.</span>
         <small class="d-block mb-3 text-muted">&copy; 2020</small>
     </div>
 </footer>
@@ -228,20 +228,26 @@
         </div>
         <div class="col-4 text-right justify-content-end">
             <span  class="btn-group" role="group" aria-label="Basic example" th:if="${store.open}">
-                <a th:if="${!store.waiting && store.checkOwner(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/'+${store.path}+'/settings/full'}"
+                <a sec:authorize="isAuthenticated()" th:if="${!store.waiting && store.checkOwner(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/'+${store.path}+'/settings/full'}"
                    data-toggle="tooltip" data-placement="bottom" title="대기중 켜기">
                     자리있음
                 </a>
+                <button sec:authorize="!isAuthenticated()" th:if="${!store.waiting}" class="btn btn-primary" disabled>
+                    자리있음
+                </button>
                 <span sec:authorize="isAuthenticated()" th:if="${store.waiting && store.open}"
                       class="btn-group" role="group" aria-label="Basic example">
                     <a class="btn btn-outline-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}"
                        th:text="${store.countWaitingList()}" data-toggle="tooltip" data-placement="bottom" title="현재 대기중인 인원">1
                     </a>
-                    <a th:if="${store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}"
-                       data-toggle="tooltip" data-placement="bottom" title="대기표 발급">
+                    <button th:if="${store.isWaitingable(#authentication.principal)}" class="btn btn-primary" data-toggle="modal" data-target="#waiting">
                         <i class="fa fa-user-o" aria-hidden="true"></i> 줄서기
-                    </a>
-                    <a th:if="${!store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/exit-waiting?personnel=4'}"
+                    </button>
+<!--                    <a th:if="${store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/new-waiting?personnel=4'}"-->
+<!--                       data-toggle="tooltip" data-placement="bottom" title="대기표 발급">-->
+<!--                        <i class="fa fa-user-o" aria-hidden="true"></i> 줄서기-->
+<!--                    </a>-->
+                    <a th:if="${!store.isWaitingable(#authentication.principal)}" class="btn btn-primary" th:href="@{'/store/' + ${store.path} + '/exit-waiting'}"
                        data-toggle="tooltip" data-placement="bottom" title="대기 취소">
                         <i class="fa fa-user" aria-hidden="true"></i> Waiting...
                     </a>
@@ -251,6 +257,35 @@
                     </a>
                 </span>
             </span>
+            <div class="modal fade" id="waiting" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="sit-up-title" th:text="${store.name}+' 대기표 발급'"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form th:action="@{'/store/' + ${store.path} + '/new-waiting'}" method="get">
+                        <div class="modal-body">
+                            <p>대기표를 발급 받으시겠습니까?</p>
+                            <p><span th:text="${'현재 '+store.countWaitingList()+'명 대기중'}"></span></p>
+                            <div class="input-group">
+                                <label for="personnel">인원</label>
+                                <select id="personnel" name="personnel">
+                                    <option th:each="num: ${#numbers.sequence(1, 10)}" th:value="${num}" th:text="${num}">1</option>
+                                </select>
+                            </div>
+                            <p>감사합니다.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">확인</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row pt-1 justify-content-center bg-light">
@@ -520,7 +555,7 @@
             <li class="page-item" th:classappend="${!page.hasPrevious()}? disabled">
                 <a th:href="@{'/search/store?keyword='+${keyword}+'&sort='+${sortProperty}+',desc&page='+${page.getNumber()-1}}" class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
             </li>
-            <li class="page-item" th:classappend="${i == page.getNumber()}? active"
+            <li th:if="${i >=0}" class="page-item" th:classappend="${i == page.getNumber()}? active"
                 th:each="i: ${#numbers.sequence(0, page.getTotalPages() - 1)}">
                 <a th:href="@{'/search/store?keyword=' + ${keyword} + '&sort=' + ${sortProperty} + ',desc&page=' + ${i}}"
                    class="page-link" href="#" th:text="${i + 1}">1</a>

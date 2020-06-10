@@ -8,8 +8,8 @@
         <version>2.2.7.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.UntacStore</groupId>
-    <artifactId>untacstore</artifactId>
+    <groupId>com.UntactStore</groupId>
+    <artifactId>untactstore</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>UntacStore</name>
     <description>Un Contact Store System</description>

@@ -1,12 +1,13 @@
 package com.untacstore.modules.account;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.untacstore.modules.account.repository.AccountRepository;
-import com.untacstore.modules.account.service.AccountService;
-import com.untacstore.modules.keyword.Keyword;
-import com.untacstore.modules.keyword.KeywordRepository;
-import com.untacstore.modules.location.Location;
-import com.untacstore.modules.location.LocationRepository;
+import com.untactstore.modules.account.Account;
+import com.untactstore.modules.account.repository.AccountRepository;
+import com.untactstore.modules.account.service.AccountService;
+import com.untactstore.modules.keyword.Keyword;
+import com.untactstore.modules.keyword.KeywordRepository;
+import com.untactstore.modules.location.Location;
+import com.untactstore.modules.location.LocationRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

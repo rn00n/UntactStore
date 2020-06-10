@@ -8,14 +8,14 @@
 
         <div class="container">
             <div class="row py-4 text-left justify-content-center bg-light">
-                <div class="col-6">
+                <div class="col-4">
                 <span class="h2">
                 <a href="#" class="text-decoration-none" th:href="@{'/store/' + ${store.path}}">
                     <span th:text="${store.name}">상점 이름</span>
                 </a> / </span>
                     <span class="h2" >Waiting List</span>
                 </div>
-<!--                <div class="col-4 text-right justify-content-end">-->
+                <div class="col-3 text-right justify-content-end">
 <!--                <span sec:authorize="isAuthenticated()">-->
 <!--                    <button th:if="${event.isEnrollableFor(#authentication.principal)}"-->
 <!--                            class="btn btn-outline-primary" data-toggle="modal" data-target="#enroll">-->
@@ -76,20 +76,21 @@
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                    </div>-->
-<!--                </div>-->
+                </div>
             </div>
             <div class="row px-3 justify-content-center">
                 <div class="col-7 pt-3">
                     <dt class="font-weight-light">대기자 목록</dt>
-                    <dd >목목목목</dd>
-
-                    <dt class="font-weight-light">대기대기</dt>
+                    <dd >여기에 무슨말을</dd>
+<!--TODO-->
+                    <dt class="font-weight-light">써야할까</dt>
                     <dd>
                         <table class="table table-borderless table-sm" th:if="${waitingList.size() > 0}">
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">대기자</th>
+                                <th scope="col">인원</th>
                                 <th scope="col">대기 신청 일시</th>
                                 <th scope="col">대기 상태</th>
                                 <th scope="col">대기 신청 관리</th>
@@ -106,6 +107,9 @@
                                              th:data-jdenticon-value="${waiting.getAccount().getUsername()}" width="24" height="24" class="rounded border bg-light"></svg>
                                         <span th:text="${waiting.getAccount().getName()}"></span>
                                     </a>
+                                </td>
+                                <td>
+                                    <span th:text="${waiting.getPersonnel()}+'명'"></span>
                                 </td>
                                 <td>
                                     <span class="date-time" th:text="${waiting.getWaitingAt()}"></span>

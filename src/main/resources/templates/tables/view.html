@@ -68,9 +68,21 @@
                             class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-request">
                         <i class="fa fa-desktop"></i> 자리 신청 현황
                     </button>
-<!--                    <span class="text-success" th:if="${tables.isAttended(#authentication.principal)}" disabled>-->
-<!--                        <i class="fa fa-check-circle"></i> 사장이 ok해주면-->
-<!--                    </span>-->
+                </span>
+                <span sec:authorize="!isAuthenticated()" th:if="${store.open}">
+                    <button th:if="${tables.isSitable()}"
+                            class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-down">
+                        <i class="fa fa-plus-circle"></i> 자리 신청
+                    </button>
+                    <button th:if="${tables.isfull()}"
+                            class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-up" disabled>
+                        <i class="fa fa-minus-circle"></i> 자리 신청 마감
+                    </button>
+                </span>
+                <span th:if="${!store.open}">
+                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#sit-up" disabled>
+                        <i class="fa fa-minus-circle"></i> 상점 오픈 전
+                    </button>
                 </span>
             </div>
             <div class="modal fade" id="sit-down" tabindex="-1" role="dialog" aria-labelledby="leaveTitle" aria-hidden="true">
@@ -83,15 +95,23 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>테이블을 요청하시겠습니까?</p>
-                            <p><strong>확인</strong>하시면 테이블 배치를 요청합니다.</p>
-                            <p>감사합니다.</p>
+                            <span sec:authorize="isAuthenticated()">
+                                <p>테이블을 요청하시겠습니까?</p>
+                                <p><strong>확인</strong>하시면 테이블 배치를 요청합니다.</p>
+                                <p>감사합니다.</p>
+                            </span>
+                            <span sec:authorize="!isAuthenticated()">
+                                <p>로그인 후 이용 가능합니다.</p>
+                                <p><strong>확인</strong>하시면 로그인 페이지로 이동합니다.</p>
+                                <p>감사합니다.</p>
+                            </span>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                            <form th:action="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-down'}" method="post">
+                            <form sec:authorize="isAuthenticated()" th:action="@{'/store/' + ${store.path} + '/tables/' + ${tables.tablesPath} + '/sit-down'}" method="post">
                                 <button class="btn btn-primary" type="submit" aria-describedby="submitHelp">확인</button>
                             </form>
+                            <a sec:authorize="!isAuthenticated()" class="btn btn-primary" th:href="@{/login}">확인</a>
                         </div>
                     </div>
                 </div>

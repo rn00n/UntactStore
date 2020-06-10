@@ -1,7 +1,7 @@
 package com.untacstore.modules.account;
 
-import com.untacstore.modules.account.form.SignUpForm;
-import com.untacstore.modules.account.service.AccountService;
+import com.untactstore.modules.account.form.SignUpForm;
+import com.untactstore.modules.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

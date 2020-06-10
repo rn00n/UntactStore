@@ -1,6 +1,7 @@
 package com.untacstore.modules.account;
 
-import com.untacstore.modules.account.repository.AccountRepository;
+import com.untactstore.modules.account.Account;
+import com.untactstore.modules.account.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
