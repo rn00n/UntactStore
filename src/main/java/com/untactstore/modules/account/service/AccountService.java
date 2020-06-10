@@ -39,6 +39,8 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final AccountReportRepository accountReportRepository;
+    private final EmailService emailService;
+    private final TemplateEngine templateEngine;
 
     /*시큐리티 로그인(UserDetails) 설정*/
     @Transactional(readOnly = true)
@@ -54,7 +56,7 @@ public class AccountService implements UserDetailsService {
     /*회원가입*/
     public Account processNewAccount(SignUpForm signUpForm) {
         Account account = saveNewAccount(signUpForm);
-        //TODO sendSignUpConfirmEmail(account);
+//        sendSignUpConfirmEmail(account);
         return account;
     }
 
@@ -62,7 +64,7 @@ public class AccountService implements UserDetailsService {
     public Account saveNewAccount(SignUpForm signUpForm) {
         signUpForm.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
         Account account = modelMapper.map(signUpForm, Account.class);
-        //TODO Email Token 생성
+        account.generateEmailCheckToken();
         return accountRepository.save(account);
     }
 
@@ -81,11 +83,7 @@ public class AccountService implements UserDetailsService {
         return account;
     }
 
-    @Autowired
-    EmailService emailService;
-    @Autowired
-    TemplateEngine templateEngine;
-    public void sendSignUpConfirmEmail() {
+    public void sendSignUpConfirmEmail(Account account) {
         Context context = new Context();
         context.setVariable("link", "/check-email-token?token=[토큰값]");
         context.setVariable("nickname", "안농");
@@ -168,5 +166,27 @@ public class AccountService implements UserDetailsService {
         AccountReport accountReport = accountReportRepository.findByToAndFrom(to, from);
         accountReportRepository.deleteByToAndFrom(to, from);
         to.getReport().remove(accountReport);
+    }
+
+    public void sendFindPasswordEmail(Account account) {
+        Context context = new Context();
+        context.setVariable("link", "/find-password-by-email?token="+account.getEmailCheckToken()+"&email="+account.getEmail());
+        context.setVariable("nickname", account.getUsername());
+        context.setVariable("linkName", "이메일로 비밀번호 찾기");
+        context.setVariable("message", "아래 링크를 클릭하여 비밀번호를 재설정 하세요.");
+        context.setVariable("host", "http://localhost:8081");
+        String message = templateEngine.process("mail/simple-link", context);
+
+        EmailMessage emailMessage = EmailMessage.builder()
+                .to(account.getEmail())
+                .subject("UntactStore, 비밀번호 찾기 링크")
+                .message(message)
+                .build();
+
+        emailService.sendEmail(emailMessage);
+    }
+
+    public void addToken(List<Account> accountList) {
+        accountList.stream().forEach(a-> a.generateEmailCheckToken());
     }
 }

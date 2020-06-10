@@ -40,7 +40,8 @@ public class MainController {
     private final FavoritesRepository favoritesRepository;
 
     @GetMapping("/")
-    public String home(@CurrentAccount Account account, Model model) {
+    public String home(@CurrentAccount Account account, Model model,
+                       @PageableDefault(size=9,sort="grade",direction= Sort.Direction.DESC) Pageable pageable) {
         if (account != null) {
             System.out.println("log-account");
             Account accountLoaded = accountRepository.findAccountWithKeywordsById(account.getId());
@@ -91,12 +92,11 @@ public class MainController {
 
 //            모든 상점
 //            Pageable pageable = PageRequest.of(0,9, Sort.by("grade").descending());
-            List<Store> storeList = storeRepository.findFirst9ByOrderByGradeDesc();
-            model.addAttribute("storeList", storeList);
+            Page<Store> storePage = storeRepository.findAll(pageable);
+            model.addAttribute("storePage", storePage);
             return "index-after-login";
         }
 
-        Pageable pageable = PageRequest.of(0,9, Sort.by("grade").descending());
         Page<Store> storePage = storeRepository.findAll(pageable);
         model.addAttribute("storePage", storePage);
 

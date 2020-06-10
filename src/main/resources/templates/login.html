@@ -13,7 +13,7 @@
             <div th:if="${param.error}" class="alert alert-danger" role="alert">
                 <p>아이디 패스워드가 정확하지 않습니다.</p>
                 <p>
-                    확인 후 다시 입력하시거나, <a href="#" th:href="@{/find-passsword}">패스워드 찾기</a>를 이용하세요.
+                    확인 후 다시 입력하시거나, <a href="#" th:href="@{/find-password}">패스워드 찾기</a>를 이용하세요.
                 </p>
             </div>
             <form class="needs-validation col-sm-6" th:action="@{/login}" method="post" novalidate>
@@ -31,7 +31,7 @@
                     <input id="password" class="form-control" type="password" name="password"
                            placeholder="password" aria-describedby="passwordHelp" required>
                     <small id="passwordHelp" class="form-text text-muted">
-                        패스워드가 기억나지 않는다면, <a href="#" th:href="@{/email-login}">패스워드 없이 로그인하기</a>
+                        패스워드가 기억나지 않는다면, <a href="#" th:href="@{/find-password}">패스워드 찾기</a>
                     </small>
                     <small class="invalid-feedback">패스워드를 입력하세요.</small>
                 </div>

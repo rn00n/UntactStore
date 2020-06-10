@@ -19,4 +19,6 @@ public interface AccountRepository extends JpaRepository<Account, Long>, Queryds
 
     @EntityGraph(attributePaths = {"keywords", "locations"})
     Account findAccountWithKeywordsAndLocationsById(Long id);
+
+    Account findByEmail(String email);
 }

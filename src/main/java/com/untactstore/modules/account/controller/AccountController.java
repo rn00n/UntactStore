@@ -2,6 +2,7 @@ package com.untactstore.modules.account.controller;
 
 import com.untactstore.modules.account.Account;
 import com.untactstore.modules.account.authentication.CurrentAccount;
+import com.untactstore.modules.account.form.FindPasswordForm;
 import com.untactstore.modules.account.form.SignUpForm;
 import com.untactstore.modules.account.repository.AccountRepository;
 import com.untactstore.modules.account.service.AccountService;
@@ -14,9 +15,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,11 +35,6 @@ public class AccountController {
         webDataBinder.addValidators(signUpFormValidator);
     }
 
-    @GetMapping("/email")
-    public String emailTest() {
-        accountService.sendSignUpConfirmEmail();
-        return "redirect:/";
-    }
     /*회원가입 - 폼*/
     @GetMapping("/sign-up")
     public String signUpForm(Model model) {
@@ -91,4 +89,48 @@ public class AccountController {
         return "redirect:/profile/"+username;
     }
 
+    /*계정 - 비밀번호 찾기*/
+    @GetMapping("/find-password")
+    public String findPasswordForm(Model model) {
+        model.addAttribute(new FindPasswordForm());
+        return "account/find-password";
+    }
+
+    @PostMapping("/find-password")
+    public String findPassword(@Valid FindPasswordForm findPasswordForm, Errors errors, Model model, RedirectAttributes attributes) {
+        Account account = accountRepository.findByUsername(findPasswordForm.getUsername());
+        if (account == null) {
+            model.addAttribute("error", "유효한 아이디가 아닙니다.");
+            return "account/find-password";
+        }
+
+        if (!account.getEmail().equals(findPasswordForm.getEmail())) {
+            model.addAttribute("error", "등록하신 이메일이 아닙니다.");
+            return "account/find-password";
+        }
+
+
+        accountService.sendFindPasswordEmail(account);
+        attributes.addFlashAttribute("message", "입력하신 이메일로 인증 메일을 발송했습니다.");
+        return "redirect:/";
+    }
+
+    @GetMapping("/find-password-by-email")
+    public String findPasswordByEmail(String token, String email, Model model) {
+        Account account = accountRepository.findByEmail(email);
+        if (account == null || !account.isValidToken(token)) {
+            model.addAttribute("error", "로그인 할 수 없습니다.");
+            return "account/logged-in-by-email";
+        }
+        accountService.login(account);
+        return "redirect:/settings/account";
+    }
+
+    @GetMapping("/addToken")
+    public String addToken() {
+        List<Account> accountList = accountRepository.findAll();
+        accountService.addToken(accountList);
+
+        return "redirect:/";
+    }
 }

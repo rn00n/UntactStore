@@ -569,4 +569,24 @@
         </ul>
     </nav>
 </div>
+<div th:fragment="pagination-home (page, sortProperty)">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${!page.hasPrevious()}? disabled">
+                <a th:href="@{'/?sort='+${sortProperty}+',desc&page='+${page.getNumber()-1}}" class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            <li th:if="${i >=0}" class="page-item" th:classappend="${i == page.getNumber()}? active"
+                th:each="i: ${#numbers.sequence(0, page.getTotalPages() - 1)}">
+                <a th:href="@{'/?sort=' + ${sortProperty} + ',desc&page=' + ${i}}"
+                   class="page-link" href="#" th:text="${i + 1}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${!page.hasNext()}? disabled">
+                <a th:href="@{'/?&sort=' + ${sortProperty} + ',desc&page=' + ${page.getNumber() + 1}}"
+                   class="page-link">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 </html>
