@@ -1,4 +1,4 @@
-# UntacStore
+# UntactStore
 Un + Contact Store system
 
 비대면 예약, 주문 시스템
