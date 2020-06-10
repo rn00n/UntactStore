@@ -1,6 +1,7 @@
 package com.untactstore.modules.account;
 
 import com.untactstore.modules.account.authentication.PrincipalAccount;
+import com.untactstore.modules.favorites.Favorites;
 import com.untactstore.modules.keyword.Keyword;
 import com.untactstore.modules.location.Location;
 import com.untactstore.modules.waiting.Waiting;
@@ -51,6 +52,9 @@ public class Account {
 
     @OneToMany(mappedBy = "to")
     private List<AccountReport> report = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account")
+    private Set<Favorites> favoritesList = new HashSet<>();
 
     public int reportSize() {
         return report.size();

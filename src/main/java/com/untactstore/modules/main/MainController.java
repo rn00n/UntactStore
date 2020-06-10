@@ -44,7 +44,7 @@ public class MainController {
                        @PageableDefault(size=9,sort="grade",direction= Sort.Direction.DESC) Pageable pageable) {
         if (account != null) {
             System.out.println("log-account");
-            Account accountLoaded = accountRepository.findAccountWithKeywordsById(account.getId());
+            Account accountLoaded = accountRepository.findAccountWithKeywordsAndLocationsById(account.getId());
             model.addAttribute(accountLoaded);
 
             System.out.println("log-store");

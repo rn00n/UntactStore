@@ -4,6 +4,7 @@ import com.untactstore.modules.account.Account;
 import com.untactstore.modules.account.authentication.PrincipalAccount;
 import com.untactstore.modules.address.Address;
 import com.untactstore.modules.favorites.Favorites;
+import com.untactstore.modules.grade.Grade;
 import com.untactstore.modules.keyword.Keyword;
 import com.untactstore.modules.menu.Menu;
 import com.untactstore.modules.menu.Setmenu;
@@ -43,8 +44,6 @@ public class Store {
     @ManyToOne
     private Account owner;
 
-    private Double grade = 0.0;
-
     private String operatingTime; // 운영시간
 
     @Lob @Basic(fetch = FetchType.EAGER)
@@ -75,10 +74,14 @@ public class Store {
     @OrderBy("turn")
     private Set<Waiting> waitingList = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "store")
     private Set<Favorites> favoritesList = new HashSet<>();
 
     private int favoritesCount = 0;
+
+    @OneToMany(mappedBy = "store")
+    private Set<Grade> gradeList = new HashSet<>();
+    private Double grade = 0.0;
 
     public boolean isOwner(PrincipalAccount principalAccount) {
         return this.owner.equals(principalAccount.getAccount());
@@ -170,5 +173,10 @@ public class Store {
     public void removeFavorites(Favorites favorites) {
         this.favoritesList.remove(favorites);
         this.favoritesCount--;
+    }
+
+    public void addGrade(Grade grade) {
+        gradeList.add(grade);
+        grade.setStore(this);
     }
 }

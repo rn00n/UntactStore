@@ -45,7 +45,7 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
 
 
     //store profile
-    @EntityGraph(attributePaths = {"keywords", "waitingList", "favoritesList"})
+    @EntityGraph(attributePaths = {"keywords", "waitingList", "favoritesList","gradeList"})
     Store findStoreWithKeywordsAndWaitingListAndFavoritesListByPath(String path);
 
     //table view
@@ -53,4 +53,5 @@ public interface StoreRepository extends JpaRepository<Store, Long>, StoreReposi
     Store findStoreWithSetmenuListAndMenuListByPath(String path);
 
     List<Store> findFirst9ByOrderByGradeDesc();
+
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untactstore.modules.account.Account;
 import com.untactstore.modules.account.authentication.CurrentAccount;
+import com.untactstore.modules.grade.Grade;
+import com.untactstore.modules.grade.GradeRepository;
 import com.untactstore.modules.menu.Menu;
 import com.untactstore.modules.menu.Setmenu;
 import com.untactstore.modules.menu.repository.MenuRepository;
@@ -54,6 +56,7 @@ public class StoreController {
     private final ReviewRepository reviewRepository;
     private final PaymentRepository paymentRepository;
     private final TablesRepository tablesRepository;
+    private final GradeRepository gradeRepository;
     private final WaitingRepository waitingRepository;
     private final ObjectMapper objectMapper;
 
@@ -65,6 +68,9 @@ public class StoreController {
     /*Store - 폼*/
     @GetMapping("/new-store")
     public String createStoreForm(@CurrentAccount Account account, Model model) {
+        if (account == null) {
+            return "redirect:/";
+        }
         model.addAttribute(account);
         model.addAttribute(new StoreForm());
         return "store/form";
@@ -104,6 +110,11 @@ public class StoreController {
         //리뷰
         Set<Review> reviews = store.getReviews();
         model.addAttribute("review", reviews);
+
+        Grade grade = gradeRepository.findByAccountAndStore(account, store);
+        if (grade != null) {
+            model.addAttribute("grade", grade.getGrade());
+        }
 
         return "store/view";
     }
@@ -238,10 +249,11 @@ public class StoreController {
         model.addAttribute("statistics", statistics.values().stream().collect(Collectors.toList()));
     }
 
-
-    @GetMapping("/data")
-    public String generateTestStoreData(@CurrentAccount Account account) {
-        storeService.generateTestStoreDate(account);
-        return "redirect:/";
+    /*별점 설정*/
+    @GetMapping("/{path}/grade")
+    public String setGrade(@CurrentAccount Account account, @PathVariable String path, String grade, Model model) {
+        Store store = storeRepository.findStoreByPath(path);
+        storeService.setGrade(account, store, grade);
+        return "redirect:/store/"+ URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 }

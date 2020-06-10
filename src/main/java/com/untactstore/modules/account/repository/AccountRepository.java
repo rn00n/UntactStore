@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public interface AccountRepository extends JpaRepository<Account, Long>, QuerydslPredicateExecutor<Account> {
+    @EntityGraph(attributePaths = {"locations"})
     Account findByUsername(String username);
 
     boolean existsByUsername(String username);
@@ -21,4 +22,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>, Queryds
     Account findAccountWithKeywordsAndLocationsById(Long id);
 
     Account findByEmail(String email);
+
+    @EntityGraph(attributePaths = {"favoritesList", "favoritesList.store"})
+    Account findAccountWithFavoritesListByUsername(String username);
 }

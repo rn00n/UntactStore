@@ -105,8 +105,8 @@
                     <h6 class="dropdown-header">
                         <span sec:authentication="name">Username</span>
                     </h6>
-                    <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}}">내 정보</a>
-                    <a class="dropdown-item" >즐겨찾기</a>
+                    <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}+'?view=profile'}">내 정보</a>
+                    <a class="dropdown-item" th:href="@{'/profile/' + ${#authentication.name}+'?view=favorites'}">즐겨찾기</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#" th:href="@{'/settings/profile'}">설정</a>
                     <form class="form-inline my-2 my-lg-0" action="#" th:action="@{/logout}" method="post">
@@ -184,6 +184,26 @@
             <a href="#" class="text-decoration-none" th:href="@{'/store/' + ${store.path}}">
                 <strong class="h2" th:text="${store.name}">상점 이름</strong>
             </a>
+            <span sec:authorize="isAuthenticated()" id="star_grade">
+                <a th:each="on: ${#numbers.sequence(1, 5)}" th:classappend="${on <= grade}? on" th:href="@{'/store/'+${store.path}+'/grade?grade='+${on}}">★</a>
+                <span>(<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> <span th:text="${#numbers.formatDecimal(store.grade,1,1)}"></span>)</span>
+            </span>
+<!--            <script>-->
+<!--                $('#star_grade a').click(function(){-->
+<!--                    $(this).parent().children("a").removeClass("on");  /* 별점의 on 클래스 전부 제거 */-->
+<!--                    $(this).addClass("on").prevAll("a").addClass("on"); /* 클릭한 별과, 그 앞 까지 별점에 on 클래스 추가 */-->
+<!--                    return false;-->
+<!--                });-->
+<!--            </script>-->
+            <style>
+                #star_grade a{
+                    text-decoration: none;
+                    color: gray;
+                }
+                #star_grade a.on{
+                    color: red;
+                }
+            </style>
         </div>
         <div class="col-4 text-right justify-content-end">
             <!--            -->

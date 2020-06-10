@@ -14,11 +14,13 @@
                 <div class="col-md-4" th:each="waiting: ${waitingList}">
                     <div class="card" style="width: 15rem;">
                         <div class="card-body">
-                            <h1 class="card-title" th:text="${waiting.getTurn()+' 남음'}">turn</h1>
-                            <h6 class="card-subtitle mb-2 text-muted" th:text="${waiting.getStore().getName()}">store</h6>
-                            <div class="justify-content-end card-text" th:text="${waiting.getPersonnel()+'명'}">인원</div>
-                            <div class="card-text" th:text="${waiting.getAccount().getName()}">account</div>
-                            <a href="#" class="float-right">취소</a>
+                            <a th:href="@{'/store/' + ${waiting.store.path}}" class="font-weight-bold">
+                                <h1 class="card-title" th:text="${waiting.getTurn()+' 남음'}">turn</h1>
+                                <h6 class="card-subtitle mb-2 text-muted" th:text="${waiting.getStore().getName()}">store</h6>
+                                <div class="justify-content-end card-text" th:text="${waiting.getPersonnel()+'명'}">인원</div>
+                                <div class="card-text" th:text="${waiting.getAccount().getName()}">account</div>
+                            </a>
+                            <a th:href="@{'/store/' + ${waiting.store.path} + '/exit-waiting'}" class="float-right">취소</a>
                         </div>
                     </div>
                 </div>
@@ -35,7 +37,6 @@
                             <h6 class="card-subtitle mb-2 text-muted" th:text="${end.getStore().getName()}">store</h6>
                             <div class="justify-content-end card-text" th:text="${end.getPersonnel()+'명'}">인원</div>
                             <div class="card-text" th:text="${end.getAccount().getName()}">account</div>
-                            <a href="#" class="float-right">취소</a>
                         </div>
                     </div>
                 </div>

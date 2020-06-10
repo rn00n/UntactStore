@@ -7,8 +7,11 @@ import com.untactstore.modules.account.form.SignUpForm;
 import com.untactstore.modules.account.repository.AccountRepository;
 import com.untactstore.modules.account.service.AccountService;
 import com.untactstore.modules.account.validator.SignUpFormValidator;
+import com.untactstore.modules.favorites.Favorites;
 import com.untactstore.modules.keyword.Keyword;
 import com.untactstore.modules.location.Location;
+import com.untactstore.modules.store.Store;
+import com.untactstore.modules.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 public class AccountController {
     private final AccountService accountService;
     private final AccountRepository accountRepository;
+    private final StoreRepository storeRepository;
     private final SignUpFormValidator signUpFormValidator;
 
     @InitBinder("signUpForm")
@@ -56,19 +60,28 @@ public class AccountController {
 
     /*프로필 보기*/
     @GetMapping("/profile/{username}")
-    public String viewProfile(@CurrentAccount Account account, @PathVariable String username, Model model) {
+    public String viewProfile(@CurrentAccount Account account, @PathVariable String username, String view, Model model) {
         model.addAttribute(account);
         Account accountToView = accountService.getAccount(username);
         model.addAttribute("profileAccount", accountToView);
         model.addAttribute("isOwner", accountToView.equals(account));
 
-        Set<Keyword> keywords = accountService.getKeywords(account);
-        model.addAttribute("keywords", keywords.stream().map(Keyword::getName).collect(Collectors.toList()));
-        //로그인된 계정의 location
-        Set<Location> locations = accountService.getLocations(account);
-        model.addAttribute("locations", locations.stream().map(Location::getName).collect(Collectors.toList()));
+//        Set<Keyword> keywords = accountService.getKeywords(account);
+//        model.addAttribute("keywords", keywords.stream().map(Keyword::getName).collect(Collectors.toList()));
+//        //로그인된 계정의 location
+//        Set<Location> locations = accountService.getLocations(account);
+//        model.addAttribute("locations", locations.stream().map(Location::getName).collect(Collectors.toList()));
+
+        List<Store> favoritesStoreList = accountToView.getFavoritesList().stream().map(Favorites::getStore).collect(Collectors.toList());
+        model.addAttribute("favoritesStoreList", favoritesStoreList);
 
         model.addAttribute("profileUsername", username);
+
+        if (view == null) {
+            model.addAttribute("view", "profile");
+        } else {
+            model.addAttribute("view", view);
+        }
         return "account/profile";
     }
 

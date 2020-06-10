@@ -79,7 +79,7 @@ public class AccountService implements UserDetailsService {
 
     /*프로필 보기*/
     public Account getAccount(String username) {
-        Account account = accountRepository.findByUsername(username);
+        Account account = accountRepository.findAccountWithFavoritesListByUsername(username);
         return account;
     }
 

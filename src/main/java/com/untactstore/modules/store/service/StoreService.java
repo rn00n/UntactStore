@@ -6,6 +6,8 @@ import com.untactstore.modules.account.service.AccountService;
 import com.untactstore.modules.address.Address;
 import com.untactstore.modules.address.AddressForm;
 import com.untactstore.modules.address.AddressRepository;
+import com.untactstore.modules.grade.Grade;
+import com.untactstore.modules.grade.GradeRepository;
 import com.untactstore.modules.keyword.Keyword;
 import com.untactstore.modules.keyword.KeywordRepository;
 import com.untactstore.modules.menu.Menu;
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -57,6 +60,7 @@ public class StoreService {
     private final OrdersRepository ordersRepository;
     private final AddressRepository addressRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final GradeRepository gradeRepository;
 
 
     public Store newStore(Account account, StoreForm storeForm) {
@@ -244,6 +248,26 @@ public class StoreService {
 
     public void updateMenuImage(Menu menu, String image) {
         menu.setImage(image);
+    }
+
+    public void setGrade(Account account, Store store, String grade) {
+        if (store.getGradeList().stream().filter(g->g.getAccount().equals(account)).collect(Collectors.toList()).isEmpty()) {
+            Grade newGrade = new Grade();
+            newGrade.setAccount(account);
+            newGrade.setGrade(Integer.valueOf(grade));
+            store.addGrade(newGrade);
+            gradeRepository.save(newGrade);
+        } else {
+            Grade updateGrade = gradeRepository.findByAccountAndStore(account, store);
+            updateGrade.setGrade(Integer.valueOf(grade));
+        }
+
+        double totalGrade = 0;
+        List<Integer> collect = store.getGradeList().stream().map(Grade::getGrade).collect(Collectors.toList());
+        for (Integer g:collect) {
+            totalGrade += g;
+        }
+        store.setGrade(totalGrade/collect.size());
     }
 
     //TODO 리뷰 답글 삭제

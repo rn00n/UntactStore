@@ -4,10 +4,7 @@ import com.untactstore.modules.account.Account;
 import com.untactstore.modules.store.Store;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity @EqualsAndHashCode(of = "id")
 @Getter @Setter
