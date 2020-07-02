@@ -3,6 +3,8 @@ Un + Contact Store system
 
 https://github.com/rn00n/UntactStore
 
+임시 도메인 http://112.148.5.57:8080/
+
 비대면 예약, 주문 시스템
 
 team : read a dream
