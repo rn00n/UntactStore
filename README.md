@@ -3,7 +3,9 @@ Un + Contact Store system
 
 https://github.com/rn00n/UntactStore
 
-임시 도메인 http://112.148.5.57:8080/
+# 임시 도메인
+http://112.148.5.57:8080/
+sample page : 맥도날드 확인
 
 비대면 예약, 주문 시스템
 
